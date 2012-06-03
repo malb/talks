@@ -1,0 +1,21 @@
+#cargs -std=c99 -ggdb
+
+cdef extern from "katan.c":
+    ctypedef unsigned long uint64_t
+    void katan32_encrypt(uint64_t *plain, uint64_t *cipher, uint64_t *k, int rounds )
+    void katan32_keyschedule(uint64_t *k, uint64_t *key, int rounds)
+    uint64_t ONES
+
+def k32_encrypt(plain, key):
+    cdef int i
+    cdef uint64_t _plain[32], _cipher[32], kk[2*254], _key[80]
+
+    for i in range(80):
+        _key[i] = ONES if key[i] else 0
+    for i in range(32):
+        _plain[i] = ONES if plain[i] else 0
+
+    katan32_keyschedule(kk, _key, 254)
+    katan32_encrypt(_plain, _cipher, _key, 254)
+
+    return [int(_cipher[i]%2) for i in range(32)]
