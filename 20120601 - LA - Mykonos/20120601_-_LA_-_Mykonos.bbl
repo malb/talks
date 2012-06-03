@@ -1,0 +1,25 @@
+\begin{thebibliography}{ADKF70}
+
+\bibitem[ADKF70]{ADKF70}
+V.~Arlazarov, E.~Dinic, M.~Kronrod, and I.~Faradzev.
+\newblock On economical construction of the transitive closure of a directed
+  graph.
+\newblock {\em Dokl. Akad. Nauk.}, 194(11), 1970.
+\newblock (in Russian), English Translation in Soviet Math Dokl.
+
+\bibitem[Gra53]{graycode}
+Frank Gray.
+\newblock Pulse code communication, March 1953.
+\newblock US Patent No. 2,632,058.
+
+\bibitem[Mon05]{M05}
+Peter~L.\ Montgomery.
+\newblock Five, six, and seven-term {K}aratsuba-like formulae.
+\newblock {\em IEEE Trans. on Computers}, 53(3):362--369, 2005.
+
+\bibitem[Str69]{Strassen}
+Volker Strassen.
+\newblock Gaussian elimination is not optimal.
+\newblock {\em Nummerische Mathematik}, 13:354--256, 1969.
+
+\end{thebibliography}
