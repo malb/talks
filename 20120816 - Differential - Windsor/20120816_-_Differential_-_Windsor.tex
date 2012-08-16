@@ -1,0 +1,847 @@
+\documentclass[11pt]{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage{xspace}
+\usepackage{tikz}
+
+
+\mode<presentation>
+{
+  \setbeamercovered{transparent}
+  \setbeamercolor{normal text}{fg=white,bg=gray}
+  \setbeamercolor{alerted text}{fg=white}
+  \setbeamercolor{example text}{fg=white}
+  \setbeamercolor{background canvas}{bg=darkgray} 
+  \setbeamercolor{structure}{fg=white}
+
+  \setbeamercolor{block title}{bg=orange,fg=white}
+  \setbeamercolor{block body}{bg=white,fg=darkgray}
+
+  \setbeamercolor{palette primary}{use=structure,fg=structure.fg}
+
+  \setbeamercolor{math text}{}
+  \setbeamercolor{math text inlined}{parent=math text}
+  \setbeamercolor{math text displayed}{parent=math text}
+
+  \setbeamercolor{normal text in math text}{}
+
+  \setbeamercolor{local structure}{parent=structure}
+
+  \setbeamercolor{titlelike}{parent=structure}
+
+  \setbeamercolor{title}{parent=titlelike}
+  \setbeamercolor{title in head/foot}{parent=palette quaternary}
+  \setbeamercolor{title in sidebar}{parent=palette sidebar quaternary}
+
+  \setbeamercolor{subtitle}{parent=title}
+}
+
+\title{An All-In-One Approach to Differential Cryptanalysis for Small Block Ciphers}
+\author{Martin R.\ Albrecht~\inst{1} \and Gregor Leander~\inst{2}}
+\institute{1 -- POLSYS Team, UPMC, France \and 2 -- DTU, Denmark}
+\date{SAC 2012, Windsor, Canada}
+
+\newcommand{\bemph}[1]{\textbf{#1}\xspace}
+
+\newcommand{\SBox}[2]{\draw (#1-0.4,#2) -- (#1+0.4,#2) -- (#1+0.4,#2-0.75) -- (#1-0.4,#2-0.75) -- cycle; \node at (#1,#2-0.4) {$S$} }
+\newcommand{\KeyAdd}[2]{
+\draw (#1, #2) -- (#1+0.5,#2); \node at (#1+0.25,#2) {\tiny $\oplus$};
+\draw (#1,#2-0.25) -- (#1+0.5,#2-0.25);  \node at (#1+0.25,#2-0.25) {\tiny $\oplus$};
+\draw (#1,#2-0.50) -- (#1+0.5,#2-0.50);   \node at (#1+0.25,#2-0.50) {\tiny $\oplus$};
+\draw (#1,#2-0.75) -- (#1+0.5,#2-0.75);  \node at (#1+0.25,#2-0.75) {\tiny $\oplus$};
+ }
+
+\newcommand{\SBoxes}[1]{\SBox{#1}{0}; \SBox{#1}{1}; \SBox{#1}{2}; \SBox{#1}{3};}
+\newcommand{\KeyAdds}[1]{\KeyAdd{#1}{0}; \KeyAdd{#1}{1}; \KeyAdd{#1}{2}; \KeyAdd{#1}{3};}
+
+\newcommand{\Permutation}[1]{
+\draw (#1,3.00) -- (#1+0.25,3.00) -- (#1+1,3.00) -- (#1+1.25,3.00);
+\draw (#1,2.75) -- (#1+0.25,2.75) -- (#1+1,2.00) -- (#1+1.25,2.00);
+\draw (#1,2.50) -- (#1+0.25,2.50) -- (#1+1,1.00) -- (#1+1.25,1.00);
+\draw (#1,2.25) -- (#1+0.25,2.25) -- (#1+1,0.00) -- (#1+1.25,0.00);
+
+\draw (#1,2.00) -- (#1+0.25,2.00) -- (#1+1,2.75) -- (#1+1.25,2.75);
+\draw (#1,1.75) -- (#1+0.25,1.75) -- (#1+1,1.75) -- (#1+1.25,1.75);
+\draw (#1,1.50) -- (#1+0.25,1.50) -- (#1+1,0.75) -- (#1+1.25,0.75);
+\draw (#1,1.25) -- (#1+0.25,1.25) -- (#1+1,-0.25) -- (#1+1.25,-0.25);
+
+\draw (#1,1.00) -- (#1+0.25,1.00) -- (#1+1,2.50) -- (#1+1.25,2.50);
+\draw (#1,0.75) -- (#1+0.25,0.75) -- (#1+1,1.50) -- (#1+1.25,1.50);
+\draw (#1,0.50) -- (#1+0.25,0.50) -- (#1+1,0.50) -- (#1+1.25,0.50);
+\draw (#1,0.25) -- (#1+0.25,0.25) -- (#1+1,-0.50) -- (#1+1.25,-0.50);
+
+\draw (#1,0.00)  -- (#1+0.25,0.00)   -- (#1+1,2.25) -- (#1+1.25,2.25);
+\draw (#1,-0.25) -- (#1+0.25,-0.25) -- (#1+1,1.25) -- (#1+1.25,1.25);
+\draw (#1,-0.50) -- (#1+0.25,-0.50) -- (#1+1,0.25) -- (#1+1.25,0.25);
+\draw (#1,-0.75) -- (#1+0.25,-0.75) -- (#1+1,-0.75) -- (#1+1.25,-0.75);
+
+}
+
+\newcommand{\cbox}[3]{\draw[fill=#3] (#1,#2) -- (#1,0) -- (#1+1,0) -- (#1+1,#2) -- cycle;}
+
+
+\DeclareMathOperator{\D}{\mathcal{D}}
+\DeclareMathOperator{\R}{\mathcal{R}}
+\DeclareMathOperator{\W}{\mathcal{W}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Prob}{\mathbf{Pr}}
+\DeclareMathOperator{\N}{\mathcal{N}}
+\DeclareMathOperator{\Bern}{\mathcal{B}}
+\DeclareMathOperator{\average}{av}
+\DeclareMathOperator{\e}{\mathbf{e}}
+\DeclareMathOperator{\erf}{erf}
+\DeclareMathOperator{\Dist}{Dist}
+\DeclareMathOperator{\Multi}{Multi}
+
+\AtBeginSection[] {
+   \begin{frame}{Outline}
+  \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}
+\frametitle{Lightweight Blockciphers}
+
+\begin{itemize}
+ \item Lightweight cryptography calls for block ciphers for very resource constrained devices.
+ \item Designing secure ciphers for tiny devices requires \bemph{new design strategies} and perhaps \bemph{compromises} in the security level.
+ \item One such constraint is the block size, typically
+  \begin{itemize}
+   \item $\leq 64$ for lightweight ciphers, and
+   \item $\geq 128$ for standard ciphers.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Small Block Sizes} 
+
+\begin{description}
+ \item[{\bf\color{pink} attacker:}] distinguish the output faster when in counter mode
+ \item[{\bf\color{pink} attacker:}] build the complete code-book
+ \item[{\bf\color{pink} attacker:}] time-memory trade-off
+ \item[{\bf\color{green} designer:}] statistical attacks more difficult due to less data
+ \item[{\bf\color{orange} theory:}]   study attacks using entire code-book 
+\end{description}
+
+\begin{block}{}
+For differential cryptanalysis, it is feasible to compute the exact expected probabilities for all differentials.\\
+\end{block}
+Yet, it is not obvious how to provide an optimal unified view even if this data is available.
+\end{frame}
+
+
+% \begin{frame}
+% \frametitle{Contribution} 
+% 
+% \begin{itemize}
+%  \item Differential cryptanalysis exposes a \bemph{non-uniform distribution} of \bemph{output differences}. 
+%  \item Recovering key information is task of \bemph{distinguishing} between right-key and wrong-key \bemph{distributions}. 
+%  \item Attacker does not have access to a \bemph{full description} of these distributions.
+%  \item For small block sizes, we can compute the parameters precisely. 
+%  \item $\Rightarrow$ distinguish distributions which are known completely.
+% \end{itemize}
+% 
+% \begin{block}{Side Effect}
+% Our framework unifies and generalises standard differential attacks, impossible differentials, improbable differentials and truncated differentials into one attack framework.
+% \end{block}
+% \end{frame}
+
+
+
+\section{Differential}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Rolling Example: 3 Rounds of \textsc{SmallPresent-[4]}}
+
+\vspace{0.65em}
+\begin{center}
+\begin{tikzpicture}
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\KeyAdds{5};
+\SBoxes{6};
+\Permutation{6.5};
+
+\KeyAdds{8};
+\end{tikzpicture}
+\end{center}
+
+\framebreak
+
+\begin{center}
+\begin{tikzpicture}
+\draw [fill=blue!50] (-1.0,4) -- (2.0,4) -- (2.0,-1) -- (-1.0,-1) -- cycle;
+\node at (0.5,3.5) {$R_{k_0}$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\draw [fill=blue!50] (2.0,4) -- (5.0,4) -- (5.0,-1) -- (2.0,-1) -- cycle;
+\node at (3.5,3.5) {$R_{k_1}$};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\draw [fill=blue!50] (5.0,4) -- (8.0,4) -- (8.0,-1) -- (5.0,-1) -- cycle;
+\node at (6.5,3.5) {$R_{k_2}$};
+
+\KeyAdds{5};
+\SBoxes{6};
+\Permutation{6.5};
+
+\KeyAdds{8};
+\end{tikzpicture}
+\end{center}
+
+\framebreak
+
+\begin{center}
+\begin{tikzpicture}
+\draw [fill=blue!50] (-1.0,4) -- (2.0,4) -- (2.0,-1) -- (-1.0,-1) -- cycle;
+\node at (0.5,3.5) {$R_{k_0}$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\draw [fill=blue!50] (2.0,4) -- (5.0,4) -- (5.0,-1) -- (2.0,-1) -- cycle;
+\node at (3.5,3.5) {$R_{k_1}$};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\draw [fill=blue!50] (5.0,4) -- (8.0,4) -- (8.0,-1) -- (5.0,-1) -- cycle;
+\node at (6.5,3.5) {$R_{k_2}$};
+
+\KeyAdds{5};
+\SBoxes{6};
+\Permutation{6.5};
+
+\draw [fill=red!50] (8.0,4) -- (8.5,4) -- (8.5,-1) -- (8.0,-1) -- cycle;
+
+\KeyAdds{8};
+\end{tikzpicture}
+\end{center}
+
+\framebreak
+
+{\Large
+$$E_k(x) := k_3 \oplus \left(R_{k_2} \circ R_{k_1} \circ  R_{k_0}(x)\right)$$
+}
+\end{frame}
+
+\begin{frame}
+\frametitle{Differential}
+
+Let $$P_F(\delta,\gamma) := \Pr[F(x \oplus \delta) \oplus F(x) = \gamma)].$$
+
+We are interested in pairs $(\delta,\gamma)$ such that $$P_{E_k}(\delta,\gamma) \textnormal{ is ``big enough''}.$$
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+
+\node at (-1.5,1.25) {\Huge $\delta$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\KeyAdds{5};
+\SBoxes{6};
+\Permutation{6.5};
+
+\KeyAdds{8};
+
+\node at (9,1.25) {\Huge $\gamma$};
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Markov Assumption} 
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8,trail/.style={color=orange,very thick}]
+
+\node at (-1.5,1.25) {\Huge $\delta$};
+
+\node at (0.5,3.5) {$P_R(\delta,\gamma_1)$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\node at (2.4,1.25) {\Huge $\gamma_1$};
+
+\node at (2.5,3.5) {$\cdot$};
+
+\node at (4.5,3.5) {$P_R(\gamma_1,\gamma_2)$};
+
+\KeyAdds{3};
+\SBoxes{4};
+\Permutation{4.5};
+
+\node at (6.4,1.25) {\Huge $\gamma_2$};
+
+\node at (6.5,3.5) {$\cdot$};
+
+\node at (8.5,3.5) {$P_R(\gamma_2,\gamma)$};
+
+\KeyAdds{7};
+\SBoxes{8};
+\Permutation{8.5};
+
+\KeyAdds{10};
+
+\node at (11,1.25) {\Huge $\gamma$};
+
+\draw[trail] (-1,2-0.50) -- (-1+0.5,2-0.50);
+\draw[trail] (0.5,2-0.25) -- (1.75,2-0.25);
+\draw[trail] (0.5,2-0.75) -- (0.75,2-0.75) -- (1.5,-0.25) -- (1.75,-0.25);
+
+\draw[trail] (3.0,1.75) -- (3.5,  1.75);
+\draw[trail] (3.0,-0.25) -- (3.5,-0.25);
+
+\draw[trail] (4.5,1.50) -- (4.75,1.50) -- (5.5,0.75) -- (5.75,0.75);
+\draw[trail] (4.5,1.75) -- (4.75,1.75) -- (5.5,1.75) -- (5.75,1.75);
+
+\draw[trail] (4.5,-.50) -- (4.75,-.50) -- (5.5, 0.25) -- (5.75, 0.25);
+\draw[trail] (4.5,-.75) -- (4.75,-.75) -- (5.5,-.75) -- (5.75,-.75);
+
+\draw[trail] (7.0,0.75) -- (7.5,  0.75);
+\draw[trail] (7.0,1.75) -- (7.5,  1.75);
+\draw[trail] (7.0,0.25) -- (7.5,  0.25);
+\draw[trail] (7.0,-.75) -- (7.5,  -.75);
+
+\draw[trail] (8.5,2.00) -- (8.75, 2.00) -- (9.50, 2.75) -- (9.75,2.75);
+\draw[trail] (8.5,1.75) -- (8.75, 1.75) -- (9.50, 1.75) -- (9.75,1.75);
+\draw[trail] (8.5,0.75) -- (8.75, 0.75) -- (9.50, 1.50) -- (9.75,1.50);
+\draw[trail] (8.5,-.50) -- (8.75, -.50) -- (9.50, 0.25) -- (9.75,0.25);
+
+\draw[trail] (10.00, 2.75) -- (10.50,2.75);
+\draw[trail] (10.00, 1.75) -- (10.50,1.75);
+\draw[trail] (10.00, 1.50) -- (10.50,1.50);
+\draw[trail] (10.00, 0.25) -- (10.50,0.25);
+
+\end{tikzpicture}
+\end{center}
+
+\begin{block}{}
+We sum over all such trails $\delta,\gamma_1,\gamma_2,\gamma$ and assume $$P_{E_k}(\delta,\gamma) = \sum_{\gamma_1,\gamma_2} P_R(\delta,\gamma_1) \cdot  P_R(\gamma_1.\gamma_2) \cdot  P_R(\gamma_2,\gamma).$$
+\end{block}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+\frametitle{From Differences to Distributions}
+
+If the block size is small, we can compute the probabilities for all output differences.
+
+\framebreak
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+
+\node at (-1.5,1.25) {\Huge $\delta$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\node at (3.0,1.25) {\Huge $\gamma_1$};
+
+\KeyAdds{4};
+\SBoxes{5};
+\Permutation{5.5};
+
+\node at (8.0,1.25) {\Huge $\gamma_2$};
+
+\KeyAdds{9};
+\SBoxes{10};
+\Permutation{10.5};
+
+\KeyAdds{12};
+
+\node at (13,1.25) {\Huge $\gamma$};
+\end{tikzpicture}
+\end{center}
+
+\framebreak
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+
+\node at (-1.4,1.25) {\Large $\D_{I}$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\node at (3.0,1.25) {\Large $\D_1$};
+
+\KeyAdds{4};
+\SBoxes{5};
+\Permutation{5.5};
+
+\node at (8.0,1.25) {\Large $\D_2$};
+
+\KeyAdds{9};
+\SBoxes{10};
+\Permutation{10.5};
+
+\KeyAdds{12};
+
+\node at (13.5,1.25) {\Large $\D_{O}$};
+\end{tikzpicture}
+\end{center}
+
+\framebreak
+\begin{scriptsize}
+\begin{equation*}
+\begin{array}{c}\Delta_0\\\Delta_1\\ \dots \\ \\ \delta\\ \\ \dots \\ \Delta_{2^n-2} \\ \Delta_{2^n-1}\end{array}:
+\left(\begin{array}{c}0\\0\\ \dots\\ 0\\ 1\\ 0\\ \dots \\ 0 \\ 0\end{array}\right) 
+\rightarrow A \rightarrow
+\left(\begin{array}{c}0\\1/4\\ \dots\\ 1/8\\ 1/16\\ 0\\ \dots \\ 1/4 \\ 0\end{array}\right)
+\rightarrow A \rightarrow
+\left(\begin{array}{c}0\\1/16\\ \dots\\ 7/256\\ 3/32\\ 1/4\\ \dots \\ 1/16 \\ 1/4\end{array}\right)
+\rightarrow A \rightarrow
+\left(\begin{array}{c}0\\3/32\\ \dots\\ 19/1024\\ 3/128\\ 7/64\\ \dots \\ 1/128 \\ 1/16\end{array}\right)
+ \end{equation*}
+\end{scriptsize}
+
+where $A$ is the transformation matrix composed of a block diagonal matrix with difference distribution matrices on the main diagonal and a matrix representing the linear layer.
+
+\end{frame}
+
+
+\section{Model}
+
+\begin{frame}[allowframebreaks,fragile]
+\frametitle{Multi-dimensional Distribution of $D^{(N)}_{E_K}(\delta,\gamma)$}
+We denote by
+\[ \D^{(N)}_{E_K}(\delta) = \left(D^{(N)}_{E_K}(\delta,1),D^{(N)}_{E_K}(\delta,2),\dots,D^{(N)}_{E_K}(\delta,2^n-1)\right) \]
+the vector of all counters corresponding to all output differences after encrypting $N$ plaintext-pairs with difference $\delta$.
+
+\begin{center}
+\begin{tikzpicture}[yscale=0.5]
+\cbox{0}{2}{lightgray} \node at (0.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,1)$};
+\cbox{1}{3}{lightgray} \node at (1.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,2)$};
+\cbox{2}{0}{lightgray} \node at (2.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,3)$};
+\cbox{3}{1}{lightgray} \node at (3.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,4)$};
+\cbox{4}{5}{lightgray} \node at (4.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,5)$};
+\cbox{5}{3}{lightgray} \node at (5.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,6)$};
+\cbox{6}{2}{lightgray} \node at (6.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,7)$};
+\cbox{7}{3}{lightgray} \node at (7.5,-1) {\tiny $D^{(N)}_{E_K}(\delta,8)$};
+\end{tikzpicture}
+\end{center}
+
+\framebreak
+
+\begin{block}{Assumption}
+$\D^{(N)}_{E_K}(\delta)$ follows a multinomial distribution where each component is binomially distributed and
+$$\sum_{\gamma}  D^{(N)}_{E_K}(\delta,\gamma) =N.$$
+\end{block}
+
+
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]
+ \frametitle{The Attack Algorithm}
+
+We assume that the attacker has computed the parameters of two distributions. Namely, vectors of parameters $p$ and $q$ such that
+\begin{eqnarray}
+p_i&=& P_{E}(\delta,i) \label{eqn:pi}\\
+q_i&=& P_{R^{-1} \circ R \circ E}(\delta,i). \label{eqn:qi}
+\end{eqnarray}
+
+\framebreak
+
+\begin{tikzpicture}[scale=0.5]
+
+\node at (-1.5,1.25) {\Huge $\delta$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\KeyAdds{5};
+\SBoxes{6};
+\Permutation{6.5};
+
+\KeyAdds{8};
+
+\end{tikzpicture}
+%\end{center}
+
+\begin{tikzpicture}[scale=0.5]
+
+\node at (-1.5,1.25) {\Huge $\delta$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\KeyAdds{5};
+
+\node at (10,1.25) {\Large $\Dist_1 = \Multi(N,p)$};
+\end{tikzpicture}
+
+
+%\begin{center}
+\begin{tikzpicture}[scale=0.5]
+
+\node at (-1.5,1.25) {\Huge $\delta$};
+
+\KeyAdds{-1};
+\SBoxes{0};
+\Permutation{0.5};
+
+\KeyAdds{2};
+\SBoxes{3};
+\Permutation{3.5};
+
+\KeyAdds{5};
+\SBoxes{6};
+\Permutation{6.5};
+
+\KeyAdds{8};
+
+\KeyAdds{8.75};
+
+\Permutation{9.50};
+\SBoxes{11.25};
+
+\node at (16.5,1.25) {\Large $\Dist_2 = \Multi(N,q)$};
+\end{tikzpicture}
+%\end{center}
+
+
+\framebreak
+
+Given a guess for the last round key, the attacker 
+
+\begin{enumerate}
+ \item partially decrypts every ciphertext and for all output differences $\gamma$ computes the number of pairs fulfilling the differential $\delta \rightarrow \gamma$; 
+ \item estimates the likelihood that the vector was sampled from $\Dist_1$. 
+\end{enumerate}
+
+\vspace{1em}
+
+\begin{block}{}
+Step two is equivalent to computing the difference of the log-likelihood of the vector with respect to $\Dist_1$ and with respect to $\Dist_2$.
+\end{block}
+
+\framebreak
+
+\begin{center}
+\begin{tikzpicture}[yscale=0.5]
+\node at (-1,1) {$\D^{(N)}_{E_K}(\delta)$};
+\cbox{0}{2}{lightgray}
+\cbox{1}{3}{lightgray}
+\cbox{2}{0}{lightgray}
+\cbox{3}{1}{lightgray}
+\cbox{4}{6}{lightgray}
+\cbox{5}{3}{lightgray}
+\cbox{6}{2}{lightgray}
+\cbox{7}{3}{lightgray}
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[yscale=0.5]
+\node at (-1.4,1) {$p$};
+\cbox{0}{2}{blue!50}
+\cbox{1}{4}{blue!50}
+\cbox{2}{0}{blue!50}
+\cbox{3}{2}{blue!50}
+\cbox{4}{5}{blue!50}
+\cbox{5}{3}{blue!50}
+\cbox{6}{1}{blue!50}
+\cbox{7}{2}{blue!50}
+
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[yscale=0.5]
+\node at (-1.4,1) {$q$};
+\cbox{0}{2}{red!50}
+\cbox{1}{3}{red!50}
+\cbox{2}{3}{red!50}
+\cbox{3}{2}{red!50}
+\cbox{4}{3}{red!50}
+\cbox{5}{3}{red!50}
+\cbox{6}{2}{red!50}
+\cbox{7}{3}{red!50}
+\end{tikzpicture}
+\end{center}
+
+
+\framebreak
+
+\begin{block}{}
+Denoting $w_i=\log \left(\frac{p_i}{q_i}\right)$
+the attacker computes
+$l_{k'}= \sum_{i} w_i c_i$ where $c_i$ is the counter value for the output difference $i$.
+\end{block}
+
+\framebreak
+
+This captures the following variants of differential cryptanalysis
+
+\framebreak
+
+Standard Differential Cryptanalysis:
+
+\begin{center}\begin{tikzpicture}[yscale=0.5]
+\node at (-1.4,1) {$p$};
+\draw[fill=blue!50] (0,0) rectangle (0+1,0+2);
+\draw[fill=blue!50] (1,0) rectangle (1+1,0+4);
+\draw[fill=blue!50] (2,0) rectangle (2+1,0+0);
+\draw[fill=blue!50] (3,0) rectangle (3+1,0+2);
+\draw[fill=blue!50] (4,0) rectangle (4+1,0+5);
+\draw[fill=blue!50] (5,0) rectangle (5+1,0+3);
+\draw[fill=blue!50] (6,0) rectangle (6+1,0+1);
+\draw[fill=blue!50] (7,0) rectangle (7+1,0+2);
+
+\node at (-1.4,-3) {$q$};
+\draw[fill=red!50] (0,-4) rectangle (0+1,-4+2);
+\draw[fill=red!50] (1,-4) rectangle (1+1,-4+3);
+\draw[fill=red!50] (2,-4) rectangle (2+1,-4+3);
+\draw[fill=red!50] (3,-4) rectangle (3+1,-4+2);
+\draw[fill=red!50] (4,-4) rectangle (4+1,-4+3);
+\draw[fill=red!50] (5,-4) rectangle (5+1,-4+3);
+\draw[fill=red!50] (6,-4) rectangle (6+1,-4+2);
+\draw[fill=red!50] (7,-4) rectangle (7+1,-4+3);
+
+\draw[draw=green,very thick] (4.5,0.5) ellipse (1 and 5.5);
+\end{tikzpicture}\end{center}
+
+\framebreak
+
+Truncated Differential Cryptanalysis:
+
+\begin{center}\begin{tikzpicture}[yscale=0.5]
+\node at (-1.4,1) {$p$};
+\draw[fill=blue!50] (0,0) rectangle (0+1,0+2);
+\draw[fill=blue!50] (1,0) rectangle (1+1,0+4);
+\draw[fill=blue!50] (2,0) rectangle (2+1,0+0);
+\draw[fill=blue!50] (3,0) rectangle (3+1,0+2);
+\draw[fill=blue!50] (4,0) rectangle (4+1,0+5);
+\draw[fill=blue!50] (5,0) rectangle (5+1,0+3);
+\draw[fill=blue!50] (6,0) rectangle (6+1,0+1);
+\draw[fill=blue!50] (7,0) rectangle (7+1,0+2);
+
+\node at (-1.4,-3) {$q$};
+\draw[fill=red!50] (0,-4) rectangle (0+1,-4+2);
+\draw[fill=red!50] (1,-4) rectangle (1+1,-4+3);
+\draw[fill=red!50] (2,-4) rectangle (2+1,-4+3);
+\draw[fill=red!50] (3,-4) rectangle (3+1,-4+2);
+\draw[fill=red!50] (4,-4) rectangle (4+1,-4+3);
+\draw[fill=red!50] (5,-4) rectangle (5+1,-4+3);
+\draw[fill=red!50] (6,-4) rectangle (6+1,-4+2);
+\draw[fill=red!50] (7,-4) rectangle (7+1,-4+3);
+
+\draw[draw=green,very thick] (1.5,0.5) ellipse (1 and 5.5);
+\draw[draw=green,very thick] (4.5,0.5) ellipse (1 and 5.5);
+\end{tikzpicture}\end{center}
+
+\framebreak
+
+Improbable Differential Cryptanalysis:
+
+\begin{center}\begin{tikzpicture}[yscale=0.5]
+\node at (-1.4,1) {$p$};
+\draw[fill=blue!50] (0,0) rectangle (0+1,0+2);
+\draw[fill=blue!50] (1,0) rectangle (1+1,0+4);
+\draw[fill=blue!50] (2,0) rectangle (2+1,0+0);
+\draw[fill=blue!50] (3,0) rectangle (3+1,0+2);
+\draw[fill=blue!50] (4,0) rectangle (4+1,0+5);
+\draw[fill=blue!50] (5,0) rectangle (5+1,0+3);
+\draw[fill=blue!50] (6,0) rectangle (6+1,0+1);
+\draw[fill=blue!50] (7,0) rectangle (7+1,0+2);
+
+\node at (-1.4,-3) {$q$};
+\draw[fill=red!50] (0,-4) rectangle (0+1,-4+2);
+\draw[fill=red!50] (1,-4) rectangle (1+1,-4+3);
+\draw[fill=red!50] (2,-4) rectangle (2+1,-4+3);
+\draw[fill=red!50] (3,-4) rectangle (3+1,-4+2);
+\draw[fill=red!50] (4,-4) rectangle (4+1,-4+3);
+\draw[fill=red!50] (5,-4) rectangle (5+1,-4+3);
+\draw[fill=red!50] (6,-4) rectangle (6+1,-4+2);
+\draw[fill=red!50] (7,-4) rectangle (7+1,-4+3);
+
+\draw[draw=green,very thick] (6.5,0.5) ellipse (1 and 5.5);
+\end{tikzpicture}\end{center}
+
+\framebreak
+Impossible Differential Cryptanalysis:
+
+\begin{center}\begin{tikzpicture}[yscale=0.5]
+\node at (-1.4,1) {$p$};
+\draw[fill=blue!50] (0,0) rectangle (0+1,0+2);
+\draw[fill=blue!50] (1,0) rectangle (1+1,0+4);
+\draw[fill=blue!50] (2,0) rectangle (2+1,0+0);
+\draw[fill=blue!50] (3,0) rectangle (3+1,0+2);
+\draw[fill=blue!50] (4,0) rectangle (4+1,0+5);
+\draw[fill=blue!50] (5,0) rectangle (5+1,0+3);
+\draw[fill=blue!50] (6,0) rectangle (6+1,0+1);
+\draw[fill=blue!50] (7,0) rectangle (7+1,0+2);
+
+\node at (-1.4,-3) {$q$};
+\draw[fill=red!50] (0,-4) rectangle (0+1,-4+2);
+\draw[fill=red!50] (1,-4) rectangle (1+1,-4+3);
+\draw[fill=red!50] (2,-4) rectangle (2+1,-4+3);
+\draw[fill=red!50] (3,-4) rectangle (3+1,-4+2);
+\draw[fill=red!50] (4,-4) rectangle (4+1,-4+3);
+\draw[fill=red!50] (5,-4) rectangle (5+1,-4+3);
+\draw[fill=red!50] (6,-4) rectangle (6+1,-4+2);
+\draw[fill=red!50] (7,-4) rectangle (7+1,-4+3);
+
+\draw[draw=green,very thick] (2.5,0.5) ellipse (1 and 5.5);
+\end{tikzpicture}\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Computation of the Gain}
+
+The distribution of $l_{k'}$ can be well approximated by a normal distribution. 
+
+Denote the random variable for the log-likelihood-ratio of the right key $\R$. We have
+\[ E(\R)=N \sum w_ip_i  .\]
+and
+\[ \Var(\R)=N\left( \left(\sum_i w_i^2 p_i \right) -\left(\sum_i w_i p_i \right)^2 \right).\]
+
+\framebreak
+
+Therefore, denoting by $\N\left(E,V\right)$ the normal distribution with expected value $E$ and variance $V$, we will use the following approximation
+\[ \R \sim \N\left(N \sum w_ip_i, N\left( \left(\sum_i w_i^2 p_i \right) -\left(\sum_i w_i p_i \right)^2 \right)\right).\]
+
+Similarly, for wrong keys: $\W$.
+
+\framebreak
+
+We assume that the right key value is sampled according to ${\R}$, the wrong keys values are sampled from ${\W}$. Computing the gain for 50\% of the keys is computing the probability that $\W \ge E(\R)$.
+
+\begin{center}
+\newcommand{\normdist}[5]{\draw[#3] plot[id=#4,samples=100,domain=#5] function {  1/sqrt(2*pi*#2) * exp(- ((x-#1)**2 / (2*#2)) ) };}
+\begin{tikzpicture}[scale=2.7]
+    \draw[red,fill] plot[id=f1] file{integral.points};
+    \normdist{-0.256}{0.112}{red,smooth,thick}{f2}{-1.5:1.5}
+    \draw[white,thick] (0.257,0) -- (0.257,1.18) node[above] {$E(\R)$};
+    \normdist{0.257}{0.113}{green,smooth,thick}{f3}{-1.5:1.5}
+
+    \draw[->] (-1.6,0) -- (1.6,0) node[right] {$x$};
+    \draw[->] (0,-0.0) -- (0,1.4) node[above] {$\Pr(x)$};
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+\section{Applications}
+
+\begin{frame}
+\frametitle{SmallPresent-[4]} 
+
+\begin{small}
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|c|}   
+\hline
+\#rounds &7 & 7 & 8 & 8 & 9 \\
+\hline
+Data used     & $2^{16}$ & $2^{9}$   & $2^{16}$  & $2^{16}$  & $2^{16}$  \\ \hline
+\#$\Delta$    & $1$      & $1$       & $1$       & $5$       & $60$      \\ \hline
+$E(\R)$       & $53.82$  & $0.84$    & $2.22$    & $9.76$    & $1.51$    \\ 
+$V(\R)$       & $124.08$ & $1.93$    & $4.61$    & $20.15$   & $3.04$    \\ 
+$E(\W)$       & $-47.28$ & $-0.73$   & $-2.14$   & $-9.46$   & $-1.51$   \\ 
+$V(\W)$       & $84.23$  & $1.31$    & $4.15$    & $18.35$   & $3.02$    \\ \hline
+\#r $< 2^{0}$ &      100 &  4 ( 1.1) &  1 ( 2.7) & 57 (61.9) &  1 ( 0.56)\\ 
+\#r $< 2^{1}$ &          &  4 ( 1.5) &  2 ( 3.9) & 65 (67.6) &  2 ( 0.84)\\ 
+\#r $< 2^{2}$ &          &  4 ( 2.1) &  3 ( 5.4) & 73 (73.1) &  2 ( 1.26)\\ 
+\#r $< 2^{3}$ &          &  4 ( 2.9) &  5 ( 7.4) & 79 (78.3) &  2 ( 1.96)\\ 
+\#r $< 2^{4}$ &          &  4 ( 4.1) &  8 (10.2) & 82 (83.0) &  2 ( 2.87)\\ 
+\#r $< 2^{5}$ &          &  4 ( 5.7) & 11 (13.7) & 84 (87.2) &  5 ( 4.27)\\ 
+\#r $< 2^{6}$ &          &  5 ( 7.8) & 16 (18.3) & 88 (90.7) &  8 ( 6.23)\\ 
+\#r $< 2^{7}$ &          &  9 (10.7) & 25 (24.2) & 91 (93.6) & 14 ( 8.96)\\ \hline
+\end{tabular}         
+\end{center}
+\end{small}
+\end{frame}
+
+\begin{frame}
+\frametitle{KATAN-32} 
+
+\begin{small}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\#rounds                    & 71+24 & 88+24 & 90+24 & 91+24\\
+\hline
+$\delta$                    & ${\tt 0x1006a880}$ & ${\tt 0x1006a880}$ & ${\tt 0x1006a880}$ & ${\tt 0x1006a880}$\\
+best $\gamma$               & ${\tt 0x00000008}$ & ${\tt 0x02000004}$ & ${\tt 0x08080015}$ & ${\tt 0x00400000}$\\
+$\tilde P_E(\delta,\gamma)$ & $2^{-29.52}$       & $2^{-31.97}$       & $2^{-31.99}$       & $2^{-31.98}$\\
+\hline
+$E(\R)$                     &  2505.2 &  0.7203 &  0.3750 &  0.3695\\ 
+$V(\R)$                     &  5096.6 &  1.4407 &  0.7500 &  0.7390\\ 
+$E(\W)$                     & -2467.4 & -0.7203 & -0.3750 & -0.3695\\ 
+$V(\W)$                     &  4868.2 &  1.4406 &  0.7500 &  0.7390\\
+\hline
+exp. gain                   & $>50$ & 3.12 & 2.37 & 2.35\\
+\hline
+\end{tabular}
+\end{center}
+\end{small}
+
+\vspace{0.5em}
+
+The expected gain for 50\% of the keys for 92+24 and 94+24 rounds is $1.92$ and $1.23$ respectively.
+
+\end{frame}
+
+\begin{frame}{Thank you for your attention}
+\begin{center}
+\begin{Huge}
+
+\begin{center}
+Questions?
+\end{center}
+\end{Huge}
+\end{center}
+\end{frame}
+
+
+\end{document}
