@@ -990,8 +990,7 @@ It is very useful to understand a bit how these solvers work.
  \item $\field{F}_q$ is a finite field of order $q$.
  \item $P = \field{F}_q[x_1,\dots,x_{n}]$.
  \item $\mathcal{I}$ is an ideal $ \subset P$. That is, $f,g \in \mathcal{I} \rightarrow f + g \in \mathcal{I}$ and $f \in P, g \in \mathcal{I} \rightarrow f \cdot g \in \mathcal{I}.$
-
-  \item $\ideal{f_1,\dots,f_{m}}$ is the ideal spanned by $f_1,\dots,f_{m}$.
+ \item $\ideal{f_1,\dots,f_{m}}$ is the ideal spanned by $f_1,\dots,f_{m}$.
 \begin{lstlisting}
 sage: P.<x,y,z> = PolynomialRing(GF(127),order='deglex')
 sage: I = ideal(x*y + z, y^3 + 1, z^2 - x*5 - 1)
