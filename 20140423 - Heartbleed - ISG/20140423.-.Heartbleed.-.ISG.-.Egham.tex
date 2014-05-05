@@ -1,0 +1,447 @@
+\documentclass[10pt]{beamer}
+
+\definecolor{darkred}{HTML}{A60000}
+\definecolor{lightblue}{HTML}{366690}
+\definecolor{darkgreen}{HTML}{009000}
+\definecolor{lightbrown}{HTML}{AB6402}
+\definecolor{yellow9}{HTML}{E1B640}
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{xspace}
+\usepackage[utf8]{inputenc}
+
+% Α α Β β Γ γ Δ δ Ε ε Ζ ζ Η η Θ θ Ι ι Κ κ Λ λ Μ μ Ν ν Ξ ξ Ο ο Π π Ρ ρ Σ σ Τ τ Υ υ Φ φ Χ χ Ψ ψ Ω ω
+
+\DeclareUnicodeCharacter{03B3}{\ensuremath{\gamma}\xspace}
+\DeclareUnicodeCharacter{03B4}{\ensuremath{\delta}\xspace}
+\DeclareUnicodeCharacter{03B7}{\ensuremath{\eta}\xspace}
+\DeclareUnicodeCharacter{03BA}{\ensuremath{\kappa}\xspace}
+\DeclareUnicodeCharacter{03BB}{\ensuremath{\lambda}\xspace}
+\DeclareUnicodeCharacter{03BC}{\ensuremath{\mu}\xspace}
+\DeclareUnicodeCharacter{03BD}{\ensuremath{\nu}\xspace}
+\DeclareUnicodeCharacter{03C0}{\ensuremath{\pi}\xspace}
+\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}\xspace}
+\DeclareUnicodeCharacter{03C4}{\ensuremath{\tau}\xspace}
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}\xspace}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}\xspace}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}\xspace}
+\DeclareUnicodeCharacter{00B7}{\ensuremath{\cdot}\xspace}
+\DeclareUnicodeCharacter{2261}{\ensuremath{\equiv}\xspace}
+
+
+%%% Macros
+
+\newcommand{\ZZ}[1][blank]{\ensuremath{
+    \ifthenelse{\equal{#1}{blank}}
+    {\mathbb{Z}}
+    {\mathbb{Z}\left[#1\right]}\xspace}}
+\newcommand{\QQ}[1][blank]{\ensuremath{
+        \ifthenelse{\equal{#1}{blank}}
+        {\mathbb{Q}}
+        {\mathbb{Q}\left[#1\right]}\xspace}}
+\newcommand{\ZZq}[1][blank]{\ensuremath{
+        \ifthenelse{\equal{#1}{blank}}
+        {\mathbb{Z}_q}
+        {\mathbb{Z}_q\left[#1\right]}\xspace}}
+
+\newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}\xspace}
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}\xspace}
+        
+
+\usepackage{algorithm2e}
+\usepackage{listings}
+
+\lstdefinelanguage{Sage}[]{Python}{morekeywords={True,False,sage,with},sensitive=true}
+
+\lstset{ %
+  backgroundcolor=\color[rgb]{0.95,0.95,0.90},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\color{darkgray}\scriptsize\ttfamily, % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=none,                    % sets the caption-position to none
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=none,                    % adds a frame around the code
+  keywordstyle=\bf\ttfamily\color[rgb]{0,.3,.7},
+  morekeywords={},                 % if you want to add more keywords to the set
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle={\color[rgb]{0.75,0.49,0.07}},
+  tabsize=4,                       % sets default tabsize to 2 spaces
+  title=\lstname,                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+  language=Sage,                   % the language of the code
+}
+        
+
+\usepackage{relsize}
+\usepackage{comment}
+
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.9, width=1.0\textwidth, height=0.8\textheight}
+
+
+\mode<presentation>
+{
+  \setbeamercovered{transparent}
+  \setbeamercolor{normal text}{fg=white,bg=gray}
+  \setbeamercolor{alerted text}{fg=white}
+  \setbeamercolor{example text}{fg=white}
+  \setbeamercolor{background canvas}{bg=darkgray} 
+  \setbeamercolor{structure}{fg=white}
+
+  \setbeamercolor{block title}{bg=lightblue,fg=white}
+  \setbeamercolor{block body}{bg=white,fg=darkgray}
+
+  \setbeamercolor{block title example}{bg=lightblue,fg=white}
+  \setbeamercolor{block body example}{bg=white,fg=darkgray}
+
+  \setbeamercolor{palette primary}{use=normal text,fg=normal text.fg}
+  \setbeamercolor{palette quaternary}{use=structure,fg=structure.fg}
+  \setbeamercolor{palette secondary}{use=structure,fg=structure.fg}
+  \setbeamercolor{palette tertiary}{use=normal text,fg=normal text.fg}
+
+  \setbeamercolor{palette primary}{use=structure,fg=structure.fg}
+
+  \setbeamercolor{math text}{}
+  \setbeamercolor{math text inlined}{parent=math text}
+  \setbeamercolor{math text displayed}{parent=math text}
+
+  \setbeamercolor{enumerate item}{fg=lightgray}
+  \setbeamercolor{itemize item}{fg=lightgray}
+  \setbeamercolor{itemize subitem}{fg=lightgray}
+
+  \setbeamercolor{normal text in math text}{}
+
+  \setbeamercolor{local structure}{parent=structure}
+  
+  \setbeamercolor{titlelike}{parent=structure}
+
+  \setbeamercolor{title}{parent=titlelike}
+  \setbeamercolor{title in head/foot}{parent=palette quaternary}
+  \setbeamercolor{title in sidebar}{parent=palette sidebar quaternary}
+
+  \setbeamercolor{subtitle}{parent=title}
+
+  \setbeamertemplate{navigation symbols}{}
+}
+
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}\xspace}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Presentation Title Content %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Heartbleed}
+\subtitle{or: I read the news, too}
+\author[Martin R.\ Albrecht]{Martin R.\ Albrecht}
+\institute{Information Security Group, Royal Holloway, University of London}
+
+\date{}
+
+\AtBeginSection[] {
+	\begin{frame}
+		\frametitle{Contents}
+		\tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded]
+	\end{frame}
+}
+
+\AtBeginSubsection[] {
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded]
+    \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}[plain] % frame of type 'plain' is an empty frame
+\begin{columns}
+  \column{0.3\textwidth}
+  \begin{center}
+  \includegraphics[width=1\textwidth]{./heartbleed-logo.png}
+  % heartbleed-logo.png: 341x413 pixel, 72dpi, 12.03x14.57 cm, bb=0 0 341 413
+\end{center}
+
+  \column{0.7\textwidth}\titlepage
+\end{columns}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of Contents Slide %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{XKCD \#1354}
+
+\includegraphics<1>[clip,trim = 0 1118 0   34,width=\textwidth]{xkcd.png}
+\includegraphics<2>[clip,trim = 0  894 0  258,width=\textwidth]{xkcd.png}
+\includegraphics<3>[clip,trim = 0  671 0  481,width=\textwidth]{xkcd.png}
+\includegraphics<4>[clip,trim = 0  448 0  704,width=\textwidth]{xkcd.png}
+\includegraphics<5>[clip,trim = 0  224 0  928,width=\textwidth]{xkcd.png}
+\includegraphics<6>[clip,trim = 0    0 0 1152,width=\textwidth]{xkcd.png}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{RFC 6520: Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) Heartbeat Extension}
+
+\begin{exampleblock}{}
+  {\em This document describes the Heartbeat Extension for the Transport
+   Layer Security (TLS) and Datagram Transport Layer Security (DTLS)
+   protocols.
+
+   The Heartbeat Extension provides a new protocol for TLS/DTLS allowing
+   the usage of keep-alive functionality without performing a
+   renegotiation and a basis for path MTU (PMTU) discovery for DTLS.}
+  \vskip1mm
+  \hspace*\fill{\small--- RFC 6520}
+\end{exampleblock} 
+
+\framebreak
+
+ \begin{itemize}
+   \item The heartbeat extension implements a simple ping:\\``Are you still there?''
+   \item This is a common feature for communication protocols:
+   \begin{itemize}
+    \item ICMP
+    \item HTTP keep-alive
+    \item SSH KeepAlive
+    \item \dots
+    \end{itemize}
+ \end{itemize}
+
+ \framebreak
+ 
+\begin{exampleblock}{}
+  {\em The larger takeaway actually isn't ``This wouldn't have happened if we didn't add Ping'', the takeaway is ``We can't even add Ping, how the heck are we going to fix everything else?''.}
+  \vskip1mm
+  \hspace*\fill{\small--- Dan Kaminsky}
+\end{exampleblock} 
+ 
+\begin{quote}
+  
+\end{quote}
+
+\end{frame}
+
+
+\begin{frame}{The bug \dots}
+
+\begin{itemize}
+ \item \dots is not in the standard: RFC 6520.
+ \item \dots is in an implementation of RFC 6520 in OpenSSL.
+ \item \dots affectes OpenSSL versions 
+  \begin{itemize}
+    \item 1.0.1 (up until and including 1.0.1f) and 
+    \item 1.0.2 (beta).
+  \end{itemize}
+  
+ \item \dots does not affect other SSL implementations as far as we know.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What is OpenSSL?}
+
+\begin{itemize}
+  \item TLS (formerly known as SSL) is the most used protocol to encrypt traffic on the Internet.
+  \item OpenSSL is an implementation of the TLS standard.
+  \item OpenSSL is widely used.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Show me simplified code}
+\framesubtitle{{\scriptsize \textbf{source:} \url{http://www.tedunangst.com/flak/post/heartbleed-vs-mallocconf}}}
+
+\begin{lstlisting}[language=c,morekeywords={malloc,read,memcpy,write}]
+struct { 
+    unsigned short len;
+    char payload[]; 
+} *packet; 
+
+packet = malloc(amt);
+read(s, packet, amt);
+buffer = malloc(packet->len);
+/* malb: packet->len == amt? */
+memcpy(buffer, packet->payload, packet->len);
+write(s, buffer, packet->len);
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Show me the actual code}
+\framesubtitle{{\scriptsize \textbf{main source:} \url{http://blog.existentialize.com/diagnosis-of-the-openssl-heartbleed-bug.html/}}}
+
+Here is the HeartbeatMessage packet definition:
+
+\begin{lstlisting}[language=c,morekeywords={opaque,uint16}]
+struct {
+     HeartbeatMessageType type;
+     uint16 payload_length;
+     opaque payload[HeartbeatMessage.payload_length];
+     opaque padding[padding_length];
+  } HeartbeatMessage;
+\end{lstlisting}
+
+\framebreak
+
+and here is the function processing heartbeats in OpenSSL:
+
+\begin{lstlisting}[language=c,morekeywords={}]
+int  dtls1_process_heartbeat(SSL *s) {          
+  unsigned char *p = &s->s3->rrec.data[0], *pl;
+  unsigned short hbtype;
+  unsigned int payload;
+  unsigned int padding = 16; /* Use minimum padding */
+\end{lstlisting}
+
+so we get a pointer to the data within an SSLv3 record:
+
+\begin{lstlisting}[language=c,morekeywords={}]
+typedef struct ssl3_record_st {
+  int type;               /* type of record */
+  unsigned int length;    /* How many bytes available */
+  unsigned int off;       /* read/write offset into 'buf' */
+  unsigned char *data;    /* pointer to the record data */
+  unsigned char *input;   /* where the decode bytes are */
+  unsigned char *comp;    /* only used with decompression  ... */
+  unsigned long epoch;    /* epoch number, needed by DTLS1 */
+  unsigned char seq_num[8]; /* sequence number, needed by DTLS1 */
+} SSL3_RECORD;
+\end{lstlisting}
+
+\framebreak
+
+Back to \texttt{dtls1\_process\_heartbeat}:
+
+\begin{lstlisting}[language=c,morekeywords={memcpy,n2s,s2n}]
+/* Read type and payload length first */
+hbtype = *p++; // malb: p points to start of the message
+n2s(p, payload); //malb: read 16-bit length into payload and p+=2
+pl = p; // malb: points to payload sent by user
+\end{lstlisting}
+
+Later on, the reply is constructed, but first sufficient memory is allocated:
+
+\begin{lstlisting}[language=c,morekeywords={memcpy,n2s,s2n}]
+unsigned char *buffer, *bp;
+int r;
+
+/* Allocate memory for the response, size is 1 byte
+ * message type, plus 2 bytes payload length, plus
+ * payload, plus padding
+ */
+buffer = OPENSSL_malloc(1 + 2 + payload + padding);
+bp = buffer;
+\end{lstlisting}
+
+and then the message is constructed:
+
+\begin{lstlisting}[language=c,morekeywords={memcpy,n2s,s2n}]
+/* Enter response type, length and copy payload */
+*bp++ = TLS1_HB_RESPONSE; //malb: set the type
+s2n(payload, bp); //malb: write length and bp+=2
+memcpy(bp, pl, payload); //malb: fire!
+\end{lstlisting}
+
+\framebreak
+
+\begin{itemize}
+  \item The offending line is
+\begin{lstlisting}[language=c,morekeywords={memcpy,n2s,s2n}]
+memcpy(bp, pl, payload);
+\end{lstlisting}
+where we copy \texttt{payload} bytes from {\tt pl}.
+
+ \item The variable \texttt{payload} is controlled by the user as is the actual length of data in \texttt{pl}. 
+ \item The user can hence request a read from {\tt pl} requesting more data than {\tt pl} has -- up to 64kb. 
+\end{itemize}
+
+\vspace{1em}
+
+What is after {\tt pl}? A pot of gold!
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Memory}
+
+\begin{itemize}
+  \item {\tt pl} lives on the heap.
+  \item Memory from the heap is requested with {\tt malloc()} and returned to the OS with {\tt free()}.
+  \item When asked for a certain number of bytes, the OS will find a bit of unused memory and return that (if {\tt mmap()} isn't called)
+\begin{lstlisting}
+-------- | -------- | -------- | -------- 
+-------- | -------- | --xxxxxx | -------- 
+-------- | -------- | -------- | -------- <- many bytes free
+xxxxxxxx | -------- | -------- | -------- 
+xxxxxxxx | xxxxxxxx | xxxxxxxx | xxxxxxxx 
+xxxxxxxx | xxxxxxxx | xxx--xxx | xxxxxxxx <- 2 bytes free 
+xxxxxxxx | xx------ | xxxxxxxx | xxxxxxxx <- 4 bytes free
+\end{lstlisting}
+ \item depending on where the OS put {\tt pl} different data is after it
+\end{itemize}
+
+\framebreak
+
+\begin{itemize}
+  \item If the data behind {\tt pl} is in use, the attacker gets to see that
+  \item If the data behind {\tt pl} is not in use and was returned to the OS, it depends on the OS if it is overwritten with dummy data or not.
+\end{itemize}
+
+However,
+\begin{itemize}
+  \item OpenSSL seldomly returns data to the OS.
+  \item Instead, unused memory is re-used internally for performance reasons.
+  \item This renders exploit mitigation techniques (such as overwriting free'd data) useless.
+\end{itemize}
+
+\begin{block}{Comment}
+Some people\footnote{e.g\ \url{http://www.tedunangst.com/flak/post/heartbleed-vs-mallocconf}} claim that overwriting data in calls to {\tt malloc()} and disabling OpenSSL's {\tt malloc()} wrapper would have been a mitigation to this bug, but I don't see how.
+\end{block}
+
+
+\end{frame}
+
+\begin{frame}[fragile]{The fix}
+\begin{lstlisting}[language=c,morekeywords={memcpy,n2s,s2n}]
+/* Read type and payload length first */
+if (1 + 2 + 16 > s->s3->rrec.length)
+   return 0; /* silently discard */
+hbtype = *p++;
+n2s(p, payload);
+if (1 + 2 + payload + 16 > s->s3->rrec.length)
+    return 0; /* silently discard per RFC 6520 sec. 4 */
+pl = p;
+\end{lstlisting}
+
+This does two things: 
+\begin{itemize}
+  \item The first check stops zero-length heartbeats.
+  \item The second check checks to make sure that the actual record length is sufficiently long.
+\end{itemize}
+
+  
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Fin}
+\begin{center}
+\large{Questions?}
+
+\vspace{2em}
+
+\url{http://heartbleed.com/}
+
+\end{center}
+\end{frame}
+
+\end{document}
+
+
