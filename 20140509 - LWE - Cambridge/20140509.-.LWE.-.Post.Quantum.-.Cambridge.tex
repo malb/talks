@@ -1,0 +1,573 @@
+\documentclass[10pt]{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage{xspace}
+\usepackage{tikz,pgfplots}
+\usepackage{algorithm2e}
+\usepackage{relsize}
+\usepackage{listings}
+\usepackage{comment}
+
+\pgfplotsset{compat=1.9, width=1.0\textwidth, height=0.8\textheight}
+
+\definecolor{darkred}{HTML}{A60000}
+\definecolor{lightblue}{HTML}{366690}
+\definecolor{darkgreen}{HTML}{009000}
+\definecolor{lightbrown}{HTML}{AB6402}
+\definecolor{yellow9}{HTML}{E1B640}
+
+\mode<presentation>
+{
+  \setbeamercovered{transparent}
+  \setbeamercolor{normal text}{fg=white,bg=gray}
+  \setbeamercolor{alerted text}{fg=white}
+  \setbeamercolor{example text}{fg=white}
+  \setbeamercolor{background canvas}{bg=darkgray} 
+  \setbeamercolor{structure}{fg=white}
+
+  \setbeamercolor{block title}{bg=lightblue,fg=white}
+  \setbeamercolor{block body}{bg=white,fg=darkgray}
+
+  \setbeamercolor{block title example}{bg=lightblue,fg=white}
+  \setbeamercolor{block body example}{bg=white,fg=darkgray}
+
+  \setbeamercolor{palette primary}{use=normal text,fg=normal text.fg}
+  \setbeamercolor{palette quaternary}{use=structure,fg=structure.fg}
+  \setbeamercolor{palette secondary}{use=structure,fg=structure.fg}
+  \setbeamercolor{palette tertiary}{use=normal text,fg=normal text.fg}
+
+  \setbeamercolor{palette primary}{use=structure,fg=structure.fg}
+
+  \setbeamercolor{math text}{}
+  \setbeamercolor{math text inlined}{parent=math text}
+  \setbeamercolor{math text displayed}{parent=math text}
+
+  \setbeamercolor{enumerate item}{fg=lightgray}
+  \setbeamercolor{itemize item}{fg=lightgray}
+  \setbeamercolor{itemize subitem}{fg=lightgray}
+
+  \setbeamercolor{normal text in math text}{}
+
+  \setbeamercolor{local structure}{parent=structure}
+  
+  \setbeamercolor{titlelike}{parent=structure}
+
+  \setbeamercolor{title}{parent=titlelike}
+  \setbeamercolor{title in head/foot}{parent=palette quaternary}
+  \setbeamercolor{title in sidebar}{parent=palette sidebar quaternary}
+
+  \setbeamercolor{subtitle}{parent=title}
+
+  \setbeamertemplate{navigation symbols}{}
+}
+
+\newcommand{\vectorbound}{\ensuremath{\kappa}}
+\newcommand{\secretbound}{\ensuremath{\nu}}
+\newcommand{\E}{\ensuremath{\textnormal{E}}}
+\newcommand{\Var}{\ensuremath{\textnormal{Var}}}
+\newcommand{\U}[1]{\ensuremath{\mathcal{U}(#1)\xspace}}
+\newcommand{\abs}[1]{\ensuremath{\|#1\|}\xspace}
+\newcommand{\dotp}[2]{\ensuremath{\left\langle {#1},{#2}\right\rangle}\xspace}
+
+\newcommand{\shortvec}[1]{\tilde{\mathbf{#1}}\xspace}
+\renewcommand{\vec}[1]{\mathbf{#1}\xspace}
+\newcommand{\cemph}[1]{{\color{yellow9}{\bf #1}}\xspace}
+\newcommand{\chig}{\ensuremath{\chi_{\alpha,q}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}\xspace}
+\newcommand{\Zq}{\ensuremath{\Z_q}\xspace}
+\newcommand{\Zp}{\ensuremath{\mathbb{Z}_p}\xspace}
+\newcommand{\Ldis}{L_{\mathbf{s},\chi}^{(n)}\xspace}
+\newcommand{\sample}{\ensuremath{\leftarrow_{\$}}}
+\renewcommand{\O}[1]{\ensuremath{{\mathcal{O}\left(#1\right)}}\xspace}
+\newcommand{\round}[1]{\ensuremath{\left\lfloor{#1}\right\rceil}\xspace}
+\newcommand{\Bdis}[1]{B_{\mathbf{s},\chi}(b,#1,p)\xspace}
+\newcommand{\Bdissm}[1]{B_{small,\mathbf{s},\chi}(b,#1,p)\xspace}
+\def\polyfactor{n\, \log_2^2 n}
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}\left(#1\right)}\xspace}
+\def\DAG{D_{{\rm AG}}}
+
+\newtheorem{assumption}{Assumption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Presentation Title Content %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Solving the Learning With Errors Problem}
+\author[Martin R.\ Albrecht]{Martin R.\ Albrecht}
+\institute{Information Security Group, Royal Holloway, University of London}
+
+\date{Post-Quantum Research\\Identifying Future Challenges and Directions\\8th - 9th May 2014\\Isaac Newton Institute, Cambridge}
+
+\AtBeginSection[] {
+	\begin{frame}
+		\frametitle{Contents}
+		\tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded]
+	\end{frame}
+}
+
+\AtBeginSubsection[] {
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded]
+    \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}[plain] % frame of type 'plain' is an empty frame
+  \titlepage
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of Contents Slide %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{Learning with Errors}
+
+Given $(\vec{A},\vec{c})$ with $\vec{c} \in \Zq^{m}$, $\vec{A} \in \Zq^{m \times n}$, $\vec{s} \in \Zq^{n}$ and $\vec{e} \in \Zq^{m \times \ell}$ do we have
+\[
+\left(
+\begin{array}{c}
+ \\
+ \\
+ \\ 
+ \vec{c} \\
+ \\
+ \\
+ \\
+\end{array} 
+\right) = \left(
+\begin{array}{ccc}
+ \leftarrow & n & \rightarrow \\
+ \\
+ \\ 
+ & \vec{A} & \\
+ \\
+ \\
+ \\
+\end{array} \right) \times \left( \begin{array}{c}
+ \\ 
+ \vec{s} \\
+ \\
+\end{array} \right) + \left(
+\begin{array}{c}
+  \\
+ \\
+ \\ 
+ \vec{e} \\
+ \\
+ \\
+ \\
+\end{array} 
+\right)
+\]
+or $\vec{c} \sample \U{\Zq^{m}}$.
+% 
+% 
+% \begin{definition}[Learning with Errors]
+% \begin{itemize}
+% \item Let $q$ be a modulus, $\chi$ be a probability distribution on $\Z_q$ and $\vec{s}$ be a secret vector in $\Z_q^n$.
+% 
+% \item Let $\vec{e} \sample \chi^{m}$, $\vec{A} \sample \U{\Z_q^{m \times n}}$. 
+% \item We denote by $\Ldis$ the distribution produced as $(\vec{A}, \vec{A} \times \vec{s} + \vec{e})$.
+% 
+% \item Decision-LWE is the problem of given $\vec{A},\vec{c}$ deciding if $$\vec{c} \overset{?}{=} \vec{A} \times \vec{s} + \vec{e}$$ where $\vec{e}$ is ``small'' or if  $\vec{c}$ is sampled uniformly random.
+% \end{itemize}
+% \end{definition}
+
+\end{frame}
+
+\pgfmathdeclarefunction{gauss}{2}{
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+
+\begin{frame}
+\frametitle{We Want to Build Crypto Systems}
+
+\begin{block}{Not precise enough}
+\begin{center}
+``Given $m, n, q$ and $\chi$ it takes
+{\large $2^{\tilde{\mathcal{O}}(n^{2\epsilon})}$}
+operations in $\Zq$ to solve LWE.''
+\end{center}
+\end{block}
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solving Strategies}
+
+Given $\vec{A},\vec{c}$ with $\vec{c} = \vec{A} \times \vec{s} + \vec{e}$ or $\vec{c} \sample \U{\Zq^m}$
+
+\vspace{1em}
+
+\begin{itemize}
+
+\item Solve the \cemph{Short Integer Solutions} problem (SIS) in the left kernel of $\vec{A}$, i.e.
+\[
+ \textnormal{ find a short } \vec{w} \textnormal{ such that } \vec{w} \times \vec{A} = 0
+\]
+ and check if $$\dotp{\vec{w}}{\vec{c}} = \vec{w}\times \left(\vec{A} \times \vec{s} + \vec{e}\right) = \dotp{\vec{w}}{\vec{e}}$$ is short.
+\pause
+
+\item Solve the \cemph{Bounded Distance Decoding} problem (BDD), i.e.\ 
+\[
+ \textnormal{ find } \vec{s'} \textnormal{ such that } \abs{\vec{w} - \vec{c}} \textnormal{ with } \vec{w} = \vec{A} \times \vec{s'} \textnormal{ is minimised} .
+\]
+
+
+\end{itemize}
+\end{frame}
+
+\section{BDD \& SIS: Lattice Reduction}
+
+\begin{frame}{SIS}
+
+Find $\vec{w}$ s.t. $\vec{w} \times \vec{A} = 0$ with $\abs{\vec{w}} \approx \frac{1}{\alpha}$ to get $$\abs{\dotp{\vec{w}}{\vec{e}}} \approx \frac{\alpha\, q}{\alpha} = q$$
+to distinguish from $\U{\Zq}$ in poly($n$) time. Let $\vec{B}$ denote a basis for $\{\vec{w} \mid \vec{w}\cdot \vec{A} = 0\}$.
+Using standard results from lattice reduction we get
+
+\begin{eqnarray*}
+\frac{1}{\alpha} &=& \delta^m \det(\vec{B})^{1/m} = \delta^{\sqrt{n\,\log_2 q/\log_2\delta}} q^{n/\sqrt{n\,\log_2 q /\log_2\delta}}\\
+&=& 2^{2 \, \sqrt{n\, \log_2 \delta \, \log_2 q }}.
+\end{eqnarray*}
+It follows that lattice reduction with $\delta = 2^{\frac{\log_2^2 \alpha }{4n\,\log_2 q }}$ solves Decision-LWE.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{BDD}
+
+Lattice reduction produces \cemph{short} and relatively \cemph{orthogonal bases} not only  \cemph{short vectors}.
+
+\begin{enumerate}
+  \item Reduce lattice basis to recover short and orthogonal basis $\vec{A'}$
+  \item Use variant of Babai's nearest plane algorithm to find vector close to $\vec{c} = \vec{A'} \times \vec{s} + \vec{e}$.
+\end{enumerate}
+
+\begin{block}{}
+Tradeoff between lattice reduction and decoding stage.
+\end{block}
+
+
+\end{frame}
+
+
+\section{SIS: Combinatorial Algorithms}
+
+\begin{frame}[allowframebreaks,fragile]
+\frametitle{BKW Algorithm}
+
+% The BKW algorithm was first proposed for the Learning Parity with Noise (LPN) problem which can be viewed as a special case of LWE over $\Z_{2}$.
+% 
+% \vspace{1em}
+% 
+% \begin{thebibliography}{foobar}
+% \bibitem{DBLP:journals/jacm/BlumKW03}
+% Avrim Blum, Adam Kalai, and Hal Wasserman.
+% \newblock Noise-tolerant learning, the parity problem, and the statistical query model.
+% \newblock {\em J. ACM}, 50(4):506--519, 2003.
+% \end{thebibliography}
+% 
+% \framebreak
+
+
+We revisit Gaussian elimination:
+\begin{eqnarray*}
+& & \left(
+\begin{array}{c|c|ccc|c}
+\bold{a}_{11} & \bold{a}_{12} & \bold{a}_{13} & \cdots & \bold{a}_{1n} & c_1\\
+\bold{a}_{21} & \bold{a}_{22} & \bold{a}_{23} & \cdots & \bold{a}_{2n} & c_2\\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
+\bold{a}_{m1} & \bold{a}_{m2} & \bold{a}_{m3} & \cdots & \bold{a}_{mn} & c_{m}
+\end{array}
+\right)
+\end{eqnarray*}
+
+\begin{eqnarray*}
+& \overset{?}{=} & \left(
+\begin{array}{c|c|ccc|c}
+\bold{a}_{11} & \bold{a}_{12} & \bold{a}_{13} & \cdots & \bold{a}_{1n} & \dotp{\vec{a}_1}{\vec{s}} + \vec{e}_1\\
+\bold{a}_{21} & \bold{a}_{22} & \bold{a}_{23} & \cdots & \bold{a}_{2n} & \dotp{\vec{a}_2}{\vec{s}} + \vec{e}_2\\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
+\bold{a}_{m1} & \bold{a}_{m2} & \bold{a}_{m3} & \cdots & \bold{a}_{mn} & \dotp{\vec{a}_m}{\vec{s}} + \vec{e}_m
+\end{array}
+\right)
+\end{eqnarray*}
+
+\framebreak
+
+\begin{eqnarray*}
+& \Rightarrow  & \left(
+\begin{array}{c|c|ccc|l}
+\bold{a}_{11} & \bold{a}_{12} & \bold{a}_{13} & \cdots & \bold{a}_{1n} & \dotp{\vec{a}_1}{\vec{s}} + \vec{e}_1\\
+0 & \tilde{\bold{a}}_{22} & \tilde{\bold{a}}_{23} & \cdots & \tilde{\bold{a}}_{2n} & \dotp{\shortvec{a}_2}{\vec{s}} + \vec{e}_2 - \cemph{\frac{\bold{a}_{21}}{\bold{a}_{11}}\vec{e}_1}\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\
+0 & \tilde{\bold{a}}_{m2} & \tilde{\bold{a}}_{m3} & \cdots & \tilde{\bold{a}}_{mn} & \dotp{\shortvec{a}_m}{\vec{s}} + \vec{e}_m - \cemph{\frac{\bold{a}_{m1}}{\bold{a}_{11}}\vec{e}_1}
+\end{array}
+\right)\phantom{\Longrightarrow}
+\end{eqnarray*}
+
+\begin{itemize}
+ \item $\frac{\bold{a}_{i1}}{\bold{a}_{11}}$ is essentially random in $\Z_q$ wiping all ``smallness''.
+ \item If $\frac{\bold{a}_{i1}}{\bold{a}_{11}}$ is 1 noise-size doubles because of the addition.  
+\end{itemize}
+
+
+\framebreak
+
+We considering $a \approx \log n$ `blocks' of $b$ elements each.
+
+\begin{equation*}
+\left(
+\begin{array}{cc|ccc|c}
+\bold{a}_{11} & \bold{a}_{12} & \bold{a}_{13} & \cdots & \bold{a}_{1n} & c_0\\
+\bold{a}_{21} & \bold{a}_{22} & \bold{a}_{23} & \cdots & \bold{a}_{2n} & c_1\\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
+\bold{a}_{m1} & \bold{a}_{m2} & \bold{a}_{m3} & \cdots & \bold{a}_{mn} & c_{m}
+\end{array}
+\right)
+\end{equation*}
+
+\framebreak
+
+For each block we build a table of all $q^b$ possible values indexed by $\Z_q^b$.
+
+\begin{equation*}
+T^0 = \left[ 
+\begin{array}{ll|ccc|c}
+-\lfloor\frac{q}{2}\rfloor & -\lfloor\frac{q}{2}\rfloor & \bold{t}_{13} & \cdots & \bold{t}_{1n} & c_{t,0}\\
+-\lfloor\frac{q}{2}\rfloor & -\lfloor\frac{q}{2}\rfloor+1 & \bold{t}_{23} & \cdots & \bold{t}_{2n} & c_{t,1}\\
+\phantom{--}\vdots & \phantom{--}\vdots & \vdots & \ddots & \vdots & \vdots\\
+\phantom{-}\lfloor\frac{q}{2}\rfloor & \phantom{-}\lfloor\frac{q}{2}\rfloor& \bold{t}_{q^23} & \cdots & \bold{t}_{q^2n} & c_{t,q^2}
+\end{array}\right]
+\end{equation*}
+
+For each $\vec{z} \in \Z_q^b$ find row in $\vec{A}$ which contains $\vec{z}$ as a subvector at the target indices.
+
+\framebreak
+
+Use these tables to eliminate $b$ entries with one addition.
+
+\begin{eqnarray*}
+& & \left(
+\begin{array}{cc|ccc|c}
+\vec{a}_{11} & \vec{a}_{12} & \vec{a}_{13} & \cdots & \vec{a}_{1n} & c_0\\
+\cemph{\vec{a}_{21}} & \cemph{\vec{a}_{22}} & \vec{a}_{23} & \cdots & \vec{a}_{2n} & c_1\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\
+\vec{a}_{m1} & \vec{a}_{m2} & \vec{a}_{m3} & \cdots & \vec{a}_{mn} & c_{m}
+\end{array}
+\right)\\
+&+& \left[
+\begin{array}{ll|ccc|c}
+-\lfloor\frac{q}{2}\rfloor & -\lfloor\frac{q}{2}\rfloor & \bold{t}_{13} & \cdots & \bold{t}_{1n} & c_{t,0}\\
+\cemph{-\lfloor\frac{q}{2}\rfloor} & \cemph{-\lfloor\frac{q}{2}\rfloor+1} & \bold{t}_{23} & \cdots & \bold{t}_{2n} & c_{t,1}\\
+\phantom{--}\vdots & \phantom{--}\vdots & \ddots & \vdots & \vdots\\
+\phantom{-}\lfloor\frac{q}{2}\rfloor & \phantom{-}\lfloor\frac{q}{2}\rfloor& \bold{t}_{q^23} & \cdots & \bold{t}_{q^2n} & c_{t,q^2}
+\end{array}\right]\\
+&\Rightarrow& \left(
+\begin{array}{cc|ccc|c}
+\vec{a}_{11} & \vec{a}_{12} & \vec{a}_{13} & \cdots & \vec{a}_{1n} & c_0\\
+\cemph{0} & \cemph{0} & \shortvec{a}_{23} & \cdots & \shortvec{a}_{2n} & \tilde{c}_1\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\
+\vec{a}_{m1} & \vec{a}_{m2} & \vec{a}_{m3} & \cdots & \vec{a}_{mn} & c_{m}
+\end{array}
+\right)\phantom{\Longrightarrow}
+\end{eqnarray*}
+
+\framebreak
+
+Memory requirement of $$\approx\frac{q^b}{2}\cdot a\cdot(n+1)$$ and time complexity of $$\approx (a^2n)\cdot\frac{q^b}{2}.$$
+
+\vspace{1em}
+
+A detailed analysis of the algorithm for LWE is available as:
+
+\begin{thebibliography}{foobar}
+\bibitem{foobar}
+M.A., Carlos Cid, Jean-Charles Faugère, Robert Fitzpatrick and Ludovic Perret
+\newblock On the Complexity of the BKW Algorithm on LWE
+\newblock In {\em Designs, Codes and Cryptography}.
+\end{thebibliography}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{BKW with Small Secret}
+
+Assume $\vec{s} \sample \U{\Z_2^n}$, i.e.\ all entries in secret $\vec{s}$ are very small.
+
+\vspace{1em}
+
+Common setting in cryptography
+\begin{itemize}
+ \item for performance reasons and 
+ \item to to realise some advanced functionality.
+\end{itemize}
+
+\vspace{1em}
+
+A technique called `modulus switching' can be used to improve the performance of homomorphic encryption schemes.
+
+\vspace{1em}
+
+\begin{block}{Lazy Modulus Switching}
+Exploit the same structure to solve such instances faster with BKW.
+\end{block}
+
+\vspace{1em}
+
+\begin{thebibliography}{foobar}
+\bibitem{albrecht-faugere-fitzpatrick-perret:pkc2014}
+M.A., Jean-Charles Faugère, Robert Fitzpatrick, Ludovic Perret
+\newblock Lazy Modulus Switching for the BKW Algorithm on LWE.
+\newblock In {\em PKC 2014}, Springer Verlag, 2014.
+\end{thebibliography}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Complexity}
+
+\textbf{BKW} for $q=\textnormal{poly}(n)$
+\begin{center}
+\Large $\bigO{2^{cn}\cdot \polyfactor}$
+\end{center}
+\phantom{where $0<d\leq 1$  is a small constant.}
+
+\textbf{BKW + naive modulus switching} for $q=\textnormal{poly}(n)$
+\begin{center}
+\Large $\bigO{2^{\big(c\cemph{ +\frac{\log_2 d}{\log_2 n}}\big)\,n} \cdot \polyfactor}$
+\end{center}
+\phantom{where $0<d\leq 1$  is a small constant.}
+
+\textbf{BKW + lazy modulus switching} for $q=\textnormal{poly}(n)$
+\begin{center}
+\Large $\bigO{2^{\big(c+\frac{\log_2 d\cemph{ -\frac 1 2 \log_2 \log_2 n}}{\log_2 n}\big)\,n}\cdot \polyfactor}$
+\end{center}
+where $0<d\leq 1$  is a small constant (so $\log d < 0$).
+
+\end{frame}
+
+\section{BDD: Arora \& Ge}
+
+\begin{frame}[allowframebreaks]
+\frametitle{The Idea}
+
+Noise follows a discrete Gaussian distribution, we have:
+
+$$
+\Pr [e \sample \chi : \abs{e} >C \cdot \sigma ]  \leq  \frac{2}{C \sqrt{2 \pi}}e^{-C^2/2} \in e^{\bigO{-C^2}}.
+$$
+
+\vspace{1em}
+
+\hspace{-15em}\begin{tikzpicture}[scale=0.8]
+  \begin{axis}[%every axis plot post/.append style=,
+    axis x line*=bottom, % no box around the plot, only x and y axis
+    axis y line*=left, % the * suppresses the arrow tips
+    ] % extend the axes a bit to the right and top
+   \addplot[color=darkgreen,very thick, mark=none,domain=-20:20,samples=50,smooth] {gauss(0,3.0)};
+   \addplot[very thick,color=yellow9] coordinates { (-12,0) (-12,0.14) };
+   \addplot[very thick,color=yellow9] coordinates { (12,0) (12,0.14) };  
+  \end{axis}
+\end{tikzpicture}
+
+\framebreak
+
+If $e \sample \chi$ and
+$$
+P(X)=X \prod_{i=1}^{C \cdot \sigma}(X+i)(X-i),
+$$
+we have $P(e) = 0$  with probability at least $1- e^{\bigO{-C^2}}$.
+
+\vspace{1em}
+
+If $(\vec{a},c)  = (\vec{a},\langle\vec{a},\vec{s}\rangle+e) \in \Zq^n \times \Zq$, and $e \sample \chi$, then
+$$P\big(-c + \sum_{j=1}^{n} \mathbf{a}_{(j)}x_j\big)=0,$$
+with probability at least $1-e^{\bigO{-C^2}}$. 
+
+\framebreak
+
+Each $(\vec{a},\langle\vec{a},\vec{s}\rangle + e)=(\vec{a},c)$ generates a \cemph{non-linear equation} of degree $2C\sigma+1$ in the $n$ components of the secret $\vec{s}$ which holds with probability $1-e^{\bigO{-C^2}}$.
+
+\vspace{1em}
+
+Solve this ``noise-free'' system of equations with \cemph{Gröbner bases}.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Tradeoff}
+
+More samples increase
+\begin{enumerate}
+  \item the \cemph{number of equations} $\rightarrow$ solving is \cemph{easier}.
+  \item the required interval $C\sigma$ and hence the \cemph{degree} $\rightarrow$ solving is \cemph{harder}.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Complexity}
+
+\textbf{Arora-Ge} (Linearisation):
+\begin{center}
+\Large $\bigO{2^{\,8\,\omega\,\sigma^2\log n( \log n - \log({8\, \sigma^2 \log n}))}}$
+\end{center}
+\phantom{under some regularity assumption.}
+
+\textbf{Arora-Ge} (Linearisation) with $\sigma = \sqrt{n}$
+\begin{center}
+\Large $\bigO{2^{\,8\,\omega\,n\log n( \log n - \log({8\, n \log n}))}}$
+\end{center}
+\phantom{under some regularity assumption.}
+
+\textbf{Gröbner Bases} with $\sigma = \sqrt{n}$
+\begin{center}
+\Large $\bigO{2^{2.16\,\omega\,n}}$
+\end{center}
+under some regularity assumption.
+\end{frame}
+
+\begin{frame}
+\frametitle{BinaryError-LWE}
+
+\begin{itemize}
+  \item BinaryError-LWE is a variant of LWE where the noise is $\{0,1\}$ but the number of samples severly restricted.
+  \item Given access to $m= \bigO{n \log\log n}$ samples we can solve BinaryError-LWE in \cemph{subexponential} time:
+
+  {\Large $$\bigO{2^{\frac{\omega \, n \, \log \log \log n }{8 \log \log n}}}.$$}
+
+\end{itemize}
+
+\begin{thebibliography}{foobar}
+\bibitem{foobar}
+M.A., Carlos Cid, Jean-Charles Faug\`ere, Robert Fitzpatrick and Ludovic Perret
+\newblock Gr\"obner Bases Techniques in LWE-Based Cryptography
+\newblock To appear.
+\end{thebibliography}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Fin}
+\begin{center}
+\large{Questions?}
+
+\vspace{2em}
+
+\end{center}
+\end{frame}
+
+\end{document}
+
+
