@@ -1,0 +1,764 @@
+\documentclass[10pt]{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage{xspace}
+\usepackage{tikz,pgfplots}
+\usepackage{algorithm2e}
+\usepackage{relsize}
+\usepackage{listings}
+\usepackage{comment}
+
+\pgfplotsset{compat=1.9, width=1.0\textwidth, height=0.8\textheight}
+
+\definecolor{darkred}{HTML}{A60000}
+\definecolor{lightblue}{HTML}{366690}
+\definecolor{darkgreen}{HTML}{009000}
+\definecolor{lightbrown}{HTML}{AB6402}
+\definecolor{yellow9}{HTML}{E1B640}
+
+\mode<presentation>
+{
+  \setbeamercovered{transparent}
+  \setbeamercolor{normal text}{fg=white,bg=gray}
+  \setbeamercolor{alerted text}{fg=white}
+  \setbeamercolor{example text}{fg=white}
+  \setbeamercolor{background canvas}{bg=darkgray} 
+  \setbeamercolor{structure}{fg=white}
+
+  \setbeamercolor{block title}{bg=lightblue,fg=white}
+  \setbeamercolor{block body}{bg=white,fg=darkgray}
+
+  \setbeamercolor{block title example}{bg=lightblue,fg=white}
+  \setbeamercolor{block body example}{bg=white,fg=darkgray}
+
+  \setbeamercolor{palette primary}{use=normal text,fg=normal text.fg}
+  \setbeamercolor{palette quaternary}{use=structure,fg=structure.fg}
+  \setbeamercolor{palette secondary}{use=structure,fg=structure.fg}
+  \setbeamercolor{palette tertiary}{use=normal text,fg=normal text.fg}
+
+  \setbeamercolor{palette primary}{use=structure,fg=structure.fg}
+
+  \setbeamercolor{math text}{}
+  \setbeamercolor{math text inlined}{parent=math text}
+  \setbeamercolor{math text displayed}{parent=math text}
+
+  \setbeamercolor{enumerate item}{fg=lightgray}
+  \setbeamercolor{itemize item}{fg=lightgray}
+  \setbeamercolor{itemize subitem}{fg=lightgray}
+
+  \setbeamercolor{normal text in math text}{}
+
+  \setbeamercolor{local structure}{parent=structure}
+  
+  \setbeamercolor{titlelike}{parent=structure}
+
+  \setbeamercolor{title}{parent=titlelike}
+  \setbeamercolor{title in head/foot}{parent=palette quaternary}
+  \setbeamercolor{title in sidebar}{parent=palette sidebar quaternary}
+
+  \setbeamercolor{subtitle}{parent=title}
+
+  \setbeamertemplate{navigation symbols}{}
+}
+
+%bkw
+\newcommand{\heading}[1]{{\vspace{6pt}\noindent\sc{#1.}}}
+\newcommand{\Dreg}{D_{\mathrm{reg}}}
+%\newcommand{\log}{\mathrm{log}}
+
+\newcommand*{\neper}{e}
+
+\newcommand{\AroraGe}{Arora \& Ge\xspace}
+\newcommand{\prooffactor}{\ensuremath{\sigma \, q \log q}\xspace}
+
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}\left({#1}\right)}\xspace}
+\newcommand{\tildeO}[1]{\ensuremath{\tilde{\mathcal{O}}(#1)}\xspace}
+\newcommand{\poly}{ {\rm poly}(n)}
+\newcommand{\chig}{\ensuremath{\chi_{\alpha,q}}}
+\newcommand{\U}{\ensuremath{\mathcal{U}\xspace}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Ldis}{L_{\mathbf{s},\chi}^{(n)}}
+\newcommand{\bLdis}{L_{\mathbf{s},\mathcal{U}(\mathbb{F}_2)}^{(n)}}
+\newcommand{\TLdis}{L_{\mathbf{s},\mathcal{U}([-T\ldots,T])}^{(n)}}
+
+\newcommand{\Bdis}[1]{B_{\mathbf{s},\chi,#1}^{(n)}}
+\newcommand{\sample}{\ensuremath{\leftarrow_{\$}}}
+
+\newcommand{\CDF}{\ensuremath{\textnormal{CDF}}}
+\newcommand{\E}{\ensuremath{\textnormal{E}}}
+\newcommand{\Var}{\ensuremath{\textnormal{Var}}}
+\newcommand{\Sample}{\ensuremath{\mathbf{Sample}}\xspace}
+
+\newcommand{\abs}[1]{\ensuremath{|#1|}\xspace}
+
+\newcommand{\avec}{\ensuremath{\mathbf{a}}\xspace}
+\newcommand{\svec}{\ensuremath{\mathbf{s}}\xspace}
+\newcommand{\tvec}{\ensuremath{\mathbf{t}}\xspace}
+\newcommand{\vvec}{\ensuremath{\mathbf{v}}\xspace}
+
+\newcommand{\sol}{\ensuremath{(s_{n-w},\dots,s_{n-1})}\xspace}
+\newcommand{\solvec}{\ensuremath{\mathbf{s'}}\xspace}
+
+\newcommand{\dotp}[2]{\ensuremath{\langle {#1},{#2}\rangle}\xspace}
+\newcommand{\N}[1]{\ensuremath{\mathcal{N}({#1)}}}
+\def\abn{\lceil n/b \rceil}
+\def\gnd{\lceil n/d \rceil}
+
+\DeclareMathOperator{\erf}{erf}
+
+\newcommand{\lowerbound}{\ensuremath{\lceil -q/2 \rceil}\xspace}
+\newcommand{\upperbound}{\ensuremath{\lfloor q/2\rfloor}\xspace}
+
+
+%Intial AG
+\newcommand{\id}{\mathcal{I}}
+
+\newcommand{\Mac}[1]{\ensuremath{\mathcal{M}^{\mathrm{acaulay}}_{#1}}}
+\newcommand{\K}{\ensuremath{\mathbb{K}}}
+
+%\newcommand{\Zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Zb}{\ensuremath{\mathbb{Z}_2}}
+\newcommand{\Rn}{\ensuremath{{\bf R}_n[X]}}
+\newcommand{\Ldisring}{Lr_{\mathbf{s},\chi}^{(n)}}
+
+
+\newcommand{\Fqr}{\ensuremath{\mathbb{F}_{q^t}}}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}}
+
+\newcommand{\ZqX}{\ensuremath{\mathbb{Z}_q}[x_1,\ldots,x_n]}
+\newcommand{\ZqXh}{\ensuremath{\mathbb{Z}_q}^{(d)}[x_1,\ldots,x_n]}
+\newcommand{\ZbX}{\ensuremath{\mathbb{Z}_2}[x_1,\ldots,x_n]}
+\newcommand{\KX}{\ensuremath{\mathbb{K}}[x_1,\ldots,x_n]}
+
+\newcommand{\red}[1]{\textcolor{red}{[L.P. :#1]}}
+
+\newcommand{\Sdis}{\ensuremath{S^{(m,n,d)}_{\mathbf{s}}}}
+\newcommand{\pos}{PoSSo}
+
+\newcommand{\nbvar}{n}
+\newcommand{\nbeq}{m}
+
+%\newcommand{\Udis}{\mathcal{U}^{(m,n,d)}_{{\rm PoSSo}}}
+%\newcommand{\Udispwe}{\mathcal{U}^{(m,n,d)}_{{\rm PWE}}}
+%sff
+
+\newcommand{\Udis}{\mathcal{U}^{(m,n,d)}}
+\newcommand{\Udispwe}{\mathcal{U}^{(m,n,d)}}
+
+\newcommand{\Pdis}{P^{(m,n,d)}_{\mathbf{s},\chi}}
+\newcommand{\Pdisu}{P^{(n,d)}_{\mathbf{s},\chi}}
+
+\newcommand{\Pdish}{H^{(m,n,d)}_{\mathbf{s},\chi} }
+
+\newcommand{\Adv}{{\bf Adv}}
+\newcommand{\s}{{\mathbf{s}}}
+
+\renewcommand{\Pr}{\textnormal{Pr}}
+\def\rand{\stackrel{{}_{\$}}{\leftarrow}} 
+
+\newcommand{\LM}{\ensuremath{\textsc{LM}}\xspace}
+
+
+%Names 
+\newcommand\LWE{\ensuremath{{\rm LWE}}\xspace}
+
+%Section on GB 
+
+
+\def\DAG{D_{{\rm AG}}}
+\def\MAG{M_{{\rm AG}}}
+\def\CAG{C_{{\rm AG}}}
+
+\def\DGB{D_{{\rm GB}}}
+\def\MGB{M_{{\rm GB}}}
+\def\CGB{C_{{\rm GB}}}
+
+
+
+\renewcommand{\vec}[1]{\mathbf{#1}\xspace}
+\newcommand{\cemph}[1]{{\color{yellow9}{\bf #1}}\xspace}
+
+\newtheorem{assumption}{Assumption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Presentation Title Content %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Arora-GB: Algebraic Algorithms for LWE Problems}
+\author[Martin R.\ Albrecht]{Martin R.\ Albrecht\footnote{joint work with L.\ Perret, C.\ Cid, J.-C. Faugère and R.\ Fitzpatrick}}
+\institute{Information Security Group, Royal Holloway, University of London}
+
+\date{ENS Lyon, 9. October 2014}
+
+\AtBeginSection[] {
+	\begin{frame}
+		\frametitle{Contents}
+		\tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded]
+	\end{frame}
+}
+
+\AtBeginSubsection[] {
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded]
+    \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}[plain] % frame of type 'plain' is an empty frame
+  \titlepage
+\end{frame}
+
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{Learning with Errors}
+
+\begin{definition}[LWE]\label{def:lwe}
+Let $n\ge 1$ be an integer, $q$ be an odd integer, $\chi$ be a probability distribution on $\Zq$ and \svec $\in \Zq^n$ be a secret vector. We denote by $\Ldis$ the probability distribution on $\Zq^{n \times m}\times \Zq^{m}$ 
+obtained by choosing $G\in \Zq^{n \times m}$  uniformly at random, sampling $\vec{e}$ according to $\chig^{m}$, and returning $$(G,\vec{s} \times G+\vec{e})=(G,\vec{c}) \in \Zq^{n \times m}\times \Zq^{m}.$$ \LWE is the problem of finding $\svec \in \Zq^{n}$ from $(G,\vec{s} \times G+\mathbf{e})$ sampled according to $\Ldis$.
+\end{definition}
+
+\end{frame}
+
+\pgfmathdeclarefunction{gauss}{2}{
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+
+\begin{frame}
+\frametitle{Noise Distribution}
+\begin{itemize}
+  \item $\chig$ is a discrete Gaussian distribution over $\Z$ with standard deviation $$\sigma = \frac{\alpha\, q}{\sqrt{2\pi}}$$ considered modulo $q$.
+  \item A typical setting for the standard deviation is $\sigma=n^{\epsilon}$, with $0 \leq \epsilon \leq 1$. 
+  \item As soon as $\epsilon >  1/2$, (worst-case) ${\rm GAPSVP}-\tildeO{n/\alpha}$ classically reduces to (average-case) \LWE
+\end{itemize}
+
+\begin{block}{}
+Any algorithm solving  \LWE (when $\epsilon > 1/2$) can be used to solve ${\rm GAPSVP}-\tildeO{n/\alpha}$.
+\end{block}
+\end{frame}
+
+
+\begin{frame}[allowframebreaks]{Arora-Ge Idea}
+
+The noise follows a discrete Gaussian distribution, we have:
+
+$$
+\Pr [e \sample \chi : \abs{e} >C \cdot \sigma ]  \leq  \frac{2}{C \sqrt{2 \pi}}e^{-C^2/2} \in e^{\bigO{-C^2}}.
+$$
+
+\vspace{1em}
+
+\hspace{-15em}\begin{tikzpicture}[scale=0.8]
+  \begin{axis}[%every axis plot post/.append style=,
+    axis x line*=bottom, % no box around the plot, only x and y axis
+    axis y line*=left, % the * suppresses the arrow tips
+    ] % extend the axes a bit to the right and top
+   \addplot[color=darkgreen,very thick, mark=none,domain=-20:20,samples=50,smooth] {gauss(0,3.0)};
+   \addplot[very thick,color=yellow9] coordinates { (-12,0) (-12,0.14) };
+   \addplot[very thick,color=yellow9] coordinates { (12,0) (12,0.14) };  
+  \end{axis}
+\end{tikzpicture}
+
+\framebreak
+
+If $e \sample \chi$ and
+$$
+P(X)=X \prod_{i=1}^{C \cdot \sigma}(X+i)(X-i),
+$$
+we have $P(e) = 0$  with probability at least $1- e^{\bigO{-C^2}}$.
+
+\vspace{1em}
+
+So if $(\vec{a},c)  = (\vec{a},\langle\vec{a},\vec{s}\rangle+e) \in \Zq^n \times \Zq$, and $e \sample \chi$, then
+\begin{equation}\label{agequation}
+P\big(-c + \sum_{j=1}^{n} \mathbf{a}_{(j)}x_j\big)=0,
+\end{equation}
+with probability at least $1-e^{\bigO{-C^2}}$. 
+
+\framebreak
+
+Each $(\vec{a},\langle\vec{a},\vec{s}\rangle + e)=(\vec{a},c)$ generates a \cemph{non-linear equation} of degree $2C\sigma+1$ in the $n$ components of the secret $\vec{s}$ which holds with probability $1-e^{\bigO{-C^2}}$.
+
+
+\vspace{1em}
+
+\begin{block}{Arora-Ge Idea}
+Solve this non-linear system of equations to solve \LWE.
+\end{block}
+
+\vspace{1em}
+\end{frame}
+
+
+\begin{frame}{From Arora-Ge to Arora-GB}
+
+Arora \& Ge solve the non-linear system using linearisation which requires $O(n^d)$ samples to solve equations at degree $d$.
+
+\vspace{1em}
+
+However, this might not be optimal, as more samples
+\begin{enumerate}
+  \item increase the \cemph{number of equations} $\rightarrow$ solving is \cemph{easier}.
+  \item increase the required interval $C\sigma$ and hence the \cemph{degree} $\rightarrow$ solving is \cemph{harder}.
+\end{enumerate}
+
+\vspace{1em}
+
+\begin{block}{Our idea}
+Solve this non-linear system of equations using Gröbner bases.
+\end{block}
+
+\end{frame}
+
+\begin{frame}{BinaryError-\LWE}
+ 
+\begin{theorem}[BinaryError-\LWE]
+Let $\nbvar,\nbeq=\nbvar\left(1+\Omega\big(1/{\rm log}( \nbvar)\big)\right)$ be integers, and $q\geq \nbvar^{\bigO{1}}$ be a sufficiently large polynomially bounded (prime) modulus.
+
+\vspace{1em}
+
+Then, solving \LWE with parameters $\nbvar, \nbeq,q$ and independent uniformly random binary errors is at least as hard as approximating lattice problems in the worst-case on $\Theta\big(\nbvar/{\rm log}(\nbvar)\big)$--dimensional lattices within a factor $\tildeO{\sqrt{\nbvar}\cdot q}$. 
+\end{theorem}
+
+\begin{block}{}
+From Arora-Ge we know that this problem is easy if $m = \bigO{n^2}$. But what about $$\nbvar\left(1+\Omega\big(1/{\rm log}( \nbvar)\big)\right) < m < \bigO{n^2}?$$
+\end{block}
+\end{frame}
+
+\begin{frame}{Fröberg's Conjecture}
+
+\begin{itemize}
+  \item All our results depend on assumptions that the generated systems are \cemph{semi-regular}.
+  \item These assumptions are related to Fröberg's conjecture in algebraic geometry.
+  \item We cannot prove our assumptions or his conjecture but we report on some progress in that direction.
+\end{itemize}
+
+  
+\end{frame}
+
+
+\section{Arora-Ge Complexity}
+
+\begin{frame}{\AroraGe Complexity}
+
+\begin{itemize}
+  \item The analysis of the Arora-Ge algorithm hides constants \cemph{in the exponent} and logarithm factors.
+  \framebreak
+  \item Th overall complexity is that of Gaussian elimination on a matrix of size $$\MAG \times \binom{n + \DAG}{\DAG}.$$
+ \item Gaussian elimination on an $m \times n$ matrix of rank $r$ has complexity $$\bigO{mnr^{\omega-2}}.$$
+\end{itemize}
+
+\begin{block}{\AroraGe Complexity}
+\begin{eqnarray*}
+\bigO{\MAG \cdot \binom{n + \DAG}{\DAG}^{\omega-1}} &=& \bigO{\MAG \cdot \binom{n + 2\,\CAG\, \sigma + 1}{2\, \CAG\,\sigma + 1}^{\omega-1}}.%\\
+\end{eqnarray*}
+\end{block}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Bounding $\CAG$}
+
+\begin{lemma}
+\label{lem:arora-ge-cag} 
+Let $n, q, \sigma=\alpha \cdot q$ be parameters of an $\LWE_{\chi_{\alpha,q}}$ instance where $q = \poly$. Let $p'_f \in [0,1]$ be a constant upper bound on the probability of failure and 
+$$
+\CAG \leq 2\, \sigma \log n +a^{1/2}\approx 4\, \sigma \log n,
+$$
+with  $$a= 4(\sigma \log n)^2+ 2\log(\prooffactor)-2\log p'_f +2\log n.$$
+
+Finally, let also $\DAG=2\, \CAG\, \sigma+1$. Then, the system obtained by linearizing $$\binom{n+\DAG}{\DAG} \prooffactor$$ equations of degree as in \eqref{agequation} is such that the secret is a zero of all the polynomials, with probability bigger than $1-p'_f$. 
+
+\end{lemma}
+
+\framebreak
+
+\begin{proof}
+\begin{enumerate}
+\item The probability of failure is upper bounded by:
+\begin{eqnarray*}
+p_f &=& \MAG \times \Pr [e \rand \chig : \left| e \right| >\CAG \cdot \sigma ]\\
+    &<&       \frac{\binom{n+\DAG}{\DAG} \, \prooffactor}{\CAG\cdot \neper^{\CAG^2/2}} = p_f'.
+\end{eqnarray*}
+\item Bound $\binom{n+\DAG}{\DAG}$ by $n^{\DAG}$ and solve for $\CAG$. We get $$\CAG = 2\, \sigma \cdot \log(n)+a^{1/2},$$ with $a= 4(\sigma \log n)^2+ 2\log(\prooffactor)-2\log p'_f +2\log n$.
+\item For $q \in {\rm poly(n)}$, $p'_f$ a constant and $n$ big enough: 
+\begin{eqnarray*}
+a &\approx& 4(\sigma \log n)^2. 
+\end{eqnarray*}
+\end{enumerate}\qed
+\end{proof}
+
+\end{frame}
+
+\begin{frame}{Result}
+
+\begin{theorem}
+\label{thm:arora-ge-complexity}
+Let $n,q,\sigma=\alpha \cdot q$ be parameters of an $\LWE_{\chi_{\alpha,q}}$ instance.
+
+If $n \in o(\sigma^2\log(n))$ then the \AroraGe algorithm solves the computational \LWE{} problem in time complexity
+
+\begin{eqnarray*}
+& & \bigO{2^{\, \omega \cdot n \log \frac{\DAG}{n}} \cdot \prooffactor}
+&=& \bigO{2^{\,\omega\, n\log(8\, \sigma^2 \log n) - n\log n} \cdot \poly}
+\end{eqnarray*}
+\end{theorem}
+
+\end{frame}
+	
+\section{Gröbner Bases}
+
+\begin{frame}[allowframebreaks]{Gröbner Bases}
+
+\begin{definition}[Gröbner Basis]
+Let $\id$ be an ideal of $\ZqX$ and fix a monomial ordering. A finite subset $$G = \{g_1 ,\dots , g_{m} \} \subset \id$$  is said to be a \textbf{Gröbner basis} of $\id$ if
+\[
+\langle \LM(g_1), \dots , \LM(g_m)\rangle = \langle \LM(\id) \rangle.
+\]
+\end{definition}
+
+\begin{block}{}
+If a system of equations has one common root, the Gröbner basis of the ideal spanned by its polynomials is $[x_1 - s_1, \dots,  x_n - s_n]$ where $\vec{s} = (s_1, \dots, s_n)$ is the common root.
+\end{block}
+
+
+\framebreak
+
+\begin{theorem}\label{theorem:lazard}
+Let $q$ be a prime and let  ${\bf f}=(f_1 ,\ldots,f_{m}) \in (\Zq[x_1,\ldots,x_n])^m$ be homogeneous polynomials and $\prec$ be a monomial
+ordering. There exists a positive integer $D$ for which Gaussian elimination on all $\Mac{d,m}(f_1 ,\ldots,f_{m})$ matrices for $d,1 \leq d \leq D$ computes a Gr\"obner basis of \(\langle f_1,\ldots,f_{m} \rangle\) w.r.t. to $\prec$.
+\end{theorem}
+
+\vspace{1em}
+
+The complexity of computing a Gr\"obner basis is bounded by the complexity of performing Gaussian elimination on the Macaulay matrices up to some degree $D$.
+
+\framebreak
+
+In general, computing the maximum degree in a Gr\"obner computation is  
+a difficult problem, but is known for a specific family of systems.
+
+
+\begin{definition}[Semi-regular Sequence]\label{gen}
+Let $m\geq n$, and $f_1 ,\ldots,f_{m} \in \Zq[x_1,\ldots,x_n] $ be homogeneous polynomials of degrees $d_{1},\ldots,d_{m}$ respectively and \(\id = \langle f_1,\dots,f_m\rangle\).
+The system is said to be a {\bf semi-regular sequence} if the Hilbert polynomial  associated to \(\id\) w.r.t. the grevlex order is:
+\begin{equation}\label{series}
+ {\rm HP}(z) =\left[ \frac{ \prod_{i=1}^m(1-z^{d_i})}{(1-z)^{n}} \right]_{+},
+\end{equation}
+with \([S]_{+}\) being the polynomial obtained by truncating the series $S$ before the index of its first non-positive coefficient.
+\end{definition}
+
+\framebreak
+
+\begin{lemma}\label{GBb}
+Let ${\bf f}=(f_1 ,\ldots,f_{m}) \in (\Zq[x_1,\ldots,x_n])^m$  be affine polynomials with $m >n$.
+If $f_1 ,\ldots,f_{m}$ is semi-regular, then the number of operations in $\Zq$ 
+required to compute a Gr\"obner basis for any admissible order is bounded by:
+\begin{equation}\label{cplxgb}
+\mathcal{O} \left(m D_{{reg}}  {n + D_{{reg}} \choose D_{{reg}}}^\omega \right),
+\mbox{as } D_{{reg}} \to \infty,
+\end{equation}
+where $2 \leq \omega < 3$ is the linear algebra constant and $D_{{reg}}$ is the \textbf{degree of regularity} of $\langle f_1 ,\ldots,f_{m} \rangle$: $1+\deg\big({\rm HP}(z)\big)$.
+\end{lemma}
+
+\end{frame}
+
+\section{BinaryError-\LWE}
+
+\begin{frame}[allowframebreaks]
+\frametitle{BinaryError-LWE}
+
+If $\mathbf{e}=(e_1,\ldots,e_{\nbeq}) \in  \{0,1\}^{\nbeq}$ and $P(X)=X (X-1)$, then we have $P(e_i) = 0$, for all $i, 1 \leq i \leq \nbeq$.
+
+\vspace{1em}
+
+The secret $\svec\in \Zq^{\nbvar}$ is a solution to:
+\begin{equation}
+\label{agequation_pre}
+f_1=P\big(c_1-\sum_{j=1}^{\nbvar}s_j G_{j, 1}\big)=0, \mbox{  } \ldots, \mbox{  } f_{\nbeq}=P\big(c_n-\sum_{j=1}^{\nbvar}s_j G_{j, \nbvar}\big)=0. 
+\end{equation} 
+
+\vspace{1em}
+
+This is an algebraic system of $\nbeq$ quadratic equations in $\Zq[x_1,\ldots,x_{\nbvar}].$ 
+
+\framebreak
+
+We make the following assumption about the structure of the generated polynomials: 
+
+\begin{assumption}\label{ass:semi-regular}
+Let $(G,\svec \times G+\mathbf{e})=(G,\mathbf{c}) \in \Zq^{\nbvar \times  \nbeq}\times \Zq^{\nbeq}$  be sampled according to $\bLdis$, and let $P(x) = X(X-1)$. We define:
+\begin{equation*}
+\label{agequation-f2}
+f_1=P\big(c_1-\sum_{j=1}^{\nbvar}s_j G_{j,1}\big)=0, \mbox{  } \ldots \mbox{  },f_{\nbeq}=P\big(c_n-\sum_{j=1}^{\nbvar}s_j G_{j,\nbeq}\big)=0.
+\end{equation*}
+It holds that $\langle f_1 ,\ldots,f_{m} \rangle$ is semi-regular. 
+\end{assumption}
+
+\framebreak
+
+\begin{theorem}\label{theo:reg}
+\begin{itemize}
+\item[(i)] Let $\nbeq=C\cdot \nbvar$, with $C >1$, and let $f_1 ,\ldots,f_{\nbeq} \in 
+\Zq[x_1,\ldots,x_{\nbvar}] $ be a semi-regular system of equations. The degree of regularity 
+of $f_1 ,\ldots,f_{\nbeq}$ behaves  asymptotically as
+\begin{eqnarray*}
+\Dreg &=& \left(C-\frac 1 2-\sqrt{C(C-1)}\right)\nbvar - \frac{a_1}{2\big(C(C-1)\big)^{1/6}} \, \nbvar^{\frac 1 3}\\
+      & & -\left(2-\frac{2C-1}{4\big(C(C-1)\big)^{1/2}} \right)+\bigO{\frac{1}{\nbvar^{\frac 1 3}}},  
+\end{eqnarray*}
+where $a_1 \approx 2.3381$ is the largest zero of the classical Airy function.
+\item[(ii)] Let $\nbeq=\nbvar \cdot \log^{1/{\epsilon}}(\nbvar)$, for any constant $\epsilon>0$, or  $\nbeq=\nbvar \log \log \nbvar$. 
+The degree of regularity of $f_1 ,\ldots,f_{\nbeq}$ behaves 
+asymptotically as:
+$$ 
+\Dreg=\frac{\nbvar^2}{8\nbeq}\left(1+o(1)\right).   
+$$
+\end{itemize}
+\end{theorem}
+
+\framebreak
+
+\begin{theorem} \label{theo:bounded_lwe}
+Let $\omega, 2 \leq \omega < 3$, be the linear algebra constant. Under our assumption:
+\begin{itemize}
+\item[(i)] If $\nbeq=\nbvar\left(1+\frac{1}{\log(\nbvar)}\right)$, then there is an algorithm solving {\rm BinaryError}-\LWE{} in
+\begin{eqnarray}\label{cplxgb:0}
+\bigO{n^2 \, 2^{1.37 \,  \omega \, \nbvar}} \textnormal{operations}.    
+\end{eqnarray}
+\dots
+\item[(iv)] If $\nbeq=\bigO{\nbvar \log \log \nbvar}$, in
+\begin{eqnarray}\label{cplxgb:3}
+\bigO{m^2 \, 2^{\frac{\omega \, \nbvar \, \log \log \log \nbvar }{8 \log \log \nbvar}}} \textnormal{operations}.
+\end{eqnarray}
+%\item[(v)] Finally, if $\nbeq=\nbvar \cdot \log^{1/{\epsilon}}(\nbvar)$, for any $\epsilon>0$, in
+%\begin{eqnarray}\label{cplxgb:4}
+%\bigO{m^2 \, 2^{\frac{\omega \, \nbvar \, \log\big(\log^{1/{\epsilon}}(\nbvar)\big)}{8 \log^{1/{\epsilon}}(\nbvar)}}} \textnormal{operations}. 
+%\end{eqnarray}
+\end{itemize}
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Summary}
+
+\begin{itemize}
+  \item Given access to $\nbeq \geq 6.6\, \nbvar $ samples we can solve BinaryError-LWE in time {\Large $$\bigO{n^2 \, 2^{0.344 \, \nbvar}}$$}
+  \item Given access to $m= \bigO{n \log\log n}$ samples we can solve BinaryError-LWE in \cemph{subexponential} time:
+  {\Large $$\bigO{2^{\frac{\omega \, n \, \log \log \log n }{8 \log \log n}}}.$$}
+\end{itemize}
+
+\end{frame}
+
+
+\section{Arora-GB}
+
+\begin{frame}[allowframebreaks]{Arora-GB}
+
+To analyse the complexity of solving \LWE with Arora-Ge and Gröbner bases, we make use of the following simple technical lemma:
+
+\begin{lemma} \label{lemma_succ}
+Let $({\bf a}_1,b_1),\ldots,({\bf a}_m,b_m)$ be elements of $\Fq^n \times \Fq$ sampled according  to $\LWE_{\chi_{\alpha,q}}$. 
+If $C= \sqrt{2 \log(m)}$ then, the equations generated as in \eqref{agequation} vanish with probability at least:
+$$
+p_{\rm g}=1-\sqrt{\frac{1}{\pi \cdot \log(m)}}.
+$$
+\end{lemma} 
+
+\framebreak
+
+We assume that $\sigma = n^{\epsilon}$, with $0 \leq \theta  \leq  \epsilon \leq 1$.
+We consider a number of samples of the following form:
+\begin{eqnarray*}  \label{eq:num}
+\MGB=e^{\gamma_{\theta}} \textnormal{, with } \gamma_{\theta}=n^{2\cdot (\epsilon-\theta)}.
+\end{eqnarray*}
+Note that $\theta=0$ corresponds up to polylog factors to the basic Arora-Ge approach.
+
+\framebreak
+
+We can then deduce the degree $\DGB$ required for  $\MGB=\neper^{\gamma_{\theta}}$ equations. We have to fix $\CGB=\sqrt{2 \cdot \log(\MGB)}=\sqrt{2 \cdot \gamma_{\theta}}$, giving us:
+
+\begin{eqnarray*}
+\DGB & = & 2 \, \sqrt{2 \cdot \log(\MGB)} \cdot \sigma+1 \in \bigO{\sqrt{\log(\MGB)} \cdot \sigma}\\
+& =& \bigO{\sqrt{\gamma_{\theta}} \cdot \sigma} = \bigO{n ^{2\epsilon-\theta}}=\bigO{\gamma_{\theta} \cdot n ^{\theta}}.    
+\end{eqnarray*}
+
+But to ease the analysis below, we further simplify $\DGB$ to: 
+$$
+\DGB \approx \gamma_{\theta} \cdot n ^{\theta} = \log(\MGB)\cdot n ^{\theta}.
+$$ 
+
+\framebreak
+
+Again, our results depend crucially on an assumption about the structure of the generated equations: 
+
+\vspace{1em}
+
+\begin{assumption}\label{ass:arora-ge}
+Let $({\bf a}_1,b_1),\ldots,({\bf a}_{\MGB},b_{\MGB})$ be elements of $\Fq^n \times \Fq$ sampled according to $\LWE_{\chi_{\alpha,q}}$. Let $P(X)=X \prod_{i=1}^{\CGB \cdot \sigma}(X+i)(X-i).$ We define:
+\begin{equation}\label{agequationb}
+f_i=P\big(-b + \sum_{j=1}^{n} (\mathbf{a}_i)_{(j)}x_j\big)=0, \forall i, 1 \leq i \leq  \MGB.
+\end{equation} 
+Then,  $\langle f_1 ,\ldots,f_{m} \rangle$ is semi-regular. %has Hilbert series:
+\end{assumption}
+
+\framebreak
+
+From $\DGB$ and $\MGB$ we now need to establish the degree of regularity.
+
+\vspace{1em}
+
+\begin{lemma}\label{the:lemma:gb}
+Let $A \geq 1$, and $f_1 ,\ldots,f_{m} \in \Zq[x_1,\ldots,x_{\nbvar}] $ be 
+semi-regular polynomials of degree $\frac{n}{A}$, and $\Dreg$ be the degree of regularity of these polynomials. 
+If $m=e^{\frac{\pi \cdot n}{4 \cdot A^2}}$, then it holds that $\Dreg$ behaves asymptotically as 
+$$
+C_A \cdot  n, \mbox{where $C_A$ is a constant which depends on $A$.}
+$$
+\end{lemma}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Complexity}
+
+% \textbf{Arora-Ge} (Linearisation):
+% \begin{center}
+% \Large $\bigO{2^{\,8\,\omega\,\sigma^2\log n( \log n - \log({8\, \sigma^2 \log n}))}}$
+% \end{center}
+% \phantom{under some regularity assumption.}
+
+\textbf{Arora-Ge} (Linearisation) with $\sigma = \sqrt{n}$
+\begin{center}
+\Large $\bigO{2^{\,8\,\omega\,n\log n( \log n - \log({8\, n \log n}))}}$
+\end{center}
+\phantom{under some regularity assumption.}
+
+\textbf{Gröbner Bases} with $\sigma = \sqrt{n}$
+\begin{center}
+\Large $\bigO{2^{\nbvar\big(2.35 \,  \omega +1.13\big)}}$
+\end{center}
+under some regularity assumption.
+\end{frame}
+
+
+\section{Fröberg's Conjecture}
+
+\begin{frame}[allowframebreaks]{Fröberg's Conjecture}
+
+\begin{itemize}
+  \item Our results depend on two similar assumptions, i.e.\ that our systems behave like semi-regular sequences.
+  \item We cannot prove that this holds.
+  \item We \cemph{experimentally} verified our assumptions for up to non-trivial problem sizes.
+  \item We note that our assumptions are related to a famous conjecture in algebraic geometry known as \cemph{Fr\"oberg's conjecture}.
+  \item It states that that a property -- i.e. the rank of some linear map associated to Macaulay matrices is maximal -- holds \cemph{generically}.
+  \item Genericity means that a property holds except for the vanishing set of some polynomial.
+\framebreak
+  \item A matrix has full rank if its determinant is not zero.
+  \item Matrices have full rank except when their determinant polynomial vanishes.
+  \item This happens with low probability by the Schwartz - Zippel - DeMillo - Lipton lemma:
+\begin{lemma}[Schwartz, Zippel, DeMillo, Lipton]\label{sz}
+Let \(\mathbb{K}\) be a  field and \(P\in\mathbb{K}[x_{1},\ldots,x_{n}]\) be a non-zero polynomial. Select \(r_{1},\ldots,r_{n}\) uniformly at random from a finite subset \(\mathcal{X}\) of \(\mathbb{K}\). Then, the probability that \(P(r_{1},\ldots,r_{n})=0\) is less than \(\deg(P)/|\mathcal{X}|\).
+\end{lemma}
+\framebreak
+\item The main difficulty in Fr\"oberg's conjecture is to prove that the determiant polynomial is not always identically zero.
+\item If you try a random example, it will almost always work. But what about as $n$ goes to infinity?
+\item To prove Fr\"oberg's conjecture, we must find \cemph{one} explicit family of equations for which we can be proven semi-regular for any $m$ and $n$. 
+
+\framebreak
+\item Proving our assumptions would provide such family and hence solve Fr\"oberg's conjecture.
+\item Furthermore, any non-trivial partial results on our assumptions would lead to progress on the general Fr\"oberg's conjecture.
+\item Indeed, Fröberg and Hollman already investigated the genericity of squares of linear forms, i.e.\ a problem very close to ours, in order to make progress on Fröberg's conjecture.
+\end{itemize}       
+
+We report some progress towards proving Fr\"oberg conjecture by investigating our assumptions. We prove
+\begin{itemize}       
+\item that the equations $f_1,\ldots,f_m$ generated for BinaryError-\LWE are linearly independent with high probability;
+\item that for BinaryError-\LWE $f_1,\ldots,f_m$ with $m \leq n+\lfloor \frac{n-2}{2} \rfloor$ is semigeneric, i.e.\ $\{x_i \cdot f_j \}_{1 \leq i \leq n}^{1 \leq j \leq n}$ spans a vector space of maximal dimension;
+\item that the assumption holds for BinaryError-\LWE for $m=n+1$ and a sufficiently big field.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{An Example}
+  
+\begin{lemma}\label{ex1}
+For all $i,1 \leq i \leq n$, construct a $n \times \big(n-(i-1)\big)$ matrix $G_i$ as follows. All the coefficients of $G_i$ are zero except: 
+\begin{itemize}
+\item $G_i[i,j]=1$, for all $j, 1\leq j \leq \big(n-(i-1)\big)$. 
+\item  $G_i[j+(i-1),j]=1$, for all $j, 1 \leq j \leq \big( n-(i-1) \big)$.
+\end{itemize}
+Now, let $G^*=G_1 \| G_2 \| \cdots \| G_n$ be a block matrix, $\svec \in \Zq^n$ chosen uniformly at random, and $\mathbf{e} \in \{0,1\}^m$ sampled uniformly. 
+We set $\mathbf{c} =\svec \times G^*+\mathbf{e}$ and $P(x) = X(X-1)$ and define:  
+$$
+f_1=P\big(c_1-\sum_{j=1}^{\nbvar}x_j G^*_{j,1}\big), \mbox{  } \ldots \mbox{  },f_{\nbeq}=P\big(c_{\nbeq}-\sum_{j=1}^{\nbvar}x_j G^*_{j,\nbeq}\big). 
+$$  
+Then, the homogeneous components $f^{{\rm H}}_1 ,\ldots,f^{{\rm H}}_{m}$ of degree $2$ are linearly independent.% with probability $\geq 1-\frac{2m}{q}$.   
+\end{lemma}
+
+\framebreak
+
+For $n=4$, and $m=n(n+1)/2=10$ the matrix $G^*$ is as follows:
+\begin{center}
+$$
+\begin{bmatrix}
+1 & 1 & 1 & 1 &   &   &   &   &   &  \\ 
+  & 1 &   &   & 1 & 1 & 1 &   &   &  \\ 
+  &   & 1 &   &   & 1 &   & 1 & 1 &  \\ 
+  &   &   & 1 &   &   & 1 &   & 1 & 1
+\end{bmatrix}.
+$$
+\end{center}
+
+The generated equations are
+{\small
+\begin{eqnarray*} 
+ 0 &=& x_1^2 + 15\cdot x_1 + 5,\\
+ 0 &=& x_1^2 + 2\cdot x_1\cdot x_2 + x_2^2 + 4,\\
+ 0 &=& x_1^2 + 2\cdot x_1\cdot x_3 + x_3^2 + 10\cdot x_1 + 10\cdot x_3 + 12,\\
+ 0 &=& x_1^2 + 2\cdot x_1\cdot x_4 + x_4^2 + 9\cdot x_1 + 9\cdot x_4 + 3,\\
+ 0 &=& x_2^2 + 5\cdot x_2 + 6,\\
+ 0 &=& x_2^2 + 2\cdot x_2\cdot x_3 + x_3^2 + 4,\\
+ 0 &=& x_2^2 + 2\cdot x_2\cdot x_4 + x_4^2 + 16\cdot x_2 + 16\cdot x_4,\\
+ 0 &=& x_3^2 + 13\cdot x_3 + 8,\\
+ 0 &=& x_3^2 + 2\cdot x_3\cdot x_4 + x_4^2 + 7\cdot x_3 + 7\cdot x_4 + 12,\\
+ 0 &=& x_4^2 + 14\cdot x_4 + 2.
+\end{eqnarray*}}
+
+\framebreak
+
+By performing the reductions, we get: 
+
+{\small
+\begin{eqnarray*} 
+ 0 &=& \cemph{x_1^2} + 15\cdot x_1 + 5,\\
+ 0 &=& \cemph{2\cdot x_1\cdot x_2} + x_2^2 + 2\cdot x_1 + 16,\\
+ 0 &=& \cemph{2\cdot x_1\cdot x_3} + x_3^2 + 12\cdot x_1 + 10\cdot x_3 + 7,\\
+ 0 &=& \cemph{2\cdot x_1\cdot x_4} + x_4^2 + 11\cdot x_1 + 9\cdot x_4 + 15,\\
+ 0 &=& \cemph{x_2^2 + 5\cdot x_2} + 6,\\
+ 0 &=& \cemph{2\cdot x_2\cdot x_3} + x_3^2 + 12\cdot x_2 + 15,\\
+ 0 &=& \cemph{2\cdot x_2\cdot x_4} + x_4^2 + 11\cdot x_2 + 16\cdot x_4 + 11,\\
+ 0 &=& \cemph{x_3^2} + 13\cdot x_3 + 8,\\
+ 0 &=& \cemph{2\cdot x_3\cdot x_4} + x_4^2 + 11\cdot x_3 + 7\cdot x_4 + 4,\\
+ 0 &=& \cemph{x_4^2} + 14\cdot x_4 + 2\\
+\end{eqnarray*}}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Fin}
+\begin{center}
+\large{Questions?}
+
+\vspace{2em}
+
+\end{center}
+\end{frame}
+
+% \begin{frame}[allowframebreaks]{Literature}
+% \bibliographystyle{alpha} 
+% \bibliography{../../../common-latex/crypto.bib}
+% \end{frame}
+
+\end{document}
+
+
