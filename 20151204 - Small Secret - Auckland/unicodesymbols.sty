@@ -1,0 +1,189 @@
+% ------------------------------------------------------------------------------
+% (C) 2012-2013 Olivier Verdier <olivier.verdier@gmail.com>
+% (C) 2015 Martin R. Albrecht <martinralbecht@googlemail.com>
+% ------------------------------------------------------------------------------
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unicodesymbols}[2015/09/01]
+
+\RequirePackage{ifxetex}
+
+\ifxetex
+\defaultfontfeatures{Ligatures=TeX}
+\usepackage{newunicodechar}
+\newunicodechar{α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{γ}{\gamma}
+\newunicodechar{δ}{\delta}
+\newunicodechar{ε}{\varepsilon}
+\newunicodechar{ϵ}{\epsilon}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{θ}{\theta}
+\newunicodechar{ι}{\iota}
+\newunicodechar{κ}{\kappa}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{μ}{\mu}
+\newunicodechar{ν}{\nu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{π}{\pi}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{φ}{\varphi}
+\newunicodechar{χ}{\chi}
+\newunicodechar{ψ}{\psi}
+\newunicodechar{ω}{\omega}
+
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{Δ}{\Delta}
+\newunicodechar{Θ}{\Theta}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{Φ}{\Phi}
+\newunicodechar{Ξ}{\Xi}
+\newunicodechar{Ψ}{\Psi}
+\newunicodechar{Ω}{\Omega}
+
+\newunicodechar{ℵ}{\aleph}
+
+\newunicodechar{≤}{\leq}
+\newunicodechar{≥}{\geq}
+\newunicodechar{≠}{\neq}
+\newunicodechar{≈}{\approx}
+\newunicodechar{≡}{\equiv}
+\newunicodechar{≃}{\simeq}
+
+\newunicodechar{≤}{\leq}
+\newunicodechar{≥}{\geq}
+
+\newunicodechar{∂}{\partial}
+\newunicodechar{∆}{\triangle} % or \laplace?
+
+\newunicodechar{∫}{\int}
+\newunicodechar{∑}{\sum}
+\newunicodechar{Π}{\prod}
+
+\newunicodechar{⊥}{\perp}
+\newunicodechar{∞}{\infty}
+\newunicodechar{∂}{\partial}
+
+\newunicodechar{∓}{\mp}
+\newunicodechar{±}{\pm}
+\newunicodechar{×}{\times}
+
+
+\newunicodechar{⊕}{\oplus}
+\newunicodechar{⊗}{\otimes}
+\newunicodechar{⊞}{\boxplus}
+
+\newunicodechar{∇}{\nabla}
+\newunicodechar{√}{\sqrt}
+
+\newunicodechar{•}{\cdot}
+\newunicodechar{⋅}{\cdot}
+\newunicodechar{∘}{\circ}
+
+\newunicodechar{∧}{\wedge}
+\newunicodechar{∨}{\vee}
+\newunicodechar{¬}{\neg}
+
+\newunicodechar{⟨}{\left\langle}
+\newunicodechar{⟩}{\right\rangle}
+
+\newunicodechar{∀}{\all}
+\newunicodechar{∃}{\exist}
+
+\newunicodechar{↦}{\mapsto}
+\newunicodechar{→}{\rightarrow}
+
+\newunicodechar{∩}{\cap}
+\newunicodechar{∪}{\cup}
+\newunicodechar{⊂}{\subseteq}
+\newunicodechar{⊆}{\subseteq}
+\newunicodechar{⊄}{\nsubseteq}
+\newunicodechar{⊈}{\nsubseteq}
+\newunicodechar{⊃}{\supseteq}
+\newunicodechar{⊇}{\supseteq}
+\newunicodechar{⊅}{\nsupseteq}
+\newunicodechar{⊉}{\nsupseteq}
+\newunicodechar{∈}{\in}
+\newunicodechar{∉}{\notin}
+\newunicodechar{∋}{\ni}
+\newunicodechar{∌}{\notni}
+\newunicodechar{∅}{\emptyset}
+
+\newunicodechar{∖}{\setminus}
+\newunicodechar{†}{\dag}
+\newunicodechar{ℓ}{\ell}
+
+\else
+
+\usepackage[utf8x]{inputenc}
+\SetUnicodeOption{mathletters}
+
+% % some modified characters
+% \DeclareUnicodeCharacter{1FF6}{\ensuremath{\tilde{\omega}}}
+
+% % useful math symbols
+% \DeclareUnicodeCharacter{221A}{\sqrt}
+% \DeclareUnicodeCharacter{2264}{\leq}
+% \DeclareUnicodeCharacter{2265}{\geq}
+% \DeclareUnicodeCharacter{221E}{\infty}
+% \DeclareUnicodeCharacter{2211}{\sum}
+% \DeclareUnicodeCharacter{2208}{\in}
+% \DeclareUnicodeCharacter{2209}{\notin}
+% \DeclareUnicodeCharacter{2202}{\partial}
+% \DeclareUnicodeCharacter{222B}{\int}
+% \DeclareUnicodeCharacter{2148}{\id}  
+% \DeclareUnicodeCharacter{2248}{\approx}  
+% \DeclareUnicodeCharacter{2260}{\neq}  
+% \DeclareUnicodeCharacter{00B1}{\pm}  
+% \DeclareUnicodeCharacter{2A02}{\otimes}
+% \DeclareUnicodeCharacter{2A01}{\oplus}
+% \DeclareUnicodeCharacter{00BD}{\nicefrac{1}{2}}
+% \DeclareUnicodeCharacter{00D7}{\times}
+% \DeclareUnicodeCharacter{00B7}{\cdot}
+% \DeclareUnicodeCharacter{22C5}{\cdot}
+% \DeclareUnicodeCharacter{2190}{\gets}
+% \DeclareUnicodeCharacter{2219}{\ensuremath{\cdot}}
+
+% % the prime
+% \DeclareUnicodeCharacter{2032}{\ensuremath{'}}
+
+% % daggers don't need to be preceded by a '^' anymore
+% \DeclareUnicodeCharacter{2020}{^{\dagger}}
+% \DeclareUnicodeCharacter{1D40}{^{\textnormal{\tiny{T}}}}
+% \DeclareUnicodeCharacter{00B2}{^{2}}
+% \DeclareUnicodeCharacter{00B3}{^{3}}
+% \DeclareUnicodeCharacter{00BD}{\ensuremath{\frac{1}{2}}\xspace}
+
+% % bracket heaven
+% \DeclareUnicodeCharacter{2329}{\langle}
+% \DeclareUnicodeCharacter{232A}{\rangle}
+% \DeclareUnicodeCharacter{27E8}{\langle}
+% \DeclareUnicodeCharacter{27E9}{\rangle}
+% \DeclareUnicodeCharacter{2016}{\|}
+
+% % fun with arrows
+% \DeclareUnicodeCharacter{2192}{\to}
+% \DeclareUnicodeCharacter{21D2}{\implies}
+% \DeclareUnicodeCharacter{21A6}{\mapsto}
+% \DeclareUnicodeCharacter{21A9}{\hookleftarrow}
+
+% % specialized math letters
+% \DeclareUnicodeCharacter{2113}{\ell}
+% \DeclareUnicodeCharacter{210B}{\h}
+% \DeclareUnicodeCharacter{2115}{\bN}
+% \DeclareUnicodeCharacter{211D}{\bR}
+% \DeclareUnicodeCharacter{2102}{\bC}
+% \DeclareUnicodeCharacter{2119}{\Pr}
+% \DeclareUnicodeCharacter{2130}{\sE}
+% \DeclareUnicodeCharacter{2133}{\cM}
+
+% % other notation
+% \DeclareUnicodeCharacter{00B7}{\ensuremath{\cdot}\xspace}
+% \DeclareUnicodeCharacter{2261}{\ensuremath{\equiv}\xspace}
+
+\fi
+
