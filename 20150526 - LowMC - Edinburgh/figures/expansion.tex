@@ -1,0 +1,14 @@
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+  \node[draw, minimum height=1.8cm, minimum width=.7cm, fill=yellow9!50] at (0.5,7.4) (ma) {$m$};
+  \node[draw, minimum size=3.6cm, fill=yellow9!50] at (3.5,6.5) (mb) {$\mathrm{HE_{pk}}(m)$};
+  \draw[->] (ma) -- (mb);
+
+  \node[draw, minimum height=1.8cm, minimum width=0.7cm, fill=lightblue!50] at (0.5,3) (m1) {$m$};
+  \node[draw, fill=yellow9!50] at (0.5,1.5) (k1) {$k$};
+
+  \node[draw, minimum height=0.7cm, minimum width=1.8cm, fill=lightblue!50] at (4.5,2.45) (m2) {$\mathrm{Enc}_k(m)$};
+  \node[draw, minimum height=0.7cm, minimum width=1.8cm, fill=yellow9!50] at (4.5,1.5) (k2) {$\mathrm{HE_{pk}}(k)$};
+  
+  \draw[->] (m1) -- (m2);
+  \draw[->] (k1) -- (k2);
+\end{tikzpicture}

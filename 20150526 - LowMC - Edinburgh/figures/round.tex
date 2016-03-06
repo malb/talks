@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+ [scale=1, every node/.style={scale=1},
+  rounded corners, thick,
+  sbox/.style={draw,fill=lightblue!50,minimum size=0.7cm},
+  affine/.style={draw, fill=lightblue!50, minimum height=0.6cm, minimum width=8.1cm},
+  xor/.style = {
+    draw, circle, inner sep=0cm, minimum size=0.2cm,
+    append after command = {
+      [shorten >=\pgflinewidth, shorten <=\pgflinewidth,]
+      (\tikzlastnode.north) edge (\tikzlastnode.south)
+      (\tikzlastnode.east) edge (\tikzlastnode.west)
+    }
+  }]
+   
+  \foreach \x in {1,2,3,4.4,5.4} {
+    \draw node[sbox]  at (\x,2) (S) {S};
+    \foreach \i in {-1,0,1} \draw (S.south)  ++(0.2*\i,0) -- +(0,-0.35);
+    \foreach \i in {-1,0,1} \draw (S.north)  ++(0.2*\i,0) -- +(0,0.35);
+  }
+  \node at (3.7,2) {$\dots$};
+  \foreach \i in {0,...,4} \draw  (6.2+0.2*\i,2.7) -- +(0,-1.4);
+  \node at (7.3,2) {$\dots$};
+  \foreach \i in {7,...,12} \draw  (6.2+0.2*\i,2.7) -- +(0,-1.4);
+
+  \draw node[affine] at (4.7,1.0) {Affine Layer};
+  
+  \foreach \i in
+      {0,1,2,5,6,7,10,11,12,17,18,19,22,23,24,27,28,29,30,31,34,35,36,37,38,39}
+    {
+      \draw (0.8+0.2*\i,0.7) -- ++(0,-0.6);	
+      \node[xor] at (0.8+0.2*\i,0.4) {};
+    }
+    
+  \draw (9.2,0.4) node (rk) { $k_i$};
+  \draw (rk) -- +(-1,0);
+
+
+%  0.65
+%  8.6+0.15=8.75
+\end{tikzpicture}

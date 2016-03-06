@@ -1,0 +1,37 @@
+\begin{tikzpicture}
+  [scale=0.6, every node/.style={scale=0.6},
+   rounded corners, thick,
+   sbox/.style={draw,fill=lightblue!50,minimum size=0.7cm},
+   affine/.style={draw, lightblue!50, minimum height=0.6cm, minimum width=4.8cm},
+   active/.style ={fill=yellow9!50}]
+   
+   %Draw four Sbox/affine layers
+   \foreach \y in {2,...,4} {
+    \foreach \x in {1,2,3,4} {
+      \draw node[sbox]  at (\x,2*\y+0.35) (S\x_\y) {S};
+      \foreach \i in {-1,0,1} \draw (S\x_\y.north)  ++(0.2*\i,0) -- +(0,0.35);
+      \foreach \i in {-1,0,1} \draw (S\x_\y.south)  ++(0.2*\i,0) -- +(0,-0.35);
+      \foreach \i in {-2,-1,0,1} \draw (5,2*\y+0.35)   ++(0.2*\i,0.7) -- +(0,-1.4);
+      \draw node[affine] at (3,1.0+2*\y+0.35) {A};
+    } 
+  }
+  %Draw first Sbox layer
+  \foreach \y in {2,3,4,5} {
+    \foreach \x in {1,2,3,4} {
+      \draw node[sbox]  at (\x,2*\y+0.35) (S\x_\y) {S};
+      \foreach \i in {-1,0,1} \draw (S\x_\y.south)  ++(0.2*\i,0) -- +(0,-0.35);
+      \foreach \i in {-1,0,1} \draw (S\x_\y.north)  ++(0.2*\i,0) -- +(0,0.35);
+      \foreach \i in {-2,-1,0,1} \draw (5,2*\y+0.35)   ++(0.2*\i,0.7) -- +(0,-1.4);
+    } 
+  }
+  %Redraw active nodes  
+  \draw node[sbox,active] at (S2_5) {S};
+  \draw node[sbox,active] at (S1_4) {S};
+  \draw node[sbox,active] at (S2_4) {S};
+  \draw node[sbox,active] at (S4_4) {S};
+  \draw node[sbox,active] at (S3_3) {S};
+  \draw node[sbox,active] at (S1_2) {S};
+  \draw node[sbox,active] at (S4_2) {S};
+  % \draw node[sbox,active] at (S2_1) {S};
+  % \draw node[sbox,active] at (S4_1) {S};
+\end{tikzpicture}
