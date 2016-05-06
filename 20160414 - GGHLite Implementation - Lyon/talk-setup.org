@@ -1,0 +1,10 @@
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [presentation,smaller]
+#+LaTeX_HEADER: \input{talk-header}
+#+AUTHOR: Martin R. Albrecht
+#+OPTIONS: H:2 toc:t num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %4BEAMER_ACT(Act) %4BEAMER_COL(Col) %4BEAMER_OPT(Opt)

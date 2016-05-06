@@ -1,0 +1,746 @@
+% Created 2016-04-14 Thu 12:27
+\documentclass[presentation,smaller]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{listings}
+\input{talk-header}
+\input{ggh-header}
+\usetheme{default}
+\author{Martin R. Albrecht}
+\date{2016-04-14}
+\title{Implementing Operations in Power-of-2 Cyclotomic Rings}
+\subtitle{Lattice Meeting}
+\hypersetup{
+ pdfauthor={Martin R. Albrecht},
+ pdftitle={Implementing Operations in Power-of-2 Cyclotomic Rings},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 24.5.1 (Org mode 8.3.4)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+
+\section{GGH-like Multilinear Maps}
+\label{sec:orgheadline13}
+
+\begin{frame}[label={sec:orgheadline1}]{GGH-like Multilinear Maps}
+\begin{itemize}
+\item In 2013, Garg, Gentry and Halevi \footfullcite{EC:GarGenHal13} proposed a construction, relying on ideal lattices, of a graded encoding scheme that approximates a cryptographic multilinear map.
+
+\item Shortly after, this construction was improved by Langlois, Stéhle and Steinfeld \footfullcite{EC:LanSteSte14}.
+
+\item Implementing GGH-like schemes naively would not allow instantiating it for non-trivial parameter sizes.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline2}]{Paper}
+\fullcite{AC:ACLL15}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline3}]{Wait, Aren’t Those All Broken?}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./kitten-1.jpg}
+
+\url{http://malb.io/are-graded-encoding-schemes-broken-yet.html}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline4}]{Attacks I}
+\begin{block}{Key Exchange}
+\fullcite{EPRINT:HuJia15aa}
+\end{block}
+
+\begin{itemize}
+\item Polynomial-time attack using low-level encodings of zero.\footnote{Sage implementation: \url{https://martinralbrecht.wordpress.com/2015/04/13/}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline5}]{Attacks II}
+\begin{block}{Attacks without Low-Level Encodings of Zero}
+\fullcite{EPRINT:CheJeoLee16}
+
+\fullcite{EPRINT:AlbBaiDuc16}
+\end{block}
+
+\begin{itemize}
+\item Polynomial-time attack for large levels of multilinearity \(κ\) without low-level encodings of zero.
+\item Subexponential attack for large levels of multilinearity \(κ\) without low-level encodings of zero without using the zero-testing parameter.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline6}]{Attacks III}
+\begin{block}{Indistinguishability Obfuscation}
+\fullcite{EPRINT:MilSahZha16}
+\end{block}
+
+\begin{itemize}
+\item Polynomial-time attack on several iO constructions \footfullcite{FOCS:GGHRSW13} \footfullcite{EC:BGKPS14} \footfullcite{CCS:AGIS14}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline7}]{What good is an implementation of GGH?}
+GGH-like graded encodings schemes might be broken, but designers of lattice-based schemes might still be tempted to write: “Sample \(g \hookleftarrow D_{R, σ}\) until \({\mathcal{I}}= (g)\) is a prime ideal” or “Sample \(f \hookleftarrow D_{(g)+c, σ}\).“
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline8}]{GGHLite}
+\begin{itemize}
+\item We work in the \(m\)-th cyclotomic ring for \(m\) a power of two.
+\item It has degree \(n=m/2\) and we consider the representation \(R ≃ \Z[X]/(x^n+1)\).
+\item We also consider \(R_q ≃ \Z_q[X]/(x^n+1)\) and \(R_g ≃ \Z[X]/(x^n+1,g)\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline9}]{GGHLite: Instance Generation}
+\begin{itemize}
+\item \textbf{Instance generation.} Given security parameter \(λ\) and multilinearity parameter \(κ\), determine scheme parameters \(n\), \(q\), \(σ\), \(σ'\), \(ℓ_{g^{-1}}\), \(ℓ_b\), \(ℓ\) as in GGHLite \footfullcite{EC:LanSteSte14}. Then proceed as follows:
+
+\begin{itemize}
+\item Sample \(g \hookleftarrow D_{R, σ}\) until \(\|g^{-1}\| ≤ ℓ_{g^{-1}}\) and \({\mathcal{I}}= (g)\) is a \alert{prime ideal}. Define encoding domain \(R_g = R/\ideal{g}\).
+
+\item Sample \(z_i \hookleftarrow  U(R_q)\) for all \(0 < i ≤ \kappa\).
+
+\item Sample \(h \hookleftarrow  D_{R, \sqrt{q}}\) s.t. \(h\) and \(g\) are \alert{co-prime} and define the zero-testing parameter \(\pzt = \mmod{\frac{h}{g} \prod_{i=1}^κ z_i}\).
+
+\item Return public parameters \({\sf params}=(n,q,\ell)\) and \(\pzt\).
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline10}]{GGHLite: Encoding}
+\begin{itemize}
+\item \textbf{Encode at level-$0$.} Compute a \alert{small representative} \(e' = \mmod[g]{e}\) and \alert{sample an element} \(e'' \hookleftarrow D_{e'+{\mathcal{I}},σ'}\). Output \(e''\).
+
+\item \textbf{Encode in group.} Given parameters \({\sf params}\), \(z_i\) and a level-\(0\) encoding \(e \in R\), output \(\mmod{e/z_i}\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline11}]{GGHLite: Arithmetic \& Zero-Testing}
+\begin{itemize}
+\item \textbf{Adding encodings.} Given encodings \(u_1 = \mmod{c_1/\left(\prod_{i \in S} z_i\right)}\) and \(u_2 = \mmod{c_2/\left(\prod_{i ∈ S} z_i\right)}\) with \(S ⊆ \{1,\dots, κ\}\):
+
+\begin{itemize}
+\item Return \(u = \mmod{u_1 + u_2}\), an encoding of \(\mmod{c_1+c_2}\) in the group \(S\).
+\end{itemize}
+
+\item \textbf{Multiplying encodings.} Let \(S_1 ⊂ [κ]\), \(S_2 ⊂ [ κ ]\) with \(S_1 ∩ S_2 = ∅\), given an encoding \(u_1 = \mmod{c_1/\left(\prod_{i \in S_1} z_i\right)}\) and an encoding \(u_2 = \mmod{c_2/\left(\prod_{i \in S_2} z_i\right)}\):
+
+\begin{itemize}
+\item Return \(u = \mmod{u_1 · u_2}\), an encoding of \(\mmod{c_1 · c_2}\) in \(S_1 ∪ S_2\).
+\end{itemize}
+
+\item \textbf{Zero testing.} Given parameters \({\sf params}\), a zero-testing parameter \(\pzt\), and an encoding \(u = \mmod{c/\left(\prod_{i=0}^{κ-1} z_i\right)}\) in the group \([\kappa]\), return \(1\) if \(\|\mmod{\pzt u}\|_{\infty} < q^{3/4}\) and \(0\) else.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline12}]{liboz ⊂ gghlite-flint}
+ \lstset{language=Python,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+gghlite-flint
+|- applications   # 0.9k benchmarks, high-level applications, …
+|- dgs            # 1.2k discrete Gaussian sampling over the Integers
+|- dgsl           # 0.7k discrete Gaussian sampling over lattices
+|- flint          # 250k we rely on flint
+|- gghlite        # 1.5k instance generation, zero testing …
+|- oz             # 2.2k operations in Z[x]/(x^n+1)
+|- tests          # 1.1k tests!
+\end{lstlisting}
+
+\begin{center}
+\url{https://bitbucket.org/malb/gghlite-flint}\\
+\url{https://bitbucket.org/malb/dgs}
+\end{center}
+\end{frame}
+
+\section{Multiplication}
+\label{sec:orgheadline19}
+
+\begin{frame}[label={sec:orgheadline14}]{Options}
+\begin{itemize}
+\item Naive multiplication takes \(\bigO{n^2}\).
+
+\item Asymptotically fast multiplication:
+\begin{itemize}
+\item Reduce to multiplication in \(\Z[X]\)
+\item Schönehage-Strassen algorithm for multiplying large integers in \(\bigO{n \log n \log\log n}\).
+\item This is the strategy implemented in FLINT.
+\item FLINT has highly optimised implementation of the Schönehage-Strassen algorithm.
+\end{itemize}
+
+\item We can also achieve \(\bigO{n\log n}\) by the Number-Theoretic Transform.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline15}]{Negative Wrapped Convolution}
+\begin{theorem}[Negative Wrapped Convolution]
+Let \(ω_n\) be an \(n\)th root of unity in \(\Zq\) and \(φ^2 = \omega_n\). Let
+\[a = \sum_{i=0}^{n-1} a_i X^i \textnormal{ and } b = \sum_{i=0}^{n-1} b_i X^i \in \Zq[X]/(\cycf).\]
+Let \(c = a ⋅ b \in \Zq[X]/(\cycf)\) and let
+\[\overline{a} = (a_0, φa_1, \dots, φ^{n-1}a_{n-1})\]
+and define \(\overline{b}\) and \(\overline{c}\) analogously. Then
+\[\overline{c} = 1/n \cdot \NTT_{ω_n}^{-1}(\NTT_{ω_n}(\overline{a})\odot \NTT_{ω_n}(\overline{b})).\]
+\end{theorem}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline16}]{NTT over machine words: Bit Reversal}
+ \lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+void _nmod_vec_oz_ntt(mp_ptr rop, const mp_ptr op, const mp_ptr w,
+                      const size_t n, const nmod_t q) {
+  const size_t k = n_flog(n,2);
+
+  mp_ptr a = _nmod_vec_init(n);
+
+  for (unsigned int i = 0; i < n; i++) {
+    unsigned int r;
+    r = (bit_reverse_table_256[i & 0xff] << 16) | \
+      (bit_reverse_table_256[(i >>  8) & 0xff] << 8) | \
+      (bit_reverse_table_256[(i >> 16) & 0xff]);
+    r >>= (24 - k);
+    a[r] = op[i];
+  }
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline17}]{NTT over machine words: main loop}
+ \lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+  mp_ptr b = _nmod_vec_init(n);
+
+  const double ninv = n_precompute_inverse(q.n);
+  for(size_t i=0; i<k; i++) {
+    const mp_limb_t tkm = ~(((1UL)<<(k-1-i)) - 1);
+    for(size_t j=0; j<n/2; j++) {
+      const size_t pij = j & tkm;
+      mp_limb_t tmp = n_mulmod_precomp(a[2*j+1], w[pij], q.n, ninv);
+      b[j]      = n_addmod(a[2*j], tmp, q.n);
+      b[j+n/2]  = n_submod(a[2*j], tmp, q.n);
+    }
+    if(i!=k-1)
+      _nmod_vec_set(a, b, n);
+  }
+  _nmod_vec_set(rop, b, n);
+  _nmod_vec_clear(b);
+  _nmod_vec_clear(a);
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline18}]{Avoiding Conversion}
+\begin{itemize}
+\item If we do many operations in \(\Zq[X]/(\cycf)\) we can avoid repeated conversions between coefficient and “evaluation” representation \(\left(f(1),f(ω_n),\dots,f(ω_n^{n-1})\right)\)
+\item We convert encodings to their evaluation representation once on creation
+\item We convert back only when running extraction.
+\item This reduces the amortised cost from \(\bigO{n \log n}\) to \(\bigO{n}\).
+\end{itemize}
+\end{frame}
+
+
+\section{Computing Algebraic Norms}
+\label{sec:orgheadline25}
+
+\begin{frame}[label={sec:orgheadline20}]{Computing Algebraic Norms: Resultants}
+\begin{itemize}
+\item During instance generation we have to compute the norm of \(g\).
+\item We can compute norms in \(\Z[X]/(\cycf)\) by observing that \[\norm{f} = \res(f,\cycf).\]
+\end{itemize}
+
+\note{:B\(_{\text{note}}\):
+Let \(β=q(α)\) where \(q(X)=\sum^{n−1}_{i=0} b_i X^i\) and all \(b_i ∈ \QQ\). Represent \(p(X)=∏^{n}_{i=1}(X−α_i)\) where the \(α_i\) are \(α\) and its conjugates. Then \(β_i=q(α_i)\) are \(β\) and its conjugates. By definition of the norm, \[N(β)=∏_{i=1}^n β_i =∏_{i=1}^n q(α_i) = \res(p,q).\]}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline21}]{Multi-modular Resultants}
+\begin{itemize}
+\item The usual strategy for computing resultants over the integers is to use a multi-modular approach.
+\item We compute resultants modulo many small primes \(q_i\) and then combine the results using the Chinese Remainder Theorem.
+\item Resultants modulo a prime \(q_i\) can be computed in \(\bigO{M(n}\log n)\) operations where \(M(n)\) is the cost of one multiplication in \(\Z_{q_i}[X]/(\cycf)\).
+\item Overall cost \(\bigO{n \log^2 n}\) without specialisation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline22}]{Faster Resultants}
+\begin{itemize}
+\item \(\res(f,\cycf) \bmod q_i\) can be rewritten as \[\prod_{(\cycf)(x) = 0} f(x) \bmod q_i,\] i.e. as evaluating \(f\) on all roots of \(\cycf\).
+
+\item Picking \(q_i\) such that \(q_i \equiv 1 \bmod 2n\) this can be accomplished using the NTT reducing the cost mod \(q_i\) to \(\bigO{M(n})\) saving a factor of \(\log n\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline23}]{Source Code: Main Loop}
+ \lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+void _fmpz_poly_oz_ideal_norm(fmpz_t norm, const fmpz_poly_t f,
+                              const long n) {
+  …
+#pragma omp parallel for
+  for (i = 0; i<num_primes; i++) {
+    nmod_t mod;
+    nmod_init(&mod, parr[i]);
+
+    const int id = omp_get_thread_num();
+    /* reduce polynomials modulo p */
+    _fmpz_vec_get_nmod_vec(a[id], F, n, mod);
+    /* compute resultant over Z/pZ */
+    rarr[i] = _nmod_vec_oz_resultant(a[id], n, mod);
+    flint_cleanup();
+  }
+  …
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline24}]{Souce Code: Resultants mod \(q ≡ 1 \bmod 2n\)}
+ \lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+mp_limb_t _nmod_vec_oz_resultant(const mp_ptr a, long n, nmod_t q) {
+  const mp_limb_t w_ = _nmod_nth_root(2*n, q.n);
+  mp_ptr w = _nmod_vec_init(2*n);
+  mp_ptr t = _nmod_vec_init(2*n);
+
+  _nmod_vec_oz_set_powers(w, 2*n, w_, q);
+  _nmod_vec_oz_ntt(t, a, w, 2*n, q);
+
+  mp_limb_t acc = 1;
+  for(int i=1; i<2*n; i+=2)
+    acc = n_mulmod2_preinv(acc, t[i], q.n, q.ninv);
+
+  _nmod_vec_clear(w);
+  _nmod_vec_clear(t);
+  return acc;
+}
+\end{lstlisting}
+\end{frame}
+
+
+\section{Primality}
+\label{sec:orgheadline34}
+
+\begin{frame}[fragile,label={sec:orgheadline26}]{Checking Primality}
+ To check if \((g)\) is prime, compute the norm and check if prime. This is a sufficient but not necessary condition.
+
+\lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+int fmpz_poly_oz_ideal_is_probaprime(const fmpz_poly_t f,
+                                     const long n,
+                                     const mp_limb_t *primes) {
+    …
+    fmpz_t norm;
+    fmpz_init(norm);
+    fmpz_poly_oz_ideal_norm(norm, f, n, 0);
+    r = fmpz_is_probabprime(norm);
+    fmpz_clear(norm);
+    …
+  return r;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline27}]{Ruling out Common Factors Quickly}
+ Before computing resultants, check if \(\res(g,\cycf) ≡ 0 \bmod q_i\) for several "interesting" primes \(q_i\).
+
+\lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+int fmpz_poly_oz_ideal_is_probaprime(const fmpz_poly_t f,
+                                     const long n,
+                                     const mp_limb_t *primes) {
+  int r = fmpz_poly_oz_ideal_not_prime_factors(f, n, primes);
+  if (r) {
+    fmpz_t norm;
+    fmpz_init(norm);
+    fmpz_poly_oz_ideal_norm(norm, f, n, 0);
+    r = fmpz_is_probabprime(norm);
+    fmpz_clear(norm);
+  }
+  return r;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline28}]{Ruling out Common Factors Quickly}
+ \lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+int fmpz_poly_oz_ideal_not_prime_factors(const fmpz_poly_t f, long n,
+                                         const mp_limb_t *primes) {
+  nmod_poly_t a[num_threads], b[num_threads];
+  int r[num_threads];
+
+  for(size_t i=0; i<k; i+=num_threads) {
+    if (k-i < (unsigned long)num_threads)
+      num_threads = k-i;
+#pragma omp parallel for
+    for (int j=0; j<num_threads; j++) {
+      mp_limb_t p = primes[1+i+j];
+      fmpz_poly_get_nmod_poly(a[j], f);
+      r[j] = nmod_poly_oz_resultant(a[j], n);
+    }
+    for(int j=0; j<num_threads; j++)
+      if (r[j] == 0)
+        return r[0];
+  }
+  return r[0];
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline29}]{Common Factors}
+ These primes are \(2\) and then all primes up to some bound with \(q_i \equiv 1 \bmod n\) because these occur with good probability as factors.
+
+\lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+int _gghlite_nsmall_primes(const gghlite_params_t self) {
+  /* we try about 1% small primes first, where 1% relates to the total
+     number of primes needed for multi-modular result */
+  const long n = self->n;
+  int nsp = ceil((log2(_gghlite_sigma(n)) + log2(n)/2.0)
+                 * n/100.0/(FLINT_BITS -1));
+  if (nsp < 20)
+    nsp = 20;
+  return nsp;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline30}]{Timings}
+\begin{center}
+\begin{tabular}{rrr}
+\hline
+\(n\) & \(\log σ\) & wall time\\
+\hline
+1024 & 15.1 & 0.54s\\
+2048 & 16.2 & 3.03s\\
+4096 & 17.3 & 20.99s\\
+32768 & 20.4 & 1834.99s\\
+\hline
+\end{tabular}
+
+\end{center}
+
+Average time of checking primality of a single \((g)\) on Intel Xeon CPU E5--2667 v2 3.30GHz with 256GB of RAM using 16 cores.
+\end{frame}
+
+
+\begin{frame}[label={sec:orgheadline31}]{Verifying Co-Primality}
+\begin{itemize}
+\item When re-randomisation elements are required, then it is necessary that they generate all of \(\ideal{g}\), i.e. \[(\b[1]{1},\b[2]{1}) = (g).\]
+\item When \(\b[i]{1} = \bt[i]{1}·g\) for \(0 < i \leq 2\) then this is equivalent to \[(\bt[1]{1}) + (\bt[2]{1}) = \Z[X]/(\cycf).\]
+\item We check the sufficient but not necessary condition \[\gcd(\res(\bt[1]{1},X^n+1),\, \res(\bt[2]{1},X^n+1)) = 1,\] i.e. if the respective ideal norms are co-prime.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline32}]{Avoiding Resultants}
+\begin{itemize}
+\item Perform this check for every candidate pair \((\bt[1]{1},\bt[2]{1})\).
+\item Compute two resultants and their gcd: \alert{expensive}.
+\item But \[\gcd(\res(\bt[1]{1}, X^n+1),\, \res(\bt[2]{1},X^n+1)) \neq 1\] when \[\res(\bt[1]{1},X^n+1) = 0 = \res(\bt[2]{1},X^n+1) \bmod q_i\] for any modulus \(q_i\).
+\end{itemize}
+
+➡ Check this condition for several “interesting” primes and resample if this condition holds.
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline33}]{Avoiding Resultants}
+\begin{itemize}
+\item After having ruled out small common prime factors it is quite unlikely that the gcd of the norms is not equal to one.
+\item With good probability we will perform this expensive step only once as a final verification.
+\end{itemize}
+
+\begin{block}{Improvement}
+A possible strategy is to sample \(m>2\) re-randomisers \(\b[i]{1}\) and to apply bounds on the probability of \(m\) elements \(\bt[i]{1}\) sharing a prime factor after excluding small prime factors.
+\end{block}
+\end{frame}
+
+
+\section{Inverting in \(\Q[X]/(\cycf)\)}
+\label{sec:orgheadline42}
+
+\begin{frame}[label={sec:orgheadline35}]{GGH Motivation}
+Instance generation relies on inversion in \(\Q[X]/(\cycf)\).
+
+\begin{enumerate}
+\item when sampling \(g\) we have to check that the norm of its inverse is bounded by \(ℓ_g\).
+\item To set up our discrete Gaussian samplers we need to run many inversions in an iterative process.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline36}]{Inverting in \(\Q[X]/(\cycf)\)}
+\begin{itemize}
+\item The core idea \footfullcite{ICALP:BDMM98} is similar to the FFT, i.e. to reduce the inversion of \(f\) to the inversion of an element of degree \(n/2\).
+
+\item Since \(n\) is even, \(f(X)\) is invertible modulo \(\cycf\) if and only if \(f(-X)\) is also invertible.
+
+\item By setting \[F(X^2) = f(X)f(-X) \bmod{\cycf},\] the inverse \(f^{-1}(X)\) of \(f(X)\) satisfies
+\end{itemize}
+\[F(X^2)\,f^{-1}(X) = f(-X) \bmod{\cycf}.\]
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline37}]{Inverting in \(\Q[X]/(\cycf)\)}
+\begin{itemize}
+\item Let \[f^{-1}(X) = g(X) = G_e(X^2) + X G_o(X^2)\] and \[f(-X) = F_e(X^2) + X F_o(X^2).\]
+
+\item We obtain \[F(X^2)(G_e(X^2) + X G_o(X^2)) = F_e(X^2) + X F_o(X^2) \bmod{\cycf}\] or equivalently
+\begin{eqnarray*}
+F(X^2) G_e(X^2) &=& F_e(X^2) \pmod{\cycf},\\
+F(X^2) G_o(X^2) &=& F_o(X^2) \pmod{\cycf}
+\end{eqnarray*}
+
+\item Invert \(f(X)\) by inverting \(F(X^2)\) and multiplying at degree \(n/2\).
+\item Recursively call the inversion of \(F(Y)\) modulo \((X^{n/2}+1)\) by setting \(Y=X^2\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline38}]{GGH Motivation Revisited}
+Instance generation relies on inversion in \(\Q[X]/(\cycf)\).
+
+\begin{enumerate}
+\item when sampling \(g\) we have to check that the norm of its inverse is bounded by \(ℓ_g\).
+\item To set up our discrete Gaussian samplers we need to run many inversions in an iterative process.
+\end{enumerate}
+
+\begin{block}<2->{Approximates Suffice}
+In the first case we only need to estimate the size of \(g^{-1}\) and in the second case inversion is a subroutine of an approximation algorithm.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline39}]{Truncation}
+ \lstset{language=C,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+void fmpq_poly_truncate_prec(fmpq_poly_t op, const mp_bitcnt_t prec) {
+  mpq_t *tmp_q = (mpq_t*)calloc(fmpq_poly_length(op), sizeof(mpq_t));
+  mpf_t tmp_f; mpf_init2(tmp_f, prec);
+
+  for (int i=0; i<fmpq_poly_length(op); i ++) {
+    mpq_init(tmp_q[i]);
+    fmpq_poly_get_coeff_mpq(tmp_q[i], op, i);
+    mpf_set_q(tmp_f, tmp_q[i]);
+    mpq_set_f(tmp_q[i], tmp_f);
+  }
+  fmpq_poly_set_array_mpq(op, (const mpq_t*)tmp_q, fmpq_poly_length(op));
+  …
+}
+\end{lstlisting}
+
+Calling \texttt{fmpq\_poly\_set\_array\_mpq} instead of setting each coefficient one-by-one avoids repeated GCD computations.
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline40}]{Algorithm}
+ \begin{algorithmic}
+  \IF{$n=1$}
+  \STATE $g_0 \gets f_0^{-1}$
+  \ELSE
+  \STATE $F(X^2)\gets f(X)f(-X) \bmod \cycf$
+  \STATE $\tilde F(Y) = F(Y)$ \alert{truncated} to {\tt prec} bits of precision
+  \STATE $G(Y)\gets \textnormal{InverseMod}(\tilde F(Y),q,n/2)$
+  \STATE Set $F_e(X^2), F_o(X^2)$ such that $f(-X) = F_e(X^2)+X F_o(X^2)$
+  \STATE $T_e(Y),\ T_o(Y) \gets G(Y)· F_e(Y),\ G(Y)· F_o(Y)$
+  \STATE $f^{-1}(X)\gets T_e(X^2) + X T_o(X^2)$
+  \STATE $\tilde f^{-1}(X) = f^{-1}(X)$ \alert{truncated} to {\tt prec} bits of precision
+  \RETURN $\tilde f^{-1}(X)$
+  \ENDIF
+\end{algorithmic}
+
+Approximate inverse of \(f(X) \mod \cycf\) using \texttt{prec} bits of precision
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline41}]{Timings}
+\begin{center}
+\begin{tabular}{rrrrrr}
+\hline
+\(n\) & \(\log σ\) & xgcd & 160 & 160iter & \(\infty\)\\
+\hline
+4096 & 17.2 & 234.1s & 0.067s & 0.073s & 121.8s\\
+8192 & 18.3 & 1476.8s & 0.195s & 0.200s & 755.8s\\
+\hline
+\end{tabular}
+
+\end{center}
+
+Inverting \(g \sample D_{\Z^n,σ}\) with FLINT's extended Euclidean algorithm ("xgcd"), our implementation with precision 160 ("160"), iterating our implementation until \(\Vert \tilde f^{-1}(X) · f(X) - 1\Vert < 2^{-160}\) ("160iter") and our implementation without truncation ("\(\infty\)") on Intel Core i7--4850HQ CPU at 2.30GHz, single core.
+\end{frame}
+
+
+\section{Small Remainders}
+\label{sec:orgheadline46}
+
+\begin{frame}[label={sec:orgheadline43}]{Small Remainders: Motivation}
+\begin{itemize}
+\item The Jigsaw Generator \footfullcite{FOCS:GGHRSW13} takes as input elements \(a_i\) in \(\Z_p\) where \(p = \norm{{\mathcal{I}}}\) and produces encodings with respect to some \(S_i\).
+\item This algorithm produces some small representative of the coset \(a_i\) modulo \(\ideal{g}\) from large integers of size \(\approx {(σ\sqrt{n})}^n\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline44}]{Small Remainders: HD}
+\begin{itemize}
+\item We can use Babai's trick and that \(g\) is small, i.e. compute
+\[a_i - g ⋅ \lfloor g^{-1} ⋅ a_i \rceil \textnormal{ in } \Q[X]/(\cycf)\]
+\item To produce sufficiently small elements, we need \(g^{-1}\) either exactly or with high precision.
+\item Computing such a high quality approximation of \(g^{-1}\) is prohibitively expensive.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline45}]{Small Remainders: SD}
+\begin{enumerate}
+\item Rewrite \(a_i\) as \[a_i = \sum_{j=0}^{\lceil \log_2(a_i)/B\rceil} 2^{B⋅j}\cdot a_{ij}\] where \(a_{ij} < 2^B\) for some \(B\).
+\item Compute small representatives for all \(2^{B⋅j}\) and \(a_{ij}\) using an approximation of \(g^{-1}\) with precision \(B\).
+\item Multiply small representatives for \(2^{B⋅j}\) and \(a_{ij}\) and add up their products.
+\end{enumerate}
+
+This produces a somewhat short element which we then reduce using approximation of \(g^{-1}\) with precision \(B\) until its size does not decrease any more.
+\end{frame}
+
+
+\section{Discrete Gaussians}
+\label{sec:orgheadline53}
+
+\begin{frame}[label={sec:orgheadline47}]{Discrete Gaussian Sampling}
+\begin{itemize}
+\item We need to sample from the discrete Gaussian \(D_{(g),σ',c}\) where \(c\) is a small representative of a coset of \((g)\).
+
+\item Fundamental building block is sampler over the Integers.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,label={sec:orgheadline48}]{\url{https://bitbucket.org/malb/dgs}}
+ \begin{itemize}
+\item Discrete Gaussian sampler over the integers for arbitrary precision using \texttt{MPFR} and \texttt{double} precision.
+\item Implements rejection sampling from a uniform distribution with and without table (“online”) lookups \footfullcite{STOC:GenPeiVai08} and Ducas et al's sampler which samples from \(D_{\Z,kσ_2}\) where \(σ_2\) is a constant \footfullcite{C:DDLL13}.
+\item Implementation automatically chooses the best algorithm based on \(σ\), \(c\) and \(\tau\) (tail cut).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline49}]{Timings}
+\begin{center}
+\begin{tabular}{l|rr|rr|rr|}
+algorithm & \(σ\) & \(c\) & prec & samp./\(s\) & prec & samp./\(s\)\\
+\hline
+tabulated & 10000 & 1.0 & 53 & 660.000 & 160 & 310.000\\
+tabulated & 10000 & 0.5 & 53 & 650.000 & 160 & 260.000\\
+online & 10000 & 1.0 & 53 & 414.000 & 160 & 9.000\\
+online & 10000 & 0.5 & 53 & 414.000 & 160 & 9.000\\
+Alg 12 \cite{C:DDLL13} & 10000 & 1.0 & 53 & 350.000 & 160 & 123.000\\
+\end{tabular}
+
+\end{center}
+
+Example timings for discrete Gaussian sampling over \(\Z\) on Intel Core i7--4850HQ CPU at 2.30GHz, single core.
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline50}]{Sampling from \(D_{(g),σ',0}\)}
+\begin{itemize}
+\item Implemented naively this takes \(\bigO{n^3 \log n}\) operations even if we ignore issues of precision.
+\item Following Léo’s thesis \footfullcite{PhD:Ducas13}, we implemented a variant of Peikert’s sampler \footfullcite{C:Peikert10}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline51}]{Sampling from \(D_{(g),σ',0}\)}
+\begin{enumerate}
+\item Observe that \[D_{(g),σ',0} = g ⋅ D_{R,σ'· g^{-T}}\]
+
+\item Compute approximate square-root \(\sqrt[appr]{\varSigma_2}\) of \[\varSigma_2 = σ'^2 ⋅ g^{-T} ⋅ g^{-1} - r^2 \textnormal{ with } r=2⋅ \lceil \sqrt{\log n}\, \rceil\]
+
+\item Sample a vector \(x \sample {\mathbb{R}}^n\) from a standard normal distribution and interpret it as a polynomial in \(\Q[X]/(\cycf)\).
+
+\item Compute \(y = \sqrt[appr]{\varSigma_2} \cdot x\) in \(\Q[X]/(\cycf)\) and return \(g ⋅ (\lfloor y \rceil_r)\), where \(\lfloor y \rceil_r\) denotes sampling a vector in \(\Z^n\) where the \(i\)-th component follows \(D_{\Z,r,y_i}\).
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline52}]{Sampling from \(D_{(g),σ',0}\): Sqrt}
+\begin{enumerate}
+\item Compute an approximate square root of \[\varSigma_2' = g^{-T} \cdot g^{-1}\] up to \(λ\) bits of precision.
+\begin{itemize}
+\item Precision: \(\log(n) + 4\,(\log (\sqrt{n}‖σ‖))\) bits.
+\item If square root does not converge, double precision and start over.
+\end{itemize}
+
+\item Use this approximate square-root, scaled appropriately, as the initial value from which to start computing a square-root of \[\varSigma_2 = \alert{σ'^2} ⋅ g^{-T} ⋅ g^{-1} \alert{- r^2} \textnormal{ with } r=2⋅ \lceil \sqrt{\log n}\, \rceil\]
+
+\item Terminate when the square is within distance \(2^{-2λ}\) to \(\varSigma_2\).
+
+\item Converges quickly because initial candidate close to target.
+\end{enumerate}
+\end{frame}
+
+
+\section{Approximate Square Roots}
+\label{sec:orgheadline60}
+
+\begin{frame}[label={sec:orgheadline54}]{Strategy}
+\begin{itemize}
+\item For some input element \(\varSigma\) we want to compute some element \(\sqrt[appr]{\varSigma} \in \Q[X]/(\cycf)\) such that \(\Vert \sqrt[appr]{\varSigma}⋅\sqrt[appr]{\varSigma} - \varSigma \Vert < 2^{-2λ}\).
+\item We use iterative methods which iteratively refine the approximation of the square root similar to Newton's method.\footfullcite{PhD:Ducas13}
+\item Computing approximate square roots of matrices is a well studied research area with many algorithms known in the literature.\footfullcite{Higham97}
+\item All algorithms with global convergence invoke approximate inversions in \(\Q[X]/(\cycf)\) for which we call our inversion algorithm.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline55}]{Iterated Methods}
+\begin{description}
+\item[{Babylonian}] only one inversion, which allows lower precision.
+\item[{Denman-Beavers}] converges faster in practice and can be parallelised on two cores.\footfullcite{DenBea76}
+\item[{Padé iteration}] arbitrarily many cores, but workload on each core is greater than Denman-Beavers.\footfullcite{Higham97} Only better for us when more than 8 cores were used.
+\end{description}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline56}]{Rapid Convergence}
+\begin{itemize}
+\item Quadratic convergence does not assure rapid convergence in practice because error can take many iterations to become small enough.
+\item Speed-up convergence by scaling the operands appropriately in each loop.\footfullcite{Higham97}
+\item Common scaling scheme: scale by the determinant, i.e. \(\res(f,\cycf)\) for some \(f \in \Q[X]/(\cycf)\).
+\item Computing resultants in \(\Q[X]/(\cycf)\) reduces to computing resultants in \(\Z[X](\cycf)\).
+\item Computing resultants in \(\Z[X]/(\cycf)\) can be expensive.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline57}]{Approximate Resultants}
+\begin{itemize}
+\item We are only interested in approximate determinant for scaling → compute with reduced precision.
+\item Clear all but the most significant bit for each coefficient's numerator and denominator of \(f\) to produce \(f'\) and compute \(\res(f',\cycf)\).
+\item Reduces the size of the integer representation to speed up the resultant computation.
+\item With this optimisation scaling by an approximation of the determinant is both fast and precise enough to produce fast convergence.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgheadline58}]{Sqrt Timing}
+\begin{center}
+\begin{tabular}{rrrrrr}
+prec & \(n\) & \(\log σ'\) & it. & wall time & \(\log\left( {(\sqrt[appr]{Σ_2})}^2 - Σ_2\right)\)\\
+\hline
+160 & 1024 & 45.8 & 9 & 0.4s & -200\\
+160 & 2048 & 49.6 & 9 & 0.9s & -221\\
+160 & 4096 & 53.3 & 10 & 2.5s & -239\\
+160 & 8192 & 57.0 & 10 & 8.6s & -253\\
+160 & 16384 & 60.7 & 10 & 35.4s & -270\\
+\end{tabular}
+
+\end{center}
+
+Approximate square roots of \(\varSigma_2 = σ'^2 \cdot g^{-T} \cdot g - r^2\) on Intel Core i7--4850HQ CPU at 2.30GHz, 2 cores for Denman-Beavers, 4 cores for estimating the scaling factor, one core for sampling.
+\end{frame}
+
+
+\begin{frame}[label={sec:orgheadline59}]{Fin}
+\begin{center}
+\begin{Huge}
+\alert{Thank You}
+\end{Huge}
+\end{center}
+
+\alert{Code} \url{https://bitbucket.org/malb/gghlite-flint}
+
+\alert{Paper} \url{http://ia.cr/2014/928}
+\end{frame}
+\end{document}

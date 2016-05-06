@@ -1,0 +1,50 @@
+%
+% GGH Stuff
+%
+
+\usepackage{algorithmic}
+
+\DeclareMathOperator{\res}{res}
+\DeclareMathOperator{\NTT}{NTT}
+
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}\left( {#1} \right)}}
+
+\newcommand{\ideal}[1]{\ensuremath{\left(#1\right)}\xspace}
+\newcommand{\mmod}[2][q]{\ensuremath{{\left[#2\right]}_{#1}}\xspace}
+
+\newcommand{\norm}[1]{\ensuremath{\mathcal{N}({#1})}\xspace}
+\newcommand{\cycf}{\ensuremath{X^n+1}\xspace}
+
+\newcommand{\Z}[1][blank]{\ensuremath{
+    \ifthenelse{\equal{#1}{blank}}
+    {\mathbb{Z}}
+    {\mathbb{Z}\left[#1\right]}\xspace}}
+
+\newcommand{\Q}[1][blank]{\ensuremath{
+        \ifthenelse{\equal{#1}{blank}}
+        {\mathbb{Q}}
+        {\mathbb{Q}\left[{#1}\right]}\xspace}}
+
+\newcommand{\R}[1][blank]{\ensuremath{
+        \ifthenelse{\equal{#1}{blank}}
+        {\mathbb{R}}
+        {\mathbb{R}\left[{#1}\right]}\xspace}}
+
+\newcommand{\Zq}[1][blank]{\ensuremath{
+        \ifthenelse{\equal{#1}{blank}}
+        {\mathbb{Z}_q}
+        {\mathbb{Z}_q[#1]}\xspace}}
+
+ \newcommand{\bt}[2][i]{\ensuremath{\tilde{b}^{({#2})}_{#1}}\xspace}
+\renewcommand{\b}[2][i]{\ensuremath{b^{({#2})}_{#1}}\xspace}
+\renewcommand{\u}[1][]{\ensuremath{u_{#1}}\xspace}
+  \newcommand{\e}[1][]{\ensuremath{e_{#1}}\xspace}
+  \newcommand{\pzt}{\ensuremath{p_{zt}}\xspace}
+  \newcommand{\swtch}{\ensuremath{s_{wtch}}\xspace}
+
+  \newcommand{\sample}{\ensuremath{\gets_{\$}}\xspace}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "2016-04-14-gghlite-implementation"
+%%% End:
