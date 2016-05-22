@@ -1,0 +1,174 @@
+%
+% Config
+%
+
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{comment}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+\usepackage{subfigure}
+\usepackage[normalem]{ulem}
+%
+% Pseudocode
+%
+
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+%
+% Source Code Listings
+%
+
+\usepackage{listings}
+\lstdefinelanguage{Sage}[]{Python}{morekeywords={True,False,sage,cdef,cpdef,ctypedef,self},sensitive=true}
+\lstset{frame=none,
+          showtabs=False,
+          showspaces=False,
+          showstringspaces=False,
+          commentstyle={\color{gray}},
+          keywordstyle={\color{mLightBrown}\textbf},
+          stringstyle ={\color{mDarkBrown}},
+          frame=single,
+          basicstyle=\tt\scriptsize\relax,
+          backgroundcolor=\color{gray!190!black},
+          inputencoding=utf8,
+          literate={…}{{\ldots}}1,
+          belowskip=0.0em,
+          }
+\usepackage{lstlinebgrd}
+%
+% Tikz
+%
+
+% from pgfplotsthemetol.sty
+\definecolor{DarkPurple}{HTML}{332288}
+\definecolor{DarkBlue}{HTML}{6699CC}
+\definecolor{LightBlue}{HTML}{88CCEE}
+\definecolor{DarkGreen}{HTML}{117733}
+\definecolor{DarkRed}{HTML}{661100}
+\definecolor{LightRed}{HTML}{CC6677}
+\definecolor{LightPink}{HTML}{AA4466}
+\definecolor{DarkPink}{HTML}{882255}
+\definecolor{LightPurple}{HTML}{AA4499}
+
+\definecolor{DarkBrown}{HTML}{604c38}
+\definecolor{DarkTeal}{HTML}{23373b}
+\definecolor{LightBrown}{HTML}{EB811B}
+\definecolor{LightGreen}{HTML}{14B03D}
+
+\usepackage{tikz,pgfplots}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{backgrounds, fit, shapes.symbols, chains, shapes.geometric, shapes.arrows}
+\usetikzlibrary{crypto.symbols}
+\pgfplotsset{compat=1.12}
+\usetikzlibrary{graphs}
+\tikzset{shadows=no}
+
+%% Cache TiKZ pictures
+
+\ifdefined\tikzcaching
+\usetikzlibrary{external}
+\tikzexternalize[prefix=build/]
+\tikzset{external/up to date check=diff} % MD5 fails from within emacs
+\fi
+
+%
+% SVG
+
+\ifxetex
+\newcommand{\executeiffilenewer}[3]{%
+ {\immediate\write18{#3}} % hack
+}
+\else
+\newcommand{\executeiffilenewer}[3]{%
+ \ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+ {\pdffilemoddate{#2}}>0%
+ {\immediate\write18{#3}}\fi%
+}
+\fi
+
+\newcommand{\includesvg}[2][1.0\textwidth]{%
+ \executeiffilenewer{#1.svg}{#1.pdf}%
+ {inkscape -z -D --file=#2.svg --export-pdf=#2.pdf --export-latex --export-area-page}%
+ \def\svgwidth{#1} 
+ \input{#2.pdf_tex}%
+} 
+
+%
+% Metropolis Theme
+% https://github.com/matze/mtheme.git
+%
+
+\usetheme{metropolis}
+\metroset{color/block=fill}
+\metroset{numbering=none}
+\metroset{outer/progressbar=foot}
+\metroset{titleformat=smallcaps}
+
+
+%
+% UTF-8 all the things
+% 
+\usepackage{unicodesymbols} % put this after m which loads fontspec
+
+%
+% BibLaTeX
+%
+
+\usepackage[
+    backend=bibtex,
+    style=alphabetic,
+    citestyle=alphabetic,
+]{biblatex}
+
+\bibliography{../local.bib, ../master_refs.bib, ../TLS.bib}
+
+\DeclareFieldFormat{title}{\alert{#1}}
+\DeclareFieldFormat[book]{title}{\alert{#1}}
+\DeclareFieldFormat[inproceedings]{title}{\alert{#1}}
+\DeclareFieldFormat[article]{title}{\alert{#1}}
+\DeclareFieldFormat[misc]{title}{\alert{#1}}
+
+%
+% Microtype
+%
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+
+% \AtBeginSection[] 
+% {
+% \begin{frame}<beamer>
+% \frametitle{Outline}
+% \tableofcontents[currentsection]
+% \end{frame}
+% }
+
+% \AtBeginSubsection[] 
+% {
+% \begin{frame}<beamer>
+% \frametitle{Outline}
+% \tableofcontents[currentsubsection]
+% \end{frame}
+% }
+
+%%% Local Variables:
+%%% mode: latex
+%%% End:

@@ -1,0 +1,63 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.6 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{AlFardan:2013a}{inproceedings}{}
+  \name{author}{2}{}{%
+    {{}%
+     {AlFardan}{A.}%
+     {Nadhem}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Paterson}{P.}%
+     {Kenneth~G.}{K.~G.}%
+     {}{}%
+     {}{}}%
+  }
+  \name{editor}{1}{}{%
+    {{}%
+     {Sommer}{S.}%
+     {Robin}{R.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{IEEE Press}}%
+  }
+  \strng{namehash}{ANPKG1}
+  \strng{fullhash}{ANPKG1}
+  \field{labelalpha}{AP13}
+  \field{sortinit}{A}
+  \field{booktitle}{{Proceedings of the 2013 IEEE Symposium on Security and
+  Privacy (S\&P 2013)}}
+  \verb{doi}
+  \verb 10.1109/SP.2013.42
+  \endverb
+  \field{pages}{526\bibrangedash 540}
+  \field{title}{{Lucky Thirteen: Breaking the TLS and DTLS Record Protocols}}
+  \list{location}{1}{%
+    {{San Diego, CA, USA}}%
+  }
+  \field{month}{05}
+  \field{year}{2013}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput
