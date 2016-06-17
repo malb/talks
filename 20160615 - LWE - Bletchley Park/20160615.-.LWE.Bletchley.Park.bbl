@@ -1,0 +1,784 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.7 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\sortlist[entry]{anyt/global/}
+  \entry{EPRINT:AlbBaiDuc16}{article}{}
+    \name{author}{3}{}{%
+      {{hash=AM}{%
+         family={Albrecht},
+         family_i={A\bibinitperiod},
+         given={Martin},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=BS}{%
+         family={Bai},
+         family_i={B\bibinitperiod},
+         given={Shi},
+         given_i={S\bibinitperiod},
+      }}%
+      {{hash=DL}{%
+         family={Ducas},
+         family_i={D\bibinitperiod},
+         given={L√©o},
+         given_i={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AMBSDL1}
+    \strng{fullhash}{AMBSDL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{ABD16}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{title}{A subfield lattice attack on overstretched NTRU assumptions:
+  Cryptanalysis of some FHE and Graded Encoding Schemes}
+    \verb{url}
+    \verb http://ia.cr/2016/127
+    \endverb
+    \field{volume}{2016}
+    \field{journaltitle}{{IACR} Cryptology ePrint Archive}
+    \field{year}{2016}
+  \endentry
+
+  \entry{C:ACPS09}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=AB}{%
+         family={Applebaum},
+         family_i={A\bibinitperiod},
+         given={Benny},
+         given_i={B\bibinitperiod},
+      }}%
+      {{hash=CD}{%
+         family={Cash},
+         family_i={C\bibinitperiod},
+         given={David},
+         given_i={D\bibinitperiod},
+      }}%
+      {{hash=PC}{%
+         family={Peikert},
+         family_i={P\bibinitperiod},
+         given={Chris},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Sahai},
+         family_i={S\bibinitperiod},
+         given={Amit},
+         given_i={A\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=HS}{%
+         family={Halevi},
+         family_i={H\bibinitperiod},
+         given={Shai},
+         given_i={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{ABCDPCSA1}
+    \strng{fullhash}{ABCDPCSA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{ACPS09}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{booktitle}{CRYPTO~2009}
+    \field{pages}{595\bibrangedash 618}
+    \field{series}{{LNCS}}
+    \field{title}{Fast Cryptographic Primitives and Circular-Secure Encryption
+  Based on Hard Learning Problems}
+    \field{volume}{5677}
+    \field{month}{08}
+    \field{year}{2009}
+  \endentry
+
+  \entry{EPRINT:ADPS15}{misc}{}
+    \name{author}{4}{}{%
+      {{hash=AE}{%
+         family={Alkim},
+         family_i={A\bibinitperiod},
+         given={Erdem},
+         given_i={E\bibinitperiod},
+      }}%
+      {{hash=DL}{%
+         family={Ducas},
+         family_i={D\bibinitperiod},
+         given={L{\'e}o},
+         given_i={L\bibinitperiod},
+      }}%
+      {{hash=PT}{%
+         family={P{\"o}ppelmann},
+         family_i={P\bibinitperiod},
+         given={Thomas},
+         given_i={T\bibinitperiod},
+      }}%
+      {{hash=SP}{%
+         family={Schwabe},
+         family_i={S\bibinitperiod},
+         given={Peter},
+         given_i={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AEDLPTSP1}
+    \strng{fullhash}{AEDLPTSP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{ADPS15}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{howpublished}{Cryptology ePrint Archive, Report 2015/1092}
+    \field{note}{\url{http://eprint.iacr.org/2015/1092}}
+    \field{title}{Post-quantum key exchange - a new hope}
+    \field{year}{2015}
+  \endentry
+
+  \entry{JMC:AlbPlaSco15}{article}{}
+    \name{author}{3}{}{%
+      {{hash=AMR}{%
+         family={Albrecht},
+         family_i={A\bibinitperiod},
+         given={Martin\bibnamedelima R},
+         given_i={M\bibinitperiod\bibinitdelim R\bibinitperiod},
+      }}%
+      {{hash=PR}{%
+         family={Player},
+         family_i={P\bibinitperiod},
+         given={Rachel},
+         given_i={R\bibinitperiod},
+      }}%
+      {{hash=SS}{%
+         family={Scott},
+         family_i={S\bibinitperiod},
+         given={Sam},
+         given_i={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AMRPRSS1}
+    \strng{fullhash}{AMRPRSS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{APS15}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{number}{3}
+    \field{pages}{169\bibrangedash 203}
+    \field{title}{On the concrete hardness of {L}earning with {E}rrors}
+    \field{volume}{9}
+    \field{journaltitle}{Journal of Mathematical Cryptology}
+    \field{year}{2015}
+  \endentry
+
+  \entry{SP:BCNS15}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=BJW}{%
+         family={Bos},
+         family_i={B\bibinitperiod},
+         given={Joppe\bibnamedelima W.},
+         given_i={J\bibinitperiod\bibinitdelim W\bibinitperiod},
+      }}%
+      {{hash=CC}{%
+         family={Costello},
+         family_i={C\bibinitperiod},
+         given={Craig},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=NM}{%
+         family={Naehrig},
+         family_i={N\bibinitperiod},
+         given={Michael},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={Stebila},
+         family_i={S\bibinitperiod},
+         given={Douglas},
+         given_i={D\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {{IEEE} Computer Society Press}%
+    }
+    \strng{namehash}{BJWCCNMSD1}
+    \strng{fullhash}{BJWCCNMSD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{BCNS15}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{booktitle}{2015 {IEEE} Symposium on Security and Privacy}
+    \verb{doi}
+    \verb 10.1109/SP.2015.40
+    \endverb
+    \field{pages}{553\bibrangedash 570}
+    \field{title}{Post-Quantum Key Exchange for the {TLS} Protocol from the
+  Ring Learning with Errors Problem}
+    \field{month}{05}
+    \field{year}{2015}
+  \endentry
+
+  \entry{ETSI:PQ15}{misc}{}
+    \name{author}{19}{}{%
+      {{hash=CM}{%
+         family={Campagna},
+         family_i={C\bibinitperiod},
+         given={Matthew},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=CL}{%
+         family={Chen},
+         family_i={C\bibinitperiod},
+         given={Lidong},
+         given_i={L\bibinitperiod},
+      }}%
+      {{hash=√DD}{%
+         prefix={√ñzg√ºr},
+         prefix_i={√\bibinitperiod},
+         family={Dagdelen},
+         family_i={D\bibinitperiod},
+         given={Dr},
+         given_i={D\bibinitperiod},
+      }}%
+      {{hash=DJ}{%
+         family={Ding},
+         family_i={D\bibinitperiod},
+         given={Jintai},
+         given_i={J\bibinitperiod},
+      }}%
+      {{hash=FJK}{%
+         family={Fernick},
+         family_i={F\bibinitperiod},
+         given={Jennifer\bibnamedelima K.},
+         given_i={J\bibinitperiod\bibinitdelim K\bibinitperiod},
+      }}%
+      {{hash=GN}{%
+         family={Gisin},
+         family_i={G\bibinitperiod},
+         given={Nicolas},
+         given_i={N\bibinitperiod},
+      }}%
+      {{hash=HD}{%
+         family={Hayford},
+         family_i={H\bibinitperiod},
+         given={Donald},
+         given_i={D\bibinitperiod},
+      }}%
+      {{hash=JT}{%
+         family={Jennewein},
+         family_i={J\bibinitperiod},
+         given={Thomas},
+         given_i={T\bibinitperiod},
+      }}%
+      {{hash=LN}{%
+         family={L√ºtkenhaus},
+         family_i={L\bibinitperiod},
+         given={Norbert},
+         given_i={N\bibinitperiod},
+      }}%
+      {{hash=MM}{%
+         family={Mosca},
+         family_i={M\bibinitperiod},
+         given={Michele},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=NB}{%
+         family={Neill},
+         family_i={N\bibinitperiod},
+         given={Brian},
+         given_i={B\bibinitperiod},
+      }}%
+      {{hash=PM}{%
+         family={Pecen},
+         family_i={P\bibinitperiod},
+         given={Mark},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=PR}{%
+         family={Perlner},
+         family_i={P\bibinitperiod},
+         given={Ray},
+         given_i={R\bibinitperiod},
+      }}%
+      {{hash=RG}{%
+         family={Ribordy},
+         family_i={R\bibinitperiod},
+         given={Gr√©goire},
+         given_i={G\bibinitperiod},
+      }}%
+      {{hash=SJM}{%
+         family={Schanck},
+         family_i={S\bibinitperiod},
+         given={John\bibnamedelima M.},
+         given_i={J\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=SDD}{%
+         family={Stebila},
+         family_i={S\bibinitperiod},
+         given={Dr\bibnamedelima Douglas},
+         given_i={D\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=WN}{%
+         family={Walenta},
+         family_i={W\bibinitperiod},
+         given={Nino},
+         given_i={N\bibinitperiod},
+      }}%
+      {{hash=WW}{%
+         family={Whyte},
+         family_i={W\bibinitperiod},
+         given={William},
+         given_i={W\bibinitperiod},
+      }}%
+      {{hash=ZDZ}{%
+         family={Zhang},
+         family_i={Z\bibinitperiod},
+         given={Dr\bibnamedelima Zhenfei},
+         given_i={D\bibinitperiod\bibinitdelim Z\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CM+1}
+    \strng{fullhash}{CMCLDD√DJFJKGNHDJTLNMMNBPMPRRGSJMSDDWNWWZDZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Cam+15}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+  \field{howpublished}{\url{http://www.etsi.org/images/files/ETSIWhitePapers/QuantumSafeWhitepaper.pdf}}
+    \field{title}{ETSI Whitepaper: Quantum Safe Cryptography and Security}
+    \field{year}{2015}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{EC:CDPR15}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=CR}{%
+         family={Cramer},
+         family_i={C\bibinitperiod},
+         given={Ronald},
+         given_i={R\bibinitperiod},
+      }}%
+      {{hash=DL}{%
+         family={Ducas},
+         family_i={D\bibinitperiod},
+         given={L{\'e}o},
+         given_i={L\bibinitperiod},
+      }}%
+      {{hash=PC}{%
+         family={Peikert},
+         family_i={P\bibinitperiod},
+         given={Chris},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=RO}{%
+         family={Regev},
+         family_i={R\bibinitperiod},
+         given={Oded},
+         given_i={O\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=FM}{%
+         family={Fischlin},
+         family_i={F\bibinitperiod},
+         given={Marc},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=CJS}{%
+         family={Coron},
+         family_i={C\bibinitperiod},
+         given={Jean-S{\'e}bastien},
+         given_i={J\bibinitperiod-S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer Berlin Heidelberg}%
+    }
+    \strng{namehash}{CRDLPCRO1}
+    \strng{fullhash}{CRDLPCRO1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{CDPR16}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{booktitle}{EUROCRYPT 2016}
+    \field{pages}{559\bibrangedash 585}
+    \field{title}{Recovering Short Generators of Principal Ideals in Cyclotomic
+  Rings}
+    \field{year}{2016}
+  \endentry
+
+  \entry{CESG:PQ16}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=C}{%
+         family={CESG},
+         family_i={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{C1}
+    \strng{fullhash}{C1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{CES16}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+  \field{howpublished}{\url{https://www.cesg.gov.uk/white-papers/quantum-key-distribution}}
+    \field{title}{Quantum Key Distribution --- A CESG White Paper}
+    \field{year}{2016}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{CamGroShe14}{misc}{}
+    \name{author}{3}{}{%
+      {{hash=CP}{%
+         family={Campbell},
+         family_i={C\bibinitperiod},
+         given={Peter},
+         given_i={P\bibinitperiod},
+      }}%
+      {{hash=GM}{%
+         family={Groves},
+         family_i={G\bibinitperiod},
+         given={Michael},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={Shepherd},
+         family_i={S\bibinitperiod},
+         given={Dan},
+         given_i={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CPGMSD1}
+    \strng{fullhash}{CPGMSD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{CGS14}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{howpublished}{ETSI 2nd Quantum-Safe Crypto Workshop}
+    \field{note}{available at
+  \url{http://docbox.etsi.org/Workshop/2014/201410_CRYPTO/S07_Systems_and_Attacks/S07_Groves_Annex.pdf}}
+    \field{title}{SOLILOQUY: A CAUTIONARY TALE}
+    \field{year}{2014}
+  \endentry
+
+  \entry{EPRINT:CKMS16}{article}{}
+    \name{author}{4}{}{%
+      {{hash=CS}{%
+         family={Chatterjee},
+         family_i={C\bibinitperiod},
+         given={Sanjit},
+         given_i={S\bibinitperiod},
+      }}%
+      {{hash=KN}{%
+         family={Koblitz},
+         family_i={K\bibinitperiod},
+         given={Neal},
+         given_i={N\bibinitperiod},
+      }}%
+      {{hash=MA}{%
+         family={Menezes},
+         family_i={M\bibinitperiod},
+         given={Alfred},
+         given_i={A\bibinitperiod},
+      }}%
+      {{hash=SP}{%
+         family={Sarkar},
+         family_i={S\bibinitperiod},
+         given={Palash},
+         given_i={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CSKNMASP1}
+    \strng{fullhash}{CSKNMASP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{CKMS16}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{pages}{360}
+    \field{title}{Another Look at Tightness {II:} Practical Issues in
+  Cryptography}
+    \verb{url}
+    \verb http://eprint.iacr.org/2016/360
+    \endverb
+    \field{volume}{2016}
+    \field{journaltitle}{{IACR} Cryptology ePrint Archive}
+    \field{year}{2016}
+  \endentry
+
+  \entry{C:DDLL13}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=DL}{%
+         family={Ducas},
+         family_i={D\bibinitperiod},
+         given={L{\'e}o},
+         given_i={L\bibinitperiod},
+      }}%
+      {{hash=DA}{%
+         family={Durmus},
+         family_i={D\bibinitperiod},
+         given={Alain},
+         given_i={A\bibinitperiod},
+      }}%
+      {{hash=LT}{%
+         family={Lepoint},
+         family_i={L\bibinitperiod},
+         given={Tancr{\`e}de},
+         given_i={T\bibinitperiod},
+      }}%
+      {{hash=LV}{%
+         family={Lyubashevsky},
+         family_i={L\bibinitperiod},
+         given={Vadim},
+         given_i={V\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=CR}{%
+         family={Canetti},
+         family_i={C\bibinitperiod},
+         given={Ran},
+         given_i={R\bibinitperiod},
+      }}%
+      {{hash=GJA}{%
+         family={Garay},
+         family_i={G\bibinitperiod},
+         given={Juan\bibnamedelima A.},
+         given_i={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{DLDALTLV1}
+    \strng{fullhash}{DLDALTLV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{DDLL13}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{booktitle}{CRYPTO~2013, Part I}
+    \verb{doi}
+    \verb 10.1007/978-3-642-40041-4_3
+    \endverb
+    \field{pages}{40\bibrangedash 56}
+    \field{series}{{LNCS}}
+    \field{title}{Lattice Signatures and Bimodal Gaussians}
+    \field{volume}{8042}
+    \field{month}{08}
+    \field{year}{2013}
+  \endentry
+
+  \entry{NSA:PQ15}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=DNSAIA}{%
+         family={Directorate},
+         family_i={D\bibinitperiod},
+         given={National Security Agency: Information\bibnamedelima Assurance},
+         given_i={N\bibinitperiod\bibinitdelim S\bibinitperiod A\bibinitperiod
+  I\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DNSAIA1}
+    \strng{fullhash}{DNSAIA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Dir15}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+  \field{howpublished}{\url{https://www.nsa.gov/ia/programs/suiteb_cryptography/}}
+    \field{title}{Cryptography Today}
+    \field{year}{2015}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{STOC:GenPeiVai08}{inproceedings}{}
+    \name{author}{3}{}{%
+      {{hash=GC}{%
+         family={Gentry},
+         family_i={G\bibinitperiod},
+         given={Craig},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=PC}{%
+         family={Peikert},
+         family_i={P\bibinitperiod},
+         given={Chris},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=VV}{%
+         family={Vaikuntanathan},
+         family_i={V\bibinitperiod},
+         given={Vinod},
+         given_i={V\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=LRE}{%
+         family={Ladner},
+         family_i={L\bibinitperiod},
+         given={Richard\bibnamedelima E.},
+         given_i={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+      {{hash=DC}{%
+         family={Dwork},
+         family_i={D\bibinitperiod},
+         given={Cynthia},
+         given_i={C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {{ACM} Press}%
+    }
+    \strng{namehash}{GCPCVV1}
+    \strng{fullhash}{GCPCVV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{GPV08}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{booktitle}{40th ACM STOC}
+    \field{pages}{197\bibrangedash 206}
+    \field{title}{Trapdoors for hard lattices and new cryptographic
+  constructions}
+    \field{month}{05}
+    \field{year}{2008}
+  \endentry
+
+  \entry{EC:GenSzy02}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=GC}{%
+         family={Gentry},
+         family_i={G\bibinitperiod},
+         given={Craig},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Szydlo},
+         family_i={S\bibinitperiod},
+         given={Michael},
+         given_i={M\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=KLR}{%
+         family={Knudsen},
+         family_i={K\bibinitperiod},
+         given={Lars\bibnamedelima R.},
+         given_i={L\bibinitperiod\bibinitdelim R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{GCSM1}
+    \strng{fullhash}{GCSM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{GS02}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{booktitle}{EUROCRYPT~2002}
+    \field{pages}{299\bibrangedash 320}
+    \field{series}{{LNCS}}
+    \field{title}{Cryptanalysis of the Revised {NTRU} Signature Scheme}
+    \field{volume}{2332}
+    \field{year}{2002}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{STOC:Peikert09}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=PC}{%
+         family={Peikert},
+         family_i={P\bibinitperiod},
+         given={Chris},
+         given_i={C\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=MM}{%
+         family={Mitzenmacher},
+         family_i={M\bibinitperiod},
+         given={Michael},
+         given_i={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {{ACM} Press}%
+    }
+    \strng{namehash}{PC1}
+    \strng{fullhash}{PC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Pei09}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{booktitle}{41st ACM STOC}
+    \field{pages}{333\bibrangedash 342}
+    \field{title}{Public-key cryptosystems from the worst-case shortest vector
+  problem: extended abstract}
+    \field{year}{2009}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{STOC:Regev05}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=RO}{%
+         family={Regev},
+         family_i={R\bibinitperiod},
+         given={Oded},
+         given_i={O\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=GHN}{%
+         family={Gabow},
+         family_i={G\bibinitperiod},
+         given={Harold\bibnamedelima N.},
+         given_i={H\bibinitperiod\bibinitdelim N\bibinitperiod},
+      }}%
+      {{hash=FR}{%
+         family={Fagin},
+         family_i={F\bibinitperiod},
+         given={Ronald},
+         given_i={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {{ACM} Press}%
+    }
+    \strng{namehash}{RO1}
+    \strng{fullhash}{RO1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Reg05}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{booktitle}{37th ACM STOC}
+    \field{pages}{84\bibrangedash 93}
+    \field{title}{On lattices, learning with errors, random linear codes, and
+  cryptography}
+    \field{month}{05}
+    \field{year}{2005}
+  \endentry
+\endsortlist
+\endinput
