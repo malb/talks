@@ -1,0 +1,482 @@
+#+TITLE: Greatest Common Divisors: Attacks on RSA and Post-Quantum Security
+#+AUTHOR: Martin R. Albrecht _@martinralbrecht_
+#+DATE: 22/08/2016 — Big-O London
+#+STARTUP: beamer indent
+
+#+OPTIONS: H:2 toc:t num:t todo:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LaTeX_CLASS: mbeamer
+#+LaTeX_HEADER: \newcommand{\ZZ}[1][blank]{\ensuremath{\ifthenelse{\equal{#1}{blank}}{\mathbb{Z}}{\mathbb{Z}\left[#1\right]}\xspace}}
+#+LATEX_HEADER: \usepackage{filecontents}
+#+LATEX_HEADER: \usepackage{url}
+#+LATEX_HEADER: \usefonttheme[onlymath]{serif}
+#+LATEX_HEADER: \renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}\xspace}
+#+LATEX_HEADER: \newcommand{\sample}{\ensuremath{\leftarrow_{\$}}}
+#+LATEX_HEADER: \newcommand{\ovec}[1]{\ensuremath{\overline{\vec{#1}}}\xspace}
+#+LATEX_HEADER: \setbeamercolor{example text}{fg=mDarkBrown}
+
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib
+
+
+* Greatest Common Divisors
+
+** Euclidean algorithm
+
+Given two integers $a, b < N = 2^κ$ the Euclidean algorithm computes their greatest common divisor $\gcd(a,b)$.
+
+#+BEGIN_SRC python
+def gcd(a, b):
+    if b == 0:
+        return a
+    else:
+        return gcd(b, a % b)
+#+END_SRC
+
+- The Euclidean algorithm runs in time $\bigO{κ^2}$.
+- Best known algorithm runs in time $\bigO{κ \log^2 κ \log\log κ}$. footfullcite:ANTS:SteZim04
+
+* RSA
+
+** Public key encryption
+
+-  KeyGen :: Bob sends padlock *$pk$* to Alice and keeps the key *$sk$*.
+
+-  Enc :: Alice inserts message *$m$* in a box and locks it with *$pk$*.
+
+-  Dec :: Bob opens the box *$c$* with key *$sk$* to the padlock *$pk$*.
+
+** Public key encryption
+
+-  KeyGen :: Bob generates a key pair *$(sk, pk)$* and publishes *$pk$*.
+
+-  Enc :: Alice uses *$pk$* to encrypt message *$m$* for Bob as *$c$*.
+
+-  Dec :: Bob uses *$sk$* to decrypt *$c$* to recover *$m$*.
+
+** Naive RSA
+
+- KeyGen :: The public key is $(N,e)$ and the private key is $d$, with
+
+  - $N = p⋅q$ where $p$ and $q$ prime,
+  - $e$ coprime to $φ(N) = (p-1)(q-1)$ and
+  - $d$ such that $e⋅ d = 1 \mod{φ(N)}$.
+
+- Enc :: $c = m^e \mod{N}$
+
+- Dec :: $m = c^d = m^{e\cdot d} = m^{1} \mod{N}$
+ 
+** Naive RSA is not IND-CCA secure
+
+#+ATTR_BEAMER: :overlay +-
+- Assume we want to decrypt $c = m^e \bmod N$ with access to an oracle which will decrypt any ciphertext but $c$.
+
+- Pick a random $s \bmod N$ and compute $c' = s^e ⋅ c \bmod N$
+
+- Submit $c'$ to the decryption oracle to recover $m' = {\left(s^e ⋅ c\right)}^d$
+
+- It holds that
+
+  \[m' = {\left(s^e ⋅ c\right)}^d = {\left(s^e ⋅ m^e\right)}^d = {\left({\left(s⋅m\right)}^e \right)}^d = s⋅m \bmod N\]
+
+- Such an oracle can essentially be instantiated using error messages. footfullcite:C:Bleichenbacher98
+
+** RSA-OAEP
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.5\textwidth
+[[./rsa-oaep.pdf]]
+#+END_CENTER
+
+Use RSA-OAEP (also sometimes called "PKCS#1 v2.1 encryption").
+
+** “We use RSA!”
+
+  - boxcryptor :: [[./boxcryptor.png]]
+  - telegram :: [[./telegram.png]]
+  - sicher :: [[./sicher.png]]
+
+** Classical attacks on RSA
+
+- An adversary who can factor large integers can break RSA.
+
+- The best known classical algorithm for factoring is the Number Field Sieve (NFS)
+
+- It has a *super-polynomial* but *sub-exponential* (in $\log N$ ) complexity of \[\bigO{e^{1.9 (\log^{1/3} N) (\log\log^{2/3} N)}}\] operations.
+
+
+#+BEAMER: \pause
+
+*** Warning 
+
+This does not mean an adversary _has_ to factor to solve RSA.
+
+* The GCD attack on bad random numbers  
+** Much randomness
+
+- When we generate RSA moduli, we need to sample two good prime numbers of bitsize $κ/2$
+- The probability that a random number of bitsize $κ/2$ is prime, is about $1/κ$.
+- To sample an RSA modulus we hence need about $κ^2$ random bits. For $κ = 1024$ this means about $10^6$ random bits.
+- Where do we get all these bits from?
+
+** Collecting entropy
+
+Random bits can be gathered from the environment using various sensors, e.g.
+
+-  time,
+-  process IDs currently running on the machine,
+-  the harddisk,
+-  the content of uninitialised memory,
+-  hardware sensors (temperature etc.).
+
+** What could possibly go wrong?
+
+Assume a router generating RSA moduli on booting for the first time.
+
+- It might not know the time but retrieve it once booted.
+- Whenever it boots the same processes are running.
+- The harddisk has the same files on it for every router.
+- Uninitialised memory is just full of zeros.
+- There are perhaps no hardware sensors.
+
+All routers of the same make might (in fact, some do) generate the *same* RSA modulus.
+
+** What could possibly go wrong?
+What if two routers generate moduli $N_0 = q_0 ⋅ p$ and $N_1 = q_1 \cdot p$, i.e. moduli with shared factors, due to bad randomness?
+
+- We assume that factoring each of $N_0$ or $N_1$ is hard.
+- However, computing $\gcd(N_0, N_1)$ reveals $p$ but costs only $\bigO{\log^2 N}$ operations.
+
+#+BEAMER: \pause
+If only we could compute the pairwise GCD of all RSA moduli on the Internet \dots
+
+** The GCD attack on poor random numbers
+
+#+BEGIN_QUOTE
+[W]e are able to compute the private keys for 64,000 (0.50%) of the TLS hosts and 108,000 (1.06%) of the SSH hosts from our scan data alone by exploiting known weaknesses of RSA and DSA when used with insufficient randomness.footfullcite:USENIX:HDWH12
+#+END_QUOTE
+
+** Computing pairwise GCDs efficiently
+
+#+ATTR_BEAMER: :overlay +-
+- Naively, we’d have to compute $\bigO{t^2}$ GCDs to check all $t$ moduli against each other.
+- We can do better by performing \(t\) GCD computations \[\gcd(N_i, \prod_{j \neq i} N_j)\]
+- We will use the identity \[x \bmod N_0 = (x \bmod N_0⋅N_1) \bmod N_0\]
+
+** Computing pairwise GCDs efficiently
+
+Let, for example, $t = 4$.
+
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}[node distance=3cm,on grid,scale=0.6, every node/.style={transform shape}]
+\node[anchor=center] (N0) at (0,0) {$N_0$};
+\node[anchor=center] (N1) at (4,0)  {$N_1$};
+\node[anchor=center] (N2) at (8,0) {$N_2$};
+\node[anchor=center] (N3) at (12,0) {$N_3$};
+
+\node[anchor=center](N01) at (2, -2) {$N_{01} = N_{0}\cdot N_1$};
+\node[anchor=center] at (10, -2) (N23) {$N_{23} = N_{2} \cdot N_3$};
+
+\node[anchor=center](N0123) at (6,-4) {$N_{0123} = N_{01} \cdot N_{23}$};
+
+\draw (N0) -- (N01);
+\draw (N1) -- (N01);
+
+\draw (N2) -- (N23);
+\draw (N3) -- (N23);
+
+\draw (N01) -- (N0123);
+\draw (N23) -- (N0123);
+
+\node[] (M01) at (2,-6) {$M_{01} = N_{0123} \bmod N_{01}^2$};
+\node[] (M23) at (10,-6)  {$M_{23} = N_{0123} \bmod N_{23}^2$};
+
+\node[] (M0) at (-1,-8)  {$M_{0} = M_{01} \bmod N_{0}^2$};
+\node[] (M1) at (4,-8) {$M_{1} = M_{01} \bmod N_{1}^2$};
+
+\node[] (M2) at (8,-8) {$M_{2} = M_{23} \bmod N_{2}^2$};
+\node[] (M3) at (12,-8) {$M_{3} = M_{23} \bmod N_{3}^2$};
+
+\draw (N0123) -- (M01);
+\draw (N0123) -- (M23);
+
+\draw (M01) -- (M0);
+\draw (M01) -- (M1);
+\draw (M23) -- (M2);
+\draw (M23) -- (M3);
+
+\end{tikzpicture}
+\end{center}
+#+END_LaTeX
+
+- Compute $R_{1} = \gcd(M_{1}/N_{1}, N_1), \dots, R_{4} = \gcd(M_{4}/N_{4}, N_{4})$
+- Cost: $\bigO{t ⋅ κ ⋅ \log^2 (t ⋅ κ) \log\log (t ⋅ κ)}$
+
+* The Approximate GCD problem
+** Quantum attacks on RSA
+
+An adversary with access to a quantum computer with \[ \bigO{\log^2(N) \log\log (N) \log\log\log (N)}\] gates can factor $N$ using Shor’s algorithm.[fn:1]
+
+** Quantum attacks on RSA
+
+[[./competition.png]]
+
+** The Approximate GCD problem
+
+The *Approximate GCD* problem is the problem of distinguishing \[x_i = q_i ⋅ p  \alert{+ r_i}\] from uniform $\ZZ ∩ [0, X)$ with $x_i < X$.
+
+** The Approximate GCD problem
+
+\[x_i = q_i ⋅ p  + r_i\]
+
+If $λ$ is our security parameter (think $λ=128$), then
+
+| name | sizeof | DGHV10 footfullcite:EC:DGHV10 | CheSte15 footfullcite:EC:CheSte15 |
+|------+--------+-------------------------------+-----------------------------------|
+|  <r> |    <r> |                               |                                   |
+|  $γ$ |  $x_i$ | $λ^5$                         | $λ \log λ$                        |
+|  $η$ |    $p$ | $λ^2$                         | $λ + \log λ$                      |
+|  $ρ$ |  $r_i$ | $λ$                           | $λ$                               |
+
+** Naive encryption
+
+- KeyGen :: The public key is $\{x_i = q_i ⋅ p + 2\,r_i\}_{0 ≤ i < t}$ and the private key is $p$.
+
+- Enc :: For $m \in \{0,1\}$ output $c = m + \sum b_i ⋅ x_i$ with $b_i \sample \{0,1\}$.
+
+- Dec :: $m = (c \bmod p) \bmod 2$.
+ 
+#+BEAMER: \pause
+
+*** Warning
+
+This encryption scheme has the same malleability property as naive RSA encryption![fn:2]
+
+* Attacks on the Approximate GCD problem
+
+** Exhaustive search
+
+Given $x_0 = q_0 ⋅ p + r_0$ and $x_1 + q_1 ⋅ p + r_1$ we know that \[p = \gcd\left((x_0 - r_0), (x_1 - r_1)\right)\]
+
+
+Guess $r_0$ and $r_1$!
+
+*** Cost
+
+$2^{2ρ}$ GCDs
+
+** Exhaustive search + multiplication
+
+Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for all $x_0' = x_0 - j$ with $0 \leq j < 2^{ρ-1}$.
+
+*** Cost
+
+$2^ρ$ GCDs, $2^{2ρ}$ multiplications
+
+** Time-memory trade-off
+
+- We can reduce multiplications to $2^{ρ/2}$ per guess of $x_0'$.
+- Define univariate polynomials mod $x_0'$:
+\[f_j(x) = \prod_{i=0}^{j-1} (x_1 - (x + i)) \in \ZZ_{x_0'}[x]\]
+- Note that
+\[\prod_{i=0}^{2^ρ-1} (x_1 - i) = \prod_{k=0}^{2^{ρ/2} -1} f_{2^{ρ/2}}(2^{ρ/2}k)\]
+
+*** Example
+
+- $ρ = 2$, $f_{2} = (x_1 - (x + 0)) \cdot (x_1 - (x + 1))$
+- $f_{2}(0) ⋅ f_{2}(2) = (x_1 - 0) ⋅ (x_1 - 1) ⋅ (x_1 - 2) ⋅ (x_1 - 3)$
+
+** Time-memory trade-off
+
+Compute \[\gcd\left(x_0', \prod_{k=0}^{2^{ρ/2} -1} f_{2^{ρ/2}}(2^{ρ/2}k) \bmod x_0'\right)\] for all $x_0' = x_0 - j$ with $0 \leq j < 2^{ρ-1}$.
+
+*** Cost
+
+- $2^{ρ}$ GCDs and computation of $f_{2^{ρ/2}}(x) \bmod x_0'$,
+- per guess for $x_0'$: $2^{ρ/2}$ multiplications and evaluations of $f_{2^{ρ/2}}(x)$.
+
+** Time-memory trade-off
+
+- Computing $f_{2^{ρ/2}}(x) \bmod x_0'$ can be accomplished in time $\bigO{2^{ρ/2} ⋅ ρ}$ using the Fast Fourier Transform.
+- Evaluating $f_{2^{ρ/2}}(x) \bmod x_0'$ at our $2^{ρ/2}$ points can be accomplished in time $\bigO{2^{ρ/2} ⋅ ρ}$ using the Fast Fourier Transform.
+- The strategy is similar to the pairwise GCD case earlier
+
+*** Cost
+
+$2^{\bigO{3/2 ρ \log^2 ρ}}$ operations.footfullcite:EC:CheNgu12
+
+** Lattice attacks
+
+Given \(x_0  = q_0 p + r_0\) and \(x_1  = q_1 p + r_1\), consider
+
+\begin{eqnarray*}
+q_0 x_1 - q_1 x_0 & = & q_0 (q_1 p + r_1) - q_1 (q_0 p - r_0)\\
+                  & = & q_0 q_1 p + q_0 r_1 - q_1 q_0 p - q_1 r_0\\
+& = & q_0 r_1 - q_1 r_0
+\end{eqnarray*}
+
+and note that \[q_0 x_1 - q_1 x_0 \ll x_i\]
+
+#+BEAMER: \pause
+
+*** Non-starter?
+
+We don’t know $q_i$!
+
+** Lattice attacks
+
+Consider the matrix 
+
+\[\vec{B} = \begin{pmatrix}
+2^{\rho + 1}  & x_1  & x_2   & \cdots  & x_t\\
+              & -x_0 &       &         & \\
+              &      &  -x_0 &         & \\
+              &      &       &  \ddots & \\
+              &      &       &         &  -x_0\\
+\end{pmatrix}\]
+
+multiplying on the left by the vector $\vec{q} = (q_0, q_1, q_2, \cdots, q_t)$ gives
+\begin{align*}
+\vec{v} &= (q_0, q_1, \cdots, q_t) \cdot \vec{B} \\
+        &= (q_0\, 2^{ρ+1}, q_0 x_1 - q_1 x_0, \cdots, q_0 x_t - q_t x_0)\\
+        &= (q_0\, \alert{2^{ρ+1}}, q_0 \alert{r_1} - q_1 \alert{r_0}, \cdots, q_0 \alert{r_t} - q_t \alert{r_0})
+\end{align*}
+which is a vector with small coefficients compared to $x_i$.
+
+** Finding short vectors
+
+We call the set of all integer-linear combinations of the rows of $\vec{B}$ the *lattice* spanned by (the rows of) $\vec{B}$.
+
+- SVP :: finding a *shortest* non-zero vector on *general* lattices is NP-hard.
+
+- Gap-SVP :: finding *short* non-zero vectors on *general* lattices is a well-known and presumed quantum-hard problem.
+
+*** Easy SVP
+
+GCD is SVP on the integer lattice $\ZZ$. For example, $\vec{B} = {[21, 14]}^T$, $\vec{v} = (-1,1)$, $\vec{v} ⋅\vec{B} = 7$.
+
+** Reduction to lattice problem
+
+We can show that an adversary *has* to solve Gap-SVP.
+
+*** AGCD → LWE                                                         :B_lemma:
+
+If there is an algorithm efficiently solving the AGCD problem then there exists an algorithm which solves the _Learning with Errors_ (LWE) problem with essentially the same performance. footfullcite:EC:CheSte15 
+
+*** LWE → Gap-SVP
+
+If there is an algorithm efficiently solving the LWE problem then there exists a quantum algorithm which solves worst-case Gap-SVP instances.footfullcite:STOC:Regev05
+
+* Google’s post-quantum experiment: “A New Hope”
+
+** Ring-LWE
+
+- The Learning with Errors problem is essentially the problem of solving a linear system of equations in the presence of noise.
+- Given $\vec{A}, \vec{c}$ solve \[\vec{c} = \vec{A} ⋅ \vec{s} + \vec{e} \bmod q\] for $\vec{s}$ when $\vec{e}$ is “small”.
+- The matrix $\vec{A} \in \ZZ_q^{m \times n}$ is kinda big.
+- To make it smaller, use *structured matrices*, e.g. negacyclic matrices ⇒ Ring-LWE.
+
+** A New Hope footfullcite:EPRINT:ADPS15 : Ring-LWE based key exchange
+
+#+BEGIN_SRC plantuml :file keyex.png :tangle no :exports results
+skinparam monochrome true
+skinparam dpi 600
+skinparam backgroundColor transparent
+skinparam classBackgroundColor transparent
+skinparam style strictuml
+skinparam handwritten true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+
+activate Client
+Client -> Server: g<sup>a</sup>
+activate Server
+Client <- Server: g<sup>b</sup>, sign<sub>sk</sub>(g<sup>b</sup>)
+note left: K= g<sup>ab</sup>
+Client -> Server: E<sub>K</sub>(data)
+note right: K= g<sup>ab</sup>
+Server --> Client: E<sub>K</sub>(more data)
+deactivate Server
+deactivate Client
+#+END_SRC
+
+#+BEGIN_CENTER
+#+ATTR_LaTeX: :width 0.6\textwidth
+#+RESULTS:
+[[file:keyex.png]]
+#+END_CENTER
+
+** Thank you
+
+#+BEGIN_CENTER
+ [[./kitten-01.jpg]]
+
+*@@beamer:\Large@@ Questions?*
+#+END_CENTER
+
+* Bonus
+
+** Homomorphic encryption
+
+Given $c_i = q_i ⋅ p + m_i'$ with $m_i' = 2\,r_i + m_i$.
+- We can compute \[c' = c_0 ⋅ c_1 = q_0 q_1 p^2 + q_0 m_1' p  + q_1 m_0' p + m_0' ⋅ m_1'\] to get \(c' \bmod p =  m_0' ⋅ m_1'\) and \( m_0' ⋅ m_1' \bmod 2 = m_0 ⋅ m_1\).
+- We can also compute \[c' = c_0 + c_1 = (q_0 + q_1) p + (m_0' + m_1')\] to get $c' \bmod p \bmod 2 = m_0 \oplus m_1$.
+
+We can compute with encrypted data.[fn:3]
+
+* Build Artefacts                                                     :noexport:
+** Emacs Config
+
+#+BEGIN_SRC emacs-lisp :tangle .dir-locals.el
+((magit-mode .
+             ((eval .
+                    (and
+                     (visual-line-mode 1)))))
+ (bibtex-mode . ((fill-column . 10000)))
+ (org-mode .
+           ((org-tags-column . -80)
+            (eval .
+                  (and
+                   (flyspell-mode t)
+                   (olivetti-mode t))))))
+#+END_SRC
+
+** Makefile
+
+#+BEGIN_SRC makefile :tangle Makefile
+EMACS=emacs
+EMACSFLAGS=--batch -l ~/.emacs.d/org-export-init.el
+LATEXMK=latexmk
+LATEXMKFLAGS=-xelatex
+
+%.pdf: %.tex talk-header.tex
+$(LATEXMK) $(LATEXMKFLAGS) $<
+
+%.tex: %.org
+$(EMACS) $(EMACSFLAGS) $< -f org-latex-export-to-latex
+
+clean:
+rm -f *.bbl *.aux *.out *.synctex.gz *.log *.run.xml *.blg *-blx.bib *.fdb_latexmk *.fls *.toc
+
+.PHONY: clean all
+.PRECIOUS: %.tex
+#+END_SRC
+
+** Autoexport to PDF
+
+   # Local Variables:
+   # eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+   # End:
+
+* Footnotes
+
+[fn:1] http://www.scottaaronson.com/blog/?p=208
+
+[fn:2] In contrast to naive RSA, this scheme offers indistinguishability security under chosen plaintext attacks (IND-CPA).
+
+[fn:3] https://crypto.stanford.edu/craig/easy-fhe.pdf
+
+

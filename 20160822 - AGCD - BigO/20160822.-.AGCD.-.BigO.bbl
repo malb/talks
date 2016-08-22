@@ -1,0 +1,395 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.7 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\sortlist[entry]{anyt/global/}
+  \entry{EPRINT:ADPS15}{misc}{}
+    \name{author}{4}{}{%
+      {{hash=AE}{%
+         family={Alkim},
+         family_i={A\bibinitperiod},
+         given={Erdem},
+         given_i={E\bibinitperiod},
+      }}%
+      {{hash=DL}{%
+         family={Ducas},
+         family_i={D\bibinitperiod},
+         given={L{\'e}o},
+         given_i={L\bibinitperiod},
+      }}%
+      {{hash=PT}{%
+         family={P{\"o}ppelmann},
+         family_i={P\bibinitperiod},
+         given={Thomas},
+         given_i={T\bibinitperiod},
+      }}%
+      {{hash=SP}{%
+         family={Schwabe},
+         family_i={S\bibinitperiod},
+         given={Peter},
+         given_i={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AEDLPTSP1}
+    \strng{fullhash}{AEDLPTSP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{ADPS15}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{howpublished}{Cryptology ePrint Archive, Report 2015/1092}
+    \field{note}{\url{http://eprint.iacr.org/2015/1092}}
+    \field{title}{Post-quantum key exchange - a new hope}
+    \field{year}{2015}
+  \endentry
+
+  \entry{C:Bleichenbacher98}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=BD}{%
+         family={Bleichenbacher},
+         family_i={B\bibinitperiod},
+         given={Daniel},
+         given_i={D\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=KH}{%
+         family={Krawczyk},
+         family_i={K\bibinitperiod},
+         given={Hugo},
+         given_i={H\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{BD1}
+    \strng{fullhash}{BD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Ble98}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{booktitle}{CRYPTO'98}
+    \field{pages}{1\bibrangedash 12}
+    \field{series}{{LNCS}}
+    \field{title}{Chosen Ciphertext Attacks Against Protocols Based on the
+  {RSA} Encryption Standard {PKCS} \#1}
+    \field{volume}{1462}
+    \field{month}{08}
+    \field{year}{1998}
+  \endentry
+
+  \entry{EC:CheNgu12}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=CY}{%
+         family={Chen},
+         family_i={C\bibinitperiod},
+         given={Yuanmi},
+         given_i={Y\bibinitperiod},
+      }}%
+      {{hash=NPQ}{%
+         family={Nguyen},
+         family_i={N\bibinitperiod},
+         given={Phong\bibnamedelima Q.},
+         given_i={P\bibinitperiod\bibinitdelim Q\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=PD}{%
+         family={Pointcheval},
+         family_i={P\bibinitperiod},
+         given={David},
+         given_i={D\bibinitperiod},
+      }}%
+      {{hash=JT}{%
+         family={Johansson},
+         family_i={J\bibinitperiod},
+         given={Thomas},
+         given_i={T\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{CYNPQ1}
+    \strng{fullhash}{CYNPQ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{CN12}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{booktitle}{EUROCRYPT~2012}
+    \field{pages}{502\bibrangedash 519}
+    \field{series}{{LNCS}}
+    \field{title}{Faster Algorithms for Approximate Common Divisors: Breaking
+  Fully-Homomorphic-Encryption Challenges over the Integers}
+    \field{volume}{7237}
+    \field{month}{04}
+    \field{year}{2012}
+  \endentry
+
+  \entry{EC:CheSte15}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=CJH}{%
+         family={Cheon},
+         family_i={C\bibinitperiod},
+         given={Jung\bibnamedelima Hee},
+         given_i={J\bibinitperiod\bibinitdelim H\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={Stehl{\'e}},
+         family_i={S\bibinitperiod},
+         given={Damien},
+         given_i={D\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=OE}{%
+         family={Oswald},
+         family_i={O\bibinitperiod},
+         given={Elisabeth},
+         given_i={E\bibinitperiod},
+      }}%
+      {{hash=FM}{%
+         family={Fischlin},
+         family_i={F\bibinitperiod},
+         given={Marc},
+         given_i={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{CJHSD1}
+    \strng{fullhash}{CJHSD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{CS15}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{booktitle}{EUROCRYPT~2015, Part I}
+    \verb{doi}
+    \verb 10.1007/978-3-662-46800-5_20
+    \endverb
+    \field{pages}{513\bibrangedash 536}
+    \field{series}{{LNCS}}
+    \field{title}{Fully Homomophic Encryption over the Integers Revisited}
+    \field{volume}{9056}
+    \field{month}{04}
+    \field{year}{2015}
+  \endentry
+
+  \entry{EC:DGHV10}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=vDM}{%
+         prefix={van},
+         prefix_i={v\bibinitperiod},
+         family={Dijk},
+         family_i={D\bibinitperiod},
+         given={Marten},
+         given_i={M\bibinitperiod},
+      }}%
+      {{hash=GC}{%
+         family={Gentry},
+         family_i={G\bibinitperiod},
+         given={Craig},
+         given_i={C\bibinitperiod},
+      }}%
+      {{hash=HS}{%
+         family={Halevi},
+         family_i={H\bibinitperiod},
+         given={Shai},
+         given_i={S\bibinitperiod},
+      }}%
+      {{hash=VV}{%
+         family={Vaikuntanathan},
+         family_i={V\bibinitperiod},
+         given={Vinod},
+         given_i={V\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=GH}{%
+         family={Gilbert},
+         family_i={G\bibinitperiod},
+         given={Henri},
+         given_i={H\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer, Heidelberg}%
+    }
+    \strng{namehash}{DMvGCHSVV1}
+    \strng{fullhash}{DMvGCHSVV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{DGHV10}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{booktitle}{EUROCRYPT~2010}
+    \field{pages}{24\bibrangedash 43}
+    \field{series}{{LNCS}}
+    \field{title}{Fully Homomorphic Encryption over the Integers}
+    \field{volume}{6110}
+    \field{month}{05}
+    \field{year}{2010}
+  \endentry
+
+  \entry{USENIX:HDWH12}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=HN}{%
+         family={Heninger},
+         family_i={H\bibinitperiod},
+         given={Nadia},
+         given_i={N\bibinitperiod},
+      }}%
+      {{hash=DZ}{%
+         family={Durumeric},
+         family_i={D\bibinitperiod},
+         given={Zakir},
+         given_i={Z\bibinitperiod},
+      }}%
+      {{hash=WE}{%
+         family={Wustrow},
+         family_i={W\bibinitperiod},
+         given={Eric},
+         given_i={E\bibinitperiod},
+      }}%
+      {{hash=HJA}{%
+         family={Halderman},
+         family_i={H\bibinitperiod},
+         given={J.\bibnamedelima Alex},
+         given_i={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=KT}{%
+         family={Kohno},
+         family_i={K\bibinitperiod},
+         given={Tadayoshi},
+         given_i={T\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {{USENIX} Association}%
+    }
+    \strng{namehash}{HNDZWEHJA1}
+    \strng{fullhash}{HNDZWEHJA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{HDWH12}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{booktitle}{Proceedings of the 21th {USENIX} Security Symposium,
+  Bellevue, WA, USA, August 8-10, 2012}
+    \field{pages}{205\bibrangedash 220}
+    \field{title}{Mining Your Ps and Qs: Detection of Widespread Weak Keys in
+  Network Devices}
+    \field{year}{2012}
+  \endentry
+
+  \entry{STOC:Regev05}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=RO}{%
+         family={Regev},
+         family_i={R\bibinitperiod},
+         given={Oded},
+         given_i={O\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=GHN}{%
+         family={Gabow},
+         family_i={G\bibinitperiod},
+         given={Harold\bibnamedelima N.},
+         given_i={H\bibinitperiod\bibinitdelim N\bibinitperiod},
+      }}%
+      {{hash=FR}{%
+         family={Fagin},
+         family_i={F\bibinitperiod},
+         given={Ronald},
+         given_i={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {{ACM} Press}%
+    }
+    \strng{namehash}{RO1}
+    \strng{fullhash}{RO1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Reg05}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{booktitle}{37th ACM STOC}
+    \field{pages}{84\bibrangedash 93}
+    \field{title}{On lattices, learning with errors, random linear codes, and
+  cryptography}
+    \field{month}{05}
+    \field{year}{2005}
+  \endentry
+
+  \entry{ANTS:SteZim04}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=SD}{%
+         family={Stehl{\'{e}}},
+         family_i={S\bibinitperiod},
+         given={Damien},
+         given_i={D\bibinitperiod},
+      }}%
+      {{hash=ZP}{%
+         family={Zimmermann},
+         family_i={Z\bibinitperiod},
+         given={Paul},
+         given_i={P\bibinitperiod},
+      }}%
+    }
+    \name{editor}{1}{}{%
+      {{hash=BDA}{%
+         family={Buell},
+         family_i={B\bibinitperiod},
+         given={Duncan\bibnamedelima A.},
+         given_i={D\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{SDZP1}
+    \strng{fullhash}{SDZP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{SZ04}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{booktitle}{Algorithmic Number Theory, 6th International Symposium,
+  ANTS-VI, Burlington, VT, USA, June 13-18, 2004, Proceedings}
+    \verb{doi}
+    \verb 10.1007/978-3-540-24847-7_31
+    \endverb
+    \field{pages}{411\bibrangedash 425}
+    \field{series}{Lecture Notes in Computer Science}
+    \field{title}{A Binary Recursive Gcd Algorithm}
+    \verb{url}
+    \verb http://dx.doi.org/10.1007/978-3-540-24847-7_31
+    \endverb
+    \field{volume}{3076}
+    \field{year}{2004}
+  \endentry
+\endsortlist
+\endinput
