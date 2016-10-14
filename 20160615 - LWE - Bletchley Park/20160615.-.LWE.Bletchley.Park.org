@@ -499,7 +499,7 @@ There is *no known attack* which successfully exploits ring structure for proper
             (eval .
                   (and
                    (flyspell-mode t)
-                   (olivetti-mode t))))))
+                   (visual-fill-column-mode t))))))
 #+END_SRC
 
 ** Makefile

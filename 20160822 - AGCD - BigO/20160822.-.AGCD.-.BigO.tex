@@ -1,4 +1,4 @@
-% Created 2016-08-22 Mon 23:04
+% Created 2016-10-14 Fri 13:12
 \documentclass[presentation,smaller]{beamer}
 \RequirePackage{etex}
 \RequirePackage[l2tabu,orthodox]{nag}            %% Warn about obsolete commands and packages
@@ -120,7 +120,7 @@
             maxnames=4,
             citestyle=alphabetic]{biblatex}
 
-\bibliography{local.bib,abbrev3.bib,crypto_crossref.bib}
+\bibliography{local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib}
 
 \DeclareFieldFormat{title}{\alert{#1}}
 \DeclareFieldFormat[book]{title}{\alert{#1}}
@@ -129,14 +129,6 @@
 \DeclareFieldFormat[incollection]{title}{\alert{#1}}
 \DeclareFieldFormat[article]{title}{\alert{#1}}
 \DeclareFieldFormat[misc]{title}{\alert{#1}}
-
-%%%
-%%% Math Notation
-%%% 
-
-
-\usepackage[landau,probability,logic,complexity,asymptotics]{cryptocode}
-\renewcommand{\secpar}{\ensuremath{\lambda}\xspace}
 
 %%% 
 %%% Microtype
@@ -149,17 +141,6 @@
 \setlength{\parskip}{6pt plus 2pt minus 1pt}  %%
 \setlength{\emergencystretch}{3em}            %% prevent overfull lines
 \setcounter{secnumdepth}{0}                   %%
-
-%%%
-%%% Table of Contents
-%%%
-
-% \AtBeginSection[] {
-%   \begin{frame}<beamer>
-%     \frametitle{Outline}
-%     \tableofcontents[currentsection]
-%   \end{frame}
-% }
 
 %%% Local Variables:
 %%% mode: latex
@@ -176,9 +157,16 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
+\usepackage[color=FFDD00]{todonotes}
+\usepackage{microtype}
+\usepackage{newunicodechar}
+\usepackage{unicodesymbols}
+\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda]{cryptocode}
+\usepackage{xspace}
 \usepackage{units}
 \usepackage{nicefrac}
 \usepackage{gensymb}
+\usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{xcolor}
@@ -200,7 +188,7 @@ pdfauthor={Martin R. Albrecht \textbf{@martinralbrecht}},
 pdftitle={Greatest Common Divisors: Attacks on RSA and Post-Quantum Security},
 pdfkeywords={},
 pdfsubject={},
-pdfcreator={Emacs 24.5.1 (Org mode 8.3.5)},
+pdfcreator={Emacs 24.5.1 (Org mode 8.3.6)},
 pdflang={English},
 colorlinks,
 citecolor=gray,

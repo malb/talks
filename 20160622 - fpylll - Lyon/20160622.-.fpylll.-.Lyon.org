@@ -527,7 +527,7 @@ row 1 of <IntegerMatrix(60, 60) at 0x7f1cbbfbf888>
             (eval .
                   (and
                    (flyspell-mode t)
-                   (olivetti-mode t))))))
+                   (visual-fill-column-mode t))))))
    #+END_SRC
 
 ** Makefile

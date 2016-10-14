@@ -441,7 +441,7 @@ We can compute with encrypted data.[fn:3]
             (eval .
                   (and
                    (flyspell-mode t)
-                   (olivetti-mode t))))))
+                   (visual-fill-column-mode t))))))
 #+END_SRC
 
 ** Makefile
