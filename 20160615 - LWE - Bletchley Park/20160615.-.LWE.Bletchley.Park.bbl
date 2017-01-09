@@ -1,5 +1,5 @@
 % $ biblatex auxiliary file $
-% $ biblatex bbl format version 2.7 $
+% $ biblatex bbl format version 2.8 $
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
@@ -17,25 +17,36 @@
 \endgroup
 
 \sortlist[entry]{anyt/global/}
-  \entry{EPRINT:AlbBaiDuc16}{article}{}
+\preamble{%
+\input path.sty\ifx \undefined \mathbb \def \mathbb #1{{\bf #1}}\fi\ifx
+  \undefined \mathrm \def \mathrm #1{{\rm #1}}\fi\ifx \undefined \poly \def
+  \poly {\mathrm{poly}}\fi\ifx \undefined \polylog \def \polylog
+  {\mathrm{polylog}}\fi\hyphenation{ Cher-vo-nen-kis Eh-ren-feucht Hal-pern
+  Jean-ette Kam-eda Leigh-ton Mehl-horn Metro-po-lis Pra-sad Prep-a-ra-ta
+  Press-er Pros-ku-row-ski Ros-en-krantz Ru-dolph Schie-ber Schnei-der Te-zu-ka
+  Vis-wa-na-than Yech-ez-kel Yech-i-ali data-base data-bases dead-lock
+  poly-adic }
+}
+
+  \entry{EPRINT:AlbBaiDuc16}{misc}{}
     \name{author}{3}{}{%
       {{hash=AM}{%
          family={Albrecht},
-         family_i={A\bibinitperiod},
+         familyi={A\bibinitperiod},
          given={Martin},
-         given_i={M\bibinitperiod},
+         giveni={M\bibinitperiod},
       }}%
       {{hash=BS}{%
          family={Bai},
-         family_i={B\bibinitperiod},
+         familyi={B\bibinitperiod},
          given={Shi},
-         given_i={S\bibinitperiod},
+         giveni={S\bibinitperiod},
       }}%
       {{hash=DL}{%
          family={Ducas},
-         family_i={D\bibinitperiod},
-         given={L√©o},
-         given_i={L\bibinitperiod},
+         familyi={D\bibinitperiod},
+         given={L{\'e}o},
+         giveni={L\bibinitperiod},
       }}%
     }
     \strng{namehash}{AMBSDL1}
@@ -45,13 +56,10 @@
     \field{labelalpha}{ABD16}
     \field{sortinit}{A}
     \field{sortinithash}{A}
-    \field{title}{A subfield lattice attack on overstretched NTRU assumptions:
-  Cryptanalysis of some FHE and Graded Encoding Schemes}
-    \verb{url}
-    \verb http://ia.cr/2016/127
-    \endverb
-    \field{volume}{2016}
-    \field{journaltitle}{{IACR} Cryptology ePrint Archive}
+    \field{howpublished}{Cryptology ePrint Archive, Report 2016/127}
+    \field{note}{\url{http://eprint.iacr.org/2016/127}}
+    \field{title}{A subfield lattice attack on overstretched {NTRU}
+  assumptions: Cryptanalysis of some {FHE} and Graded Encoding Schemes}
     \field{year}{2016}
   \endentry
 
@@ -59,35 +67,35 @@
     \name{author}{4}{}{%
       {{hash=AB}{%
          family={Applebaum},
-         family_i={A\bibinitperiod},
+         familyi={A\bibinitperiod},
          given={Benny},
-         given_i={B\bibinitperiod},
+         giveni={B\bibinitperiod},
       }}%
       {{hash=CD}{%
          family={Cash},
-         family_i={C\bibinitperiod},
+         familyi={C\bibinitperiod},
          given={David},
-         given_i={D\bibinitperiod},
+         giveni={D\bibinitperiod},
       }}%
       {{hash=PC}{%
          family={Peikert},
-         family_i={P\bibinitperiod},
+         familyi={P\bibinitperiod},
          given={Chris},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
       {{hash=SA}{%
          family={Sahai},
-         family_i={S\bibinitperiod},
+         familyi={S\bibinitperiod},
          given={Amit},
-         given_i={A\bibinitperiod},
+         giveni={A\bibinitperiod},
       }}%
     }
     \name{editor}{1}{}{%
       {{hash=HS}{%
          family={Halevi},
-         family_i={H\bibinitperiod},
+         familyi={H\bibinitperiod},
          given={Shai},
-         given_i={S\bibinitperiod},
+         giveni={S\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
@@ -114,27 +122,27 @@
     \name{author}{4}{}{%
       {{hash=AE}{%
          family={Alkim},
-         family_i={A\bibinitperiod},
+         familyi={A\bibinitperiod},
          given={Erdem},
-         given_i={E\bibinitperiod},
+         giveni={E\bibinitperiod},
       }}%
       {{hash=DL}{%
          family={Ducas},
-         family_i={D\bibinitperiod},
+         familyi={D\bibinitperiod},
          given={L{\'e}o},
-         given_i={L\bibinitperiod},
+         giveni={L\bibinitperiod},
       }}%
       {{hash=PT}{%
          family={P{\"o}ppelmann},
-         family_i={P\bibinitperiod},
+         familyi={P\bibinitperiod},
          given={Thomas},
-         given_i={T\bibinitperiod},
+         giveni={T\bibinitperiod},
       }}%
       {{hash=SP}{%
          family={Schwabe},
-         family_i={S\bibinitperiod},
+         familyi={S\bibinitperiod},
          given={Peter},
-         given_i={P\bibinitperiod},
+         giveni={P\bibinitperiod},
       }}%
     }
     \strng{namehash}{AEDLPTSP1}
@@ -154,21 +162,21 @@
     \name{author}{3}{}{%
       {{hash=AMR}{%
          family={Albrecht},
-         family_i={A\bibinitperiod},
+         familyi={A\bibinitperiod},
          given={Martin\bibnamedelima R},
-         given_i={M\bibinitperiod\bibinitdelim R\bibinitperiod},
+         giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod},
       }}%
       {{hash=PR}{%
          family={Player},
-         family_i={P\bibinitperiod},
+         familyi={P\bibinitperiod},
          given={Rachel},
-         given_i={R\bibinitperiod},
+         giveni={R\bibinitperiod},
       }}%
       {{hash=SS}{%
          family={Scott},
-         family_i={S\bibinitperiod},
+         familyi={S\bibinitperiod},
          given={Sam},
-         given_i={S\bibinitperiod},
+         giveni={S\bibinitperiod},
       }}%
     }
     \strng{namehash}{AMRPRSS1}
@@ -190,27 +198,27 @@
     \name{author}{4}{}{%
       {{hash=BJW}{%
          family={Bos},
-         family_i={B\bibinitperiod},
+         familyi={B\bibinitperiod},
          given={Joppe\bibnamedelima W.},
-         given_i={J\bibinitperiod\bibinitdelim W\bibinitperiod},
+         giveni={J\bibinitperiod\bibinitdelim W\bibinitperiod},
       }}%
       {{hash=CC}{%
          family={Costello},
-         family_i={C\bibinitperiod},
+         familyi={C\bibinitperiod},
          given={Craig},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
       {{hash=NM}{%
          family={Naehrig},
-         family_i={N\bibinitperiod},
+         familyi={N\bibinitperiod},
          given={Michael},
-         given_i={M\bibinitperiod},
+         giveni={M\bibinitperiod},
       }}%
       {{hash=SD}{%
          family={Stebila},
-         family_i={S\bibinitperiod},
+         familyi={S\bibinitperiod},
          given={Douglas},
-         given_i={D\bibinitperiod},
+         giveni={D\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
@@ -234,276 +242,31 @@
     \field{year}{2015}
   \endentry
 
-  \entry{ETSI:PQ15}{misc}{}
-    \name{author}{19}{}{%
-      {{hash=CM}{%
-         family={Campagna},
-         family_i={C\bibinitperiod},
-         given={Matthew},
-         given_i={M\bibinitperiod},
-      }}%
-      {{hash=CL}{%
-         family={Chen},
-         family_i={C\bibinitperiod},
-         given={Lidong},
-         given_i={L\bibinitperiod},
-      }}%
-      {{hash=√DD}{%
-         prefix={√ñzg√ºr},
-         prefix_i={√\bibinitperiod},
-         family={Dagdelen},
-         family_i={D\bibinitperiod},
-         given={Dr},
-         given_i={D\bibinitperiod},
-      }}%
-      {{hash=DJ}{%
-         family={Ding},
-         family_i={D\bibinitperiod},
-         given={Jintai},
-         given_i={J\bibinitperiod},
-      }}%
-      {{hash=FJK}{%
-         family={Fernick},
-         family_i={F\bibinitperiod},
-         given={Jennifer\bibnamedelima K.},
-         given_i={J\bibinitperiod\bibinitdelim K\bibinitperiod},
-      }}%
-      {{hash=GN}{%
-         family={Gisin},
-         family_i={G\bibinitperiod},
-         given={Nicolas},
-         given_i={N\bibinitperiod},
-      }}%
-      {{hash=HD}{%
-         family={Hayford},
-         family_i={H\bibinitperiod},
-         given={Donald},
-         given_i={D\bibinitperiod},
-      }}%
-      {{hash=JT}{%
-         family={Jennewein},
-         family_i={J\bibinitperiod},
-         given={Thomas},
-         given_i={T\bibinitperiod},
-      }}%
-      {{hash=LN}{%
-         family={L√ºtkenhaus},
-         family_i={L\bibinitperiod},
-         given={Norbert},
-         given_i={N\bibinitperiod},
-      }}%
-      {{hash=MM}{%
-         family={Mosca},
-         family_i={M\bibinitperiod},
-         given={Michele},
-         given_i={M\bibinitperiod},
-      }}%
-      {{hash=NB}{%
-         family={Neill},
-         family_i={N\bibinitperiod},
-         given={Brian},
-         given_i={B\bibinitperiod},
-      }}%
-      {{hash=PM}{%
-         family={Pecen},
-         family_i={P\bibinitperiod},
-         given={Mark},
-         given_i={M\bibinitperiod},
-      }}%
-      {{hash=PR}{%
-         family={Perlner},
-         family_i={P\bibinitperiod},
-         given={Ray},
-         given_i={R\bibinitperiod},
-      }}%
-      {{hash=RG}{%
-         family={Ribordy},
-         family_i={R\bibinitperiod},
-         given={Gr√©goire},
-         given_i={G\bibinitperiod},
-      }}%
-      {{hash=SJM}{%
-         family={Schanck},
-         family_i={S\bibinitperiod},
-         given={John\bibnamedelima M.},
-         given_i={J\bibinitperiod\bibinitdelim M\bibinitperiod},
-      }}%
-      {{hash=SDD}{%
-         family={Stebila},
-         family_i={S\bibinitperiod},
-         given={Dr\bibnamedelima Douglas},
-         given_i={D\bibinitperiod\bibinitdelim D\bibinitperiod},
-      }}%
-      {{hash=WN}{%
-         family={Walenta},
-         family_i={W\bibinitperiod},
-         given={Nino},
-         given_i={N\bibinitperiod},
-      }}%
-      {{hash=WW}{%
-         family={Whyte},
-         family_i={W\bibinitperiod},
-         given={William},
-         given_i={W\bibinitperiod},
-      }}%
-      {{hash=ZDZ}{%
-         family={Zhang},
-         family_i={Z\bibinitperiod},
-         given={Dr\bibnamedelima Zhenfei},
-         given_i={D\bibinitperiod\bibinitdelim Z\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{CM+1}
-    \strng{fullhash}{CMCLDD√DJFJKGNHDJTLNMMNBPMPRRGSJMSDDWNWWZDZ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelalpha}{Cam+15}
-    \field{sortinit}{C}
-    \field{sortinithash}{C}
-  \field{howpublished}{\url{http://www.etsi.org/images/files/ETSIWhitePapers/QuantumSafeWhitepaper.pdf}}
-    \field{title}{ETSI Whitepaper: Quantum Safe Cryptography and Security}
-    \field{year}{2015}
-    \warn{\item Invalid format of field 'month'}
-  \endentry
-
-  \entry{EC:CDPR15}{inproceedings}{}
-    \name{author}{4}{}{%
-      {{hash=CR}{%
-         family={Cramer},
-         family_i={C\bibinitperiod},
-         given={Ronald},
-         given_i={R\bibinitperiod},
-      }}%
-      {{hash=DL}{%
-         family={Ducas},
-         family_i={D\bibinitperiod},
-         given={L{\'e}o},
-         given_i={L\bibinitperiod},
-      }}%
-      {{hash=PC}{%
-         family={Peikert},
-         family_i={P\bibinitperiod},
-         given={Chris},
-         given_i={C\bibinitperiod},
-      }}%
-      {{hash=RO}{%
-         family={Regev},
-         family_i={R\bibinitperiod},
-         given={Oded},
-         given_i={O\bibinitperiod},
-      }}%
-    }
-    \name{editor}{2}{}{%
-      {{hash=FM}{%
-         family={Fischlin},
-         family_i={F\bibinitperiod},
-         given={Marc},
-         given_i={M\bibinitperiod},
-      }}%
-      {{hash=CJS}{%
-         family={Coron},
-         family_i={C\bibinitperiod},
-         given={Jean-S{\'e}bastien},
-         given_i={J\bibinitperiod-S\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Springer Berlin Heidelberg}%
-    }
-    \strng{namehash}{CRDLPCRO1}
-    \strng{fullhash}{CRDLPCRO1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelalpha}{CDPR16}
-    \field{sortinit}{C}
-    \field{sortinithash}{C}
-    \field{booktitle}{EUROCRYPT 2016}
-    \field{pages}{559\bibrangedash 585}
-    \field{title}{Recovering Short Generators of Principal Ideals in Cyclotomic
-  Rings}
-    \field{year}{2016}
-  \endentry
-
-  \entry{CESG:PQ16}{misc}{}
-    \name{author}{1}{}{%
-      {{hash=C}{%
-         family={CESG},
-         family_i={C\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{C1}
-    \strng{fullhash}{C1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelalpha}{CES16}
-    \field{sortinit}{C}
-    \field{sortinithash}{C}
-  \field{howpublished}{\url{https://www.cesg.gov.uk/white-papers/quantum-key-distribution}}
-    \field{title}{Quantum Key Distribution --- A CESG White Paper}
-    \field{year}{2016}
-    \warn{\item Invalid format of field 'month'}
-  \endentry
-
-  \entry{CamGroShe14}{misc}{}
-    \name{author}{3}{}{%
-      {{hash=CP}{%
-         family={Campbell},
-         family_i={C\bibinitperiod},
-         given={Peter},
-         given_i={P\bibinitperiod},
-      }}%
-      {{hash=GM}{%
-         family={Groves},
-         family_i={G\bibinitperiod},
-         given={Michael},
-         given_i={M\bibinitperiod},
-      }}%
-      {{hash=SD}{%
-         family={Shepherd},
-         family_i={S\bibinitperiod},
-         given={Dan},
-         given_i={D\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{CPGMSD1}
-    \strng{fullhash}{CPGMSD1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelalpha}{CGS14}
-    \field{sortinit}{C}
-    \field{sortinithash}{C}
-    \field{howpublished}{ETSI 2nd Quantum-Safe Crypto Workshop}
-    \field{note}{available at
-  \url{http://docbox.etsi.org/Workshop/2014/201410_CRYPTO/S07_Systems_and_Attacks/S07_Groves_Annex.pdf}}
-    \field{title}{SOLILOQUY: A CAUTIONARY TALE}
-    \field{year}{2014}
-  \endentry
-
-  \entry{EPRINT:CKMS16}{article}{}
+  \entry{EPRINT:CKMS16}{misc}{}
     \name{author}{4}{}{%
       {{hash=CS}{%
          family={Chatterjee},
-         family_i={C\bibinitperiod},
+         familyi={C\bibinitperiod},
          given={Sanjit},
-         given_i={S\bibinitperiod},
+         giveni={S\bibinitperiod},
       }}%
       {{hash=KN}{%
          family={Koblitz},
-         family_i={K\bibinitperiod},
+         familyi={K\bibinitperiod},
          given={Neal},
-         given_i={N\bibinitperiod},
+         giveni={N\bibinitperiod},
       }}%
       {{hash=MA}{%
          family={Menezes},
-         family_i={M\bibinitperiod},
+         familyi={M\bibinitperiod},
          given={Alfred},
-         given_i={A\bibinitperiod},
+         giveni={A\bibinitperiod},
       }}%
       {{hash=SP}{%
          family={Sarkar},
-         family_i={S\bibinitperiod},
+         familyi={S\bibinitperiod},
          given={Palash},
-         given_i={P\bibinitperiod},
+         giveni={P\bibinitperiod},
       }}%
     }
     \strng{namehash}{CSKNMASP1}
@@ -513,14 +276,10 @@
     \field{labelalpha}{CKMS16}
     \field{sortinit}{C}
     \field{sortinithash}{C}
-    \field{pages}{360}
-    \field{title}{Another Look at Tightness {II:} Practical Issues in
+    \field{howpublished}{Cryptology ePrint Archive, Report 2016/360}
+    \field{note}{\url{http://eprint.iacr.org/2016/360}}
+    \field{title}{Another Look at Tightness {II}: Practical Issues in
   Cryptography}
-    \verb{url}
-    \verb http://eprint.iacr.org/2016/360
-    \endverb
-    \field{volume}{2016}
-    \field{journaltitle}{{IACR} Cryptology ePrint Archive}
     \field{year}{2016}
   \endentry
 
@@ -528,41 +287,41 @@
     \name{author}{4}{}{%
       {{hash=DL}{%
          family={Ducas},
-         family_i={D\bibinitperiod},
+         familyi={D\bibinitperiod},
          given={L{\'e}o},
-         given_i={L\bibinitperiod},
+         giveni={L\bibinitperiod},
       }}%
       {{hash=DA}{%
          family={Durmus},
-         family_i={D\bibinitperiod},
+         familyi={D\bibinitperiod},
          given={Alain},
-         given_i={A\bibinitperiod},
+         giveni={A\bibinitperiod},
       }}%
       {{hash=LT}{%
          family={Lepoint},
-         family_i={L\bibinitperiod},
+         familyi={L\bibinitperiod},
          given={Tancr{\`e}de},
-         given_i={T\bibinitperiod},
+         giveni={T\bibinitperiod},
       }}%
       {{hash=LV}{%
          family={Lyubashevsky},
-         family_i={L\bibinitperiod},
+         familyi={L\bibinitperiod},
          given={Vadim},
-         given_i={V\bibinitperiod},
+         giveni={V\bibinitperiod},
       }}%
     }
     \name{editor}{2}{}{%
       {{hash=CR}{%
          family={Canetti},
-         family_i={C\bibinitperiod},
+         familyi={C\bibinitperiod},
          given={Ran},
-         given_i={R\bibinitperiod},
+         giveni={R\bibinitperiod},
       }}%
       {{hash=GJA}{%
          family={Garay},
-         family_i={G\bibinitperiod},
+         familyi={G\bibinitperiod},
          given={Juan\bibnamedelima A.},
-         given_i={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+         giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
@@ -581,68 +340,45 @@
     \endverb
     \field{pages}{40\bibrangedash 56}
     \field{series}{{LNCS}}
-    \field{title}{Lattice Signatures and Bimodal Gaussians}
+    \field{title}{Lattice Signatures and Bimodal {Gaussians}}
     \field{volume}{8042}
     \field{month}{08}
     \field{year}{2013}
-  \endentry
-
-  \entry{NSA:PQ15}{misc}{}
-    \name{author}{1}{}{%
-      {{hash=DNSAIA}{%
-         family={Directorate},
-         family_i={D\bibinitperiod},
-         given={National Security Agency: Information\bibnamedelima Assurance},
-         given_i={N\bibinitperiod\bibinitdelim S\bibinitperiod A\bibinitperiod
-  I\bibinitperiod\bibinitdelim A\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{DNSAIA1}
-    \strng{fullhash}{DNSAIA1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelalpha}{Dir15}
-    \field{sortinit}{D}
-    \field{sortinithash}{D}
-  \field{howpublished}{\url{https://www.nsa.gov/ia/programs/suiteb_cryptography/}}
-    \field{title}{Cryptography Today}
-    \field{year}{2015}
-    \warn{\item Invalid format of field 'month'}
   \endentry
 
   \entry{STOC:GenPeiVai08}{inproceedings}{}
     \name{author}{3}{}{%
       {{hash=GC}{%
          family={Gentry},
-         family_i={G\bibinitperiod},
+         familyi={G\bibinitperiod},
          given={Craig},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
       {{hash=PC}{%
          family={Peikert},
-         family_i={P\bibinitperiod},
+         familyi={P\bibinitperiod},
          given={Chris},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
       {{hash=VV}{%
          family={Vaikuntanathan},
-         family_i={V\bibinitperiod},
+         familyi={V\bibinitperiod},
          given={Vinod},
-         given_i={V\bibinitperiod},
+         giveni={V\bibinitperiod},
       }}%
     }
     \name{editor}{2}{}{%
       {{hash=LRE}{%
          family={Ladner},
-         family_i={L\bibinitperiod},
+         familyi={L\bibinitperiod},
          given={Richard\bibnamedelima E.},
-         given_i={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
       }}%
       {{hash=DC}{%
          family={Dwork},
-         family_i={D\bibinitperiod},
+         familyi={D\bibinitperiod},
          given={Cynthia},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
@@ -667,23 +403,23 @@
     \name{author}{2}{}{%
       {{hash=GC}{%
          family={Gentry},
-         family_i={G\bibinitperiod},
+         familyi={G\bibinitperiod},
          given={Craig},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
       {{hash=SM}{%
          family={Szydlo},
-         family_i={S\bibinitperiod},
+         familyi={S\bibinitperiod},
          given={Michael},
-         given_i={M\bibinitperiod},
+         giveni={M\bibinitperiod},
       }}%
     }
     \name{editor}{1}{}{%
       {{hash=KLR}{%
          family={Knudsen},
-         family_i={K\bibinitperiod},
+         familyi={K\bibinitperiod},
          given={Lars\bibnamedelima R.},
-         given_i={L\bibinitperiod\bibinitdelim R\bibinitperiod},
+         giveni={L\bibinitperiod\bibinitdelim R\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
@@ -709,17 +445,17 @@
     \name{author}{1}{}{%
       {{hash=PC}{%
          family={Peikert},
-         family_i={P\bibinitperiod},
+         familyi={P\bibinitperiod},
          given={Chris},
-         given_i={C\bibinitperiod},
+         giveni={C\bibinitperiod},
       }}%
     }
     \name{editor}{1}{}{%
       {{hash=MM}{%
          family={Mitzenmacher},
-         family_i={M\bibinitperiod},
+         familyi={M\bibinitperiod},
          given={Michael},
-         given_i={M\bibinitperiod},
+         giveni={M\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
@@ -744,23 +480,23 @@
     \name{author}{1}{}{%
       {{hash=RO}{%
          family={Regev},
-         family_i={R\bibinitperiod},
+         familyi={R\bibinitperiod},
          given={Oded},
-         given_i={O\bibinitperiod},
+         giveni={O\bibinitperiod},
       }}%
     }
     \name{editor}{2}{}{%
       {{hash=GHN}{%
          family={Gabow},
-         family_i={G\bibinitperiod},
+         familyi={G\bibinitperiod},
          given={Harold\bibnamedelima N.},
-         given_i={H\bibinitperiod\bibinitdelim N\bibinitperiod},
+         giveni={H\bibinitperiod\bibinitdelim N\bibinitperiod},
       }}%
       {{hash=FR}{%
          family={Fagin},
-         family_i={F\bibinitperiod},
+         familyi={F\bibinitperiod},
          given={Ronald},
-         given_i={R\bibinitperiod},
+         giveni={R\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
