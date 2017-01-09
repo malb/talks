@@ -93,7 +93,7 @@ Both problems are easy on quantum computers
 
 Given $(\vec{A},\vec{c})$ with $\vec{c} \in \ZZq^{m}$, $\vec{A} \in \ZZq^{m × n}$ and $\vec{s} \in \ZZq^{n}$ is
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \[
 \left(\begin{array}{c}
 \\
@@ -118,7 +118,7 @@ Given $(\vec{A},\vec{c})$ with $\vec{c} \in \ZZq^{m}$, $\vec{A} \in \ZZq^{m × n
 \\
 \end{array} \right)
 \]
-#+END_LaTeX
+#+END_EXPORT
 
 or $\vec{c} \sample \U{\ZZq^{m}}$.
 
@@ -127,7 +127,7 @@ or $\vec{c} \sample \U{\ZZq^{m}}$.
 
 Given $(\vec{A},\vec{c})$ with $\vec{c} \in \ZZq^{m}$, $\vec{A} \in \ZZq^{m × n}$, $\vec{s} \in \ZZq^{n}$ and *small $\vec{e} \in \ZZ^{m}$* is
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \[
 \left(\begin{array}{c}
 \\
@@ -162,7 +162,7 @@ Given $(\vec{A},\vec{c})$ with $\vec{c} \in \ZZq^{m}$, $\vec{A} \in \ZZq^{m × n
 \end{array} 
 \right)}
 \]
-#+END_LaTeX
+#+END_EXPORT
 
 or $\vec{c} \sample \U{\ZZq^{m}}$.
 
@@ -175,7 +175,7 @@ or $\vec{c} \sample \U{\ZZq^{m}}$.
 :BEAMER_col: 0.5
 :END:
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \begin{tikzpicture}[scale=0.7]
   \begin{axis}[
     domain=-10:10,
@@ -207,7 +207,7 @@ or $\vec{c} \sample \U{\ZZq^{m}}$.
     };
   \end{axis}
 \end{tikzpicture}
-#+END_LaTeX
+#+END_EXPORT
 
 
 ***                                                                    :BMCOL:
@@ -390,7 +390,7 @@ fullcite:JMC:AlbPlaSco15
 :END:
 
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \begin{tikzpicture}
 \begin{axis}[domain=0:80,grid=major,smooth,xlabel=dimension,width=0.9\textwidth,height=0.5\textheight,
 ylabel=SVP running time in $s$,]
@@ -414,7 +414,7 @@ ylabel=SVP running time in $s$,]
 };   
 \end{axis}
 \end{tikzpicture}
-#+END_LaTeX
+#+END_EXPORT
 
 *** Software                                                         :B_block:
 :PROPERTIES:

@@ -480,7 +480,7 @@ Calling =fmpq_poly_set_array_mpq= instead of setting each coefficient one-by-one
 
 ** Algorithm
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \begin{algorithmic}
   \IF{$n=1$}
   \STATE $g_0 \gets f_0^{-1}$
@@ -495,7 +495,7 @@ Calling =fmpq_poly_set_array_mpq= instead of setting each coefficient one-by-one
   \RETURN $\tilde f^{-1}(X)$
   \ENDIF
 \end{algorithmic}
-#+END_LaTeX
+#+END_EXPORT
 
 Approximate inverse of $f(X) \mod \cycf$ using =prec= bits of precision
 

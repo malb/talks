@@ -148,9 +148,9 @@ It’s hard to do it properly.
 
 * It’s hard to do it properly, revisited (3/5/16)
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \begin{tiny}
-#+END_LaTeX
+#+END_EXPORT
 
 #+BEGIN_EXAMPLE
 Padding oracle in AES-NI CBC MAC check (CVE-2016-2107)
@@ -177,9 +177,9 @@ Somorovsky using TLS-Attacker. The fix was developed by Kurt Roeckx
 of the OpenSSL development team.
 #+END_EXAMPLE
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \end{tiny}
-#+END_LaTeX
+#+END_EXPORT
 
 
 https://www.openssl.org/news/secadv/20160503.txt

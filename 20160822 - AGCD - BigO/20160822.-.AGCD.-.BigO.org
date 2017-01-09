@@ -169,7 +169,7 @@ If only we could compute the pairwise GCD of all RSA moduli on the Internet \dot
 
 Let, for example, $t = 4$.
 
-#+BEGIN_LaTeX
+#+BEGIN_EXPORT LaTeX
 \begin{center}
 \begin{tikzpicture}[node distance=3cm,on grid,scale=0.6, every node/.style={transform shape}]
 \node[anchor=center] (N0) at (0,0) {$N_0$};
@@ -210,7 +210,7 @@ Let, for example, $t = 4$.
 
 \end{tikzpicture}
 \end{center}
-#+END_LaTeX
+#+END_EXPORT
 
 - Compute $R_{1} = \gcd(M_{1}/N_{1}, N_1), \dots, R_{4} = \gcd(M_{4}/N_{4}, N_{4})$
 - Cost: $\bigO{t ⋅ κ ⋅ \log^2 (t ⋅ κ) \log\log (t ⋅ κ)}$

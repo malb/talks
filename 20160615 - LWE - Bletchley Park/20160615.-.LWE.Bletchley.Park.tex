@@ -1,4 +1,5 @@
-% Created 2016-10-14 Fri 13:12
+% Created 2017-01-08 Sun 16:28
+% Intended LaTeX compiler: pdflatex
 \documentclass[presentation,smaller]{beamer}
 \RequirePackage{etex}
 \RequirePackage[l2tabu,orthodox]{nag}            %% Warn about obsolete commands and packages
@@ -145,7 +146,6 @@
 %%% Local Variables:
 %%% mode: latex
 %%% End:
-\usepackage{fixltx2e}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage{longtable}
@@ -157,11 +157,10 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\usepackage[color=FFDD00]{todonotes}
 \usepackage{microtype}
 \usepackage{newunicodechar}
 \usepackage{unicodesymbols}
-\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda]{cryptocode}
+\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda,landau]{cryptocode}
 \usepackage{xspace}
 \usepackage{units}
 \usepackage{nicefrac}
@@ -171,6 +170,7 @@
 \usepackage{amssymb}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage[color=yellow!40]{todonotes}
 \newcommand{\ZZ}[1][blank]{\ensuremath{\ifthenelse{\equal{#1}{blank}}{\mathbb{Z}}{\mathbb{Z}\left[#1\right]}\xspace}}
 \newcommand{\QQ}[1][blank]{\ensuremath{\ifthenelse{\equal{#1}{blank}}{\mathbb{Q}}{\mathbb{Q}\left[#1\right]}\xspace}}
 \newcommand{\ZZq}[1][blank]{\ensuremath{\ifthenelse{\equal{#1}{blank}}{\mathbb{Z}_q}{\mathbb{Z}_q\left[#1\right]}\xspace}}
@@ -189,7 +189,7 @@ pdfauthor={Martin R. Albrecht \texttt{@martinralbrecht}},
 pdftitle={Learning with Errors},
 pdfkeywords={},
 pdfsubject={},
-pdfcreator={Emacs 24.5.1 (Org mode 8.3.6)},
+pdfcreator={Emacs 25.1.1 (Org mode 9.0.3)},
 pdflang={English},
 colorlinks,
 citecolor=gray,
@@ -206,11 +206,36 @@ urlcolor=gray
 
 
 \section{Motivation}
-\label{sec:orgheadline5}
+\label{sec:org9621948}
 
-\begin{frame}[label={sec:orgheadline1}]{A Typical Scenario}
+\begin{frame}[fragile,label={sec:orgdb9f820}]{A Typical Scenario}
+ \lstset{language=plantuml,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+skinparam monochrome true
+skinparam dpi 600
+skinparam backgroundColor transparent
+skinparam classBackgroundColor transparent
+skinparam style strictuml
+skinparam handwritten true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+
+activate Client
+Client -> Server: g<sup>a</sup>
+activate Server
+Client <- Server: g<sup>b</sup>, sign<sub>sk</sub>(g<sup>b</sup>)
+note left: K= g<sup>ab</sup>
+Client -> Server: E<sub>K</sub>(data)
+note right: K= g<sup>ab</sup>
+Server --> Client: E<sub>K</sub>(more data)
+deactivate Server
+deactivate Client
+\end{lstlisting}
+
+\begin{center}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{key exchange.png}
+\end{center}
 \end{center}
 
 \begin{itemize}
@@ -219,7 +244,7 @@ urlcolor=gray
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline2}]{Bye, bye DDH and RSA (?)}
+\begin{frame}[label={sec:org1437367}]{Bye, bye DDH and RSA (?)}
 \begin{center}
 Both problems are easy on quantum computers
 \end{center}
@@ -234,14 +259,16 @@ Both problems are easy on quantum computers
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline3}]{Hello Post-Quantum}
+\begin{frame}[label={sec:orgf7b0cfd}]{Hello Post-Quantum}
+\begin{center}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./competition.png}
+\end{center}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline4}]{Post-Quantum Families}
+\begin{frame}[label={sec:orgf00203b}]{Post-Quantum Families}
 \begin{itemize}
 \item Multivariate Quadratic Cryptography
 \item Code-based Cryptography
@@ -251,9 +278,9 @@ Both problems are easy on quantum computers
 \end{frame}
 
 \section{Learning with Errors}
-\label{sec:orgheadline19}
+\label{sec:org4bac775}
 
-\begin{frame}[label={sec:orgheadline6}]{Linear System Solving}
+\begin{frame}[label={sec:org8b2c2ec}]{Linear System Solving}
 Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZq^{m}\), \(\vec{A} \in \ZZq^{m × n}\) and \(\vec{s} \in \ZZq^{n}\) is
 
 \[
@@ -285,7 +312,7 @@ or \(\vec{c} \sample \U{\ZZq^{m}}\).
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline7}]{Learning with Errors}
+\begin{frame}[label={sec:org072e156}]{Learning with Errors}
 Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZq^{m}\), \(\vec{A} \in \ZZq^{m × n}\), \(\vec{s} \in \ZZq^{n}\) and \alert{small \(\vec{e} \in \ZZ^{m}\)} is
 
 \[
@@ -327,7 +354,7 @@ or \(\vec{c} \sample \U{\ZZq^{m}}\).
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline8}]{Parameters}
+\begin{frame}[label={sec:org3159ad1}]{Parameters}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{tikzpicture}[scale=0.7]
@@ -382,64 +409,74 @@ or \(\vec{c} \sample \U{\ZZq^{m}}\).
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline9}]{Lattices}
+\begin{frame}[label={sec:orgd1aa6e2}]{Lattices}
 \begin{itemize}
 \item A lattice is a discrete additive subgroup of \(\mathbb{R}^n\).
 
 \item Let \(\vec{B} = \{ \vec{b}_1, \ldots, \vec{b}_n \}\) be \(m\) linearly independent vectors in \(\mathbb{R}^n\). Then \(L(\vec{B})=\{ \sum_{i=1}^{n} x_i \vec{b}_i \,|\, x_i \in \ZZ\}\) is the lattice generated by \(\vec{B}\).
 \end{itemize}
 
+\begin{center}
 \includegraphics[width=.9\linewidth]{./joop-latt1.pdf}
+\end{center}
 
 \tiny Picture Credit: Joop van der Pol
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline10}]{Bounded Distance Decoding}
+\begin{frame}[label={sec:org672584c}]{Bounded Distance Decoding}
 Let \(\vec{B} = [\vec{A} | q\vec{I}]^T\). LWE = BDD for \(\vec{c}\) and \(L(\vec{B})\).
 
+\begin{center}
 \includegraphics[width=.9\linewidth]{./joop-cvp.pdf}
+\end{center}
 
 \tiny Picture Credit: Joop van der Pol
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline11}]{Shortest Vector Problem}
+\begin{frame}[label={sec:org00d448d}]{Shortest Vector Problem}
 \begin{description}
 \item[{SVP}] Find the shortest non-zero vector in \(L(\vec{B})\)
 \item[{GapSVP\(_γ\)}] return YES if \(λ_1(L(\vec{B})) ≤ d\), and NO if \(λ_1(L(\vec{B})) > γ⋅d\).
 \end{description}
 
 \begin{center}
+\begin{center}
 \includegraphics[width=.9\linewidth]{./joop-l1.pdf}
+\end{center}
 \end{center}
 
 \tiny Picture Credit: Joop van der Pol
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline12}]{Good and Bad Bases}
+\begin{frame}[label={sec:org27e262e}]{Good and Bad Bases}
 With a “good basis” many lattice problems are easy.
 
 \begin{center}
+\begin{center}
 \includegraphics[width=.9\linewidth]{./joop-latt1.pdf}
+\end{center}
 \end{center}
 
 \tiny Picture Credit: Joop van der Pol
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline13}]{Good and Bad Bases}
+\begin{frame}[label={sec:org59a9dc6}]{Good and Bad Bases}
 With “bad basis” GapSVP\(_γ\) for polynomial \(γ\) assumed exponential.
 
 \begin{center}
+\begin{center}
 \includegraphics[width=.9\linewidth]{./joop-latt2a.pdf}
+\end{center}
 \end{center}
 
 \tiny Picture Credit: Joop van der Pol
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline14}]{Regev’s Reduction}
+\begin{frame}[label={sec:orgf6824dd}]{Regev’s Reduction}
 \begin{theorem}
 \begin{itemize}
 \item Let \(e\) follow \(χ_α\), a (discrete) Gaussian distribution over \(\ZZ\) with standard deviation \(σ = \frac{α\, q}{\sqrt{2π}}\).
@@ -451,7 +488,7 @@ With “bad basis” GapSVP\(_γ\) for polynomial \(γ\) assumed exponential.
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline15}]{Encryption}
+\begin{frame}[label={sec:orgd4bfd18}]{Encryption}
 \begin{description}
 \item[{Public Key}] \(\vec{A},\vec{c}\) with \(\vec{c} = \vec{A}\cdot \vec{s} + \vec{e}\)
 \item[{Secret Key}] \(\vec{s}\)
@@ -461,7 +498,7 @@ With “bad basis” GapSVP\(_γ\) for polynomial \(γ\) assumed exponential.
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline16}]{Key Exchange: LWE Normal Form}
+\begin{frame}[label={sec:org71d7424}]{Key Exchange: LWE Normal Form}
 Given an LWE instance with \(\vec{s} \sample \U{\ZZ_q^n}\), we can construct samples of the form \((\vec{a}, \langle \vec{a}, \vec{s}'\rangle+e)\) with \(s_i'\) sampled from the distribution of \(e\).
 
 \begin{itemize}
@@ -476,7 +513,7 @@ Given an LWE instance with \(\vec{s} \sample \U{\ZZ_q^n}\), we can construct sam
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline17}]{Key Exchange \footfullcite{SP:BCNS15,EPRINT:ADPS15}}
+\begin{frame}[label={sec:orge9efbdd}]{Key Exchange \footfullcite{SP:BCNS15,EPRINT:ADPS15}}
 \begin{description}
 \item[{Alice}] samples \(\vec{A},\vec{c}_a=\vec{A}\cdot \vec{s}_a + \vec{e}_a\) with \(\vec{s}_a \sample χ_α^n\)  \\
 sends \((\vec{A},\vec{c})\)
@@ -489,7 +526,7 @@ sends \(\vec{c}_b\)
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline18}]{Signatures (from SIS)}
+\begin{frame}[label={sec:orgada35b3}]{Signatures (from SIS)}
 \begin{block}{SIS}
 Given \(\vec{A} \in \mathbb{Z}_q^{m \times n}\) find \alert{small} \(\vec{s}\) such that \(\vec{s}⋅\vec{A} = 0\) 
 \end{block}
@@ -504,9 +541,9 @@ Given \(\vec{A} \in \mathbb{Z}_q^{m \times n}\) find \alert{small} \(\vec{s}\) s
 
 
 \section{Challenges}
-\label{sec:orgheadline30}
+\label{sec:org4ea51c0}
 
-\begin{frame}[label={sec:orgheadline20}]{Regev’s Reduction}
+\begin{frame}[label={sec:orgf28b335}]{Regev’s Reduction}
 \begin{itemize}
 \item<1-> An algorithm solving LWE 
 \begin{itemize}
@@ -522,7 +559,7 @@ implies a polynomial-time algorithm solving GapSVP\(_γ\) calling LWE solving or
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline21}]{How Hard is \(2^{\mathcal{O}(n)}\) Time and \(2^{\mathcal{O}(n)}\) Memory?}
+\begin{frame}[label={sec:org8c1f772}]{How Hard is \(2^{\mathcal{O}(n)}\) Time and \(2^{\mathcal{O}(n)}\) Memory?}
 \begin{itemize}
 \item How big should we choose \(n\), \(q\) and the noise?
 \item Many problem formulations: SIS, BDD, uSVP, …
@@ -533,7 +570,7 @@ implies a polynomial-time algorithm solving GapSVP\(_γ\) calling LWE solving or
 \fullcite{JMC:AlbPlaSco15}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline22}]{Lattice Reduction}
+\begin{frame}[label={sec:org4d28eb8}]{Lattice Reduction}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{itemize}
@@ -579,7 +616,7 @@ ylabel=SVP running time in $s$,]
 \end{frame}
 
 
-\begin{frame}[label={sec:orgheadline23}]{Performance}
+\begin{frame}[label={sec:org0a34fc6}]{Performance}
 \begin{itemize}
 \item \alert{Computational} cost for LWE is quite manageable because it only involves simple linear operations over \(\mathbb{Z}_q\) where \(q\) can be word-sized.
 \item Public-key and ciphertext \alert{sizes} can be prohibitively expensive: \(\mathcal{O}(n^2 \log_2 q)\) and \(\mathcal{O}(n \log_2 q)\)
@@ -590,7 +627,7 @@ Post-quantum schemes are not slow, but they are big.
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline24}]{Better Performance: Ring-LWE}
+\begin{frame}[label={sec:orgf16b4b0}]{Better Performance: Ring-LWE}
 \begin{itemize}
 \item Replace random \(\vec{A}\) by structured matrices, e.g. cyclic or nega-cyclic matrices.
 \item This is equivalent to computing in \(\ZZ_q[x]/P(x)\).
@@ -604,7 +641,7 @@ Post-quantum schemes are not slow, but they are big.
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline25}]{Rings: Not all Problems are Hard}
+\begin{frame}[label={sec:orgd9f7dd2}]{Rings: Not all Problems are Hard}
 \begin{itemize}
 \item Let \(n=2^k\), sample some small \(g ∈ \ZZ[x]/(x^n+1)\).
 \item Consider the matrix \(\vec{G}\) spanned by the coefficient vectors of \(\{x^i \cdot g \bmod x^n+1\}\).
@@ -615,18 +652,18 @@ Post-quantum schemes are not slow, but they are big.
 Finding \(g\) takes polynomial time on a quantum computer.\footfullcite{CamGroShe14,EC:CDPR15}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline26}]{Rings: Not all Problems are as Hard}
+\begin{frame}[label={sec:org2302be4}]{Rings: Not all Problems are as Hard}
 \begin{itemize}
 \item What if \(\ZZq[x]/P(x)\) has subfields?
 \item Distinguishing \(h = f/g \in \ZZ_q[x]/P(x)\) from random for small \(f\) and \(g\) and big \(q\) is easier than expected.\footfullcite{EC:GenSzy02,EPRINT:AlbBaiDuc16}
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline27}]{Rings: No Known Attacks}
+\begin{frame}[label={sec:org82d6268}]{Rings: No Known Attacks}
 There is \alert{no known attack} which successfully exploits ring structure for properly chosen Ring-LWE parameters.
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline28}]{CCA Security}
+\begin{frame}[label={sec:org739fcf5}]{CCA Security}
 \begin{itemize}
 \item The schemes described here (and in the literature) promise IND-CPA security, i.e. security against chosen-plaintext attacks.
 \item They do not promise IND-CCA security, i.e. security against chosen-ciphertext attacks.
@@ -634,7 +671,7 @@ There is \alert{no known attack} which successfully exploits ring structure for 
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline29}]{Fin}
+\begin{frame}[label={sec:org719d981}]{Fin}
 \begin{center}
 \begin{Large}
 \alert{Thank You}

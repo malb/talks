@@ -1,4 +1,5 @@
-% Created 2016-10-14 Fri 13:12
+% Created 2017-01-08 Sun 16:28
+% Intended LaTeX compiler: pdflatex
 \documentclass[presentation,smaller]{beamer}
 \RequirePackage{etex}
 \RequirePackage[l2tabu,orthodox]{nag}            %% Warn about obsolete commands and packages
@@ -145,7 +146,6 @@
 %%% Local Variables:
 %%% mode: latex
 %%% End:
-\usepackage{fixltx2e}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage{longtable}
@@ -157,11 +157,10 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\usepackage[color=FFDD00]{todonotes}
 \usepackage{microtype}
 \usepackage{newunicodechar}
 \usepackage{unicodesymbols}
-\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda]{cryptocode}
+\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda,landau]{cryptocode}
 \usepackage{xspace}
 \usepackage{units}
 \usepackage{nicefrac}
@@ -171,6 +170,7 @@
 \usepackage{amssymb}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage[color=yellow!40]{todonotes}
 \newcommand{\ZZ}[1][blank]{\ensuremath{\ifthenelse{\equal{#1}{blank}}{\mathbb{Z}}{\mathbb{Z}\left[#1\right]}\xspace}}
 \usepackage{filecontents}
 \usepackage{url}
@@ -188,7 +188,7 @@ pdfauthor={Martin R. Albrecht \textbf{@martinralbrecht}},
 pdftitle={Greatest Common Divisors: Attacks on RSA and Post-Quantum Security},
 pdfkeywords={},
 pdfsubject={},
-pdfcreator={Emacs 24.5.1 (Org mode 8.3.6)},
+pdfcreator={Emacs 25.1.1 (Org mode 9.0.3)},
 pdflang={English},
 colorlinks,
 citecolor=gray,
@@ -206,9 +206,9 @@ urlcolor=gray
 
 
 \section{Greatest Common Divisors}
-\label{sec:orgheadline2}
+\label{sec:orge79265a}
 
-\begin{frame}[fragile,label={sec:orgheadline1}]{Euclidean algorithm}
+\begin{frame}[fragile,label={sec:org82cccc9}]{Euclidean algorithm}
  Given two integers \(a, b < N = 2^κ\) the Euclidean algorithm computes their greatest common divisor \(\gcd(a,b)\).
 
 \lstset{language=Python,label= ,caption= ,captionpos=b,numbers=none}
@@ -227,9 +227,9 @@ def gcd(a, b):
 \end{frame}
 
 \section{RSA}
-\label{sec:orgheadline10}
+\label{sec:org888da86}
 
-\begin{frame}[label={sec:orgheadline3}]{Public key encryption}
+\begin{frame}[label={sec:org65b588d}]{Public key encryption}
 \begin{description}
 \item[{KeyGen}] Bob sends padlock \alert{\(pk\)} to Alice and keeps the key \alert{\(sk\)}.
 
@@ -239,7 +239,7 @@ def gcd(a, b):
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline4}]{Public key encryption}
+\begin{frame}[label={sec:orgd9276f5}]{Public key encryption}
 \begin{description}
 \item[{KeyGen}] Bob generates a key pair \alert{\((sk, pk)\)} and publishes \alert{\(pk\)}.
 
@@ -249,7 +249,7 @@ def gcd(a, b):
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline5}]{Naive RSA}
+\begin{frame}[label={sec:org6023a3d}]{Naive RSA}
 \begin{description}
 \item[{KeyGen}] The public key is \((N,e)\) and the private key is \(d\), with
 
@@ -265,7 +265,7 @@ def gcd(a, b):
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline6}]{Naive RSA is not IND-CCA secure}
+\begin{frame}[label={sec:org5f0bde3}]{Naive RSA is not IND-CCA secure}
 \begin{itemize}[<+->]
 \item Assume we want to decrypt \(c = m^e \bmod N\) with access to an oracle which will decrypt any ciphertext but \(c\).
 
@@ -281,23 +281,31 @@ def gcd(a, b):
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline7}]{RSA-OAEP}
+\begin{frame}[label={sec:orgdef03c8}]{RSA-OAEP}
+\begin{center}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{./rsa-oaep.pdf}
+\end{center}
 \end{center}
 
 Use RSA-OAEP (also sometimes called "PKCS\#1 v2.1 encryption").
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline8}]{“We use RSA!”}
+\begin{frame}[label={sec:orgea0b0c7}]{“We use RSA!”}
 \begin{description}
-\item[{boxcryptor}] \includegraphics[width=.9\linewidth]{./boxcryptor.png}
-\item[{telegram}] \includegraphics[width=.9\linewidth]{./telegram.png}
-\item[{sicher}] \includegraphics[width=.9\linewidth]{./sicher.png}
+\item[{boxcryptor}] \begin{center}
+\includegraphics[width=.9\linewidth]{./boxcryptor.png}
+\end{center}
+\item[{telegram}] \begin{center}
+\includegraphics[width=.9\linewidth]{./telegram.png}
+\end{center}
+\item[{sicher}] \begin{center}
+\includegraphics[width=.9\linewidth]{./sicher.png}
+\end{center}
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline9}]{Classical attacks on RSA}
+\begin{frame}[label={sec:orge96d1e6}]{Classical attacks on RSA}
 \begin{itemize}
 \item An adversary who can factor large integers can break RSA.
 
@@ -315,8 +323,8 @@ This does not mean an adversary \textbf{has} to factor to solve RSA.
 \end{frame}
 
 \section{The GCD attack on bad random numbers}
-\label{sec:orgheadline18}
-\begin{frame}[label={sec:orgheadline11}]{Much randomness}
+\label{sec:org7703e79}
+\begin{frame}[label={sec:org5ee5f72}]{Much randomness}
 \begin{itemize}
 \item When we generate RSA moduli, we need to sample two good prime numbers of bitsize \(κ/2\)
 \item The probability that a random number of bitsize \(κ/2\) is prime, is about \(1/κ\).
@@ -325,7 +333,7 @@ This does not mean an adversary \textbf{has} to factor to solve RSA.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline12}]{Collecting entropy}
+\begin{frame}[label={sec:org19350d4}]{Collecting entropy}
 Random bits can be gathered from the environment using various sensors, e.g.
 
 \begin{itemize}
@@ -337,7 +345,7 @@ Random bits can be gathered from the environment using various sensors, e.g.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline13}]{What could possibly go wrong?}
+\begin{frame}[label={sec:org2799b3f}]{What could possibly go wrong?}
 Assume a router generating RSA moduli on booting for the first time.
 
 \begin{itemize}
@@ -351,7 +359,7 @@ Assume a router generating RSA moduli on booting for the first time.
 All routers of the same make might (in fact, some do) generate the \alert{same} RSA modulus.
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline14}]{What could possibly go wrong?}
+\begin{frame}[label={sec:orgaa09002}]{What could possibly go wrong?}
 What if two routers generate moduli \(N_0 = q_0 ⋅ p\) and \(N_1 = q_1 \cdot p\), i.e. moduli with shared factors, due to bad randomness?
 
 \begin{itemize}
@@ -363,13 +371,13 @@ What if two routers generate moduli \(N_0 = q_0 ⋅ p\) and \(N_1 = q_1 \cdot p\
 If only we could compute the pairwise GCD of all RSA moduli on the Internet \dots{}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline15}]{The GCD attack on poor random numbers}
+\begin{frame}[label={sec:orgab72a6c}]{The GCD attack on poor random numbers}
 \begin{quote}
 [W]e are able to compute the private keys for 64,000 (0.50\%) of the TLS hosts and 108,000 (1.06\%) of the SSH hosts from our scan data alone by exploiting known weaknesses of RSA and DSA when used with insufficient randomness.\footfullcite{USENIX:HDWH12}
 \end{quote}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline16}]{Computing pairwise GCDs efficiently}
+\begin{frame}[label={sec:orgb689215}]{Computing pairwise GCDs efficiently}
 \begin{itemize}[<+->]
 \item Naively, we’d have to compute \(\bigO{t^2}\) GCDs to check all \(t\) moduli against each other.
 \item We can do better by performing \(t\) GCD computations \[\gcd(N_i, \prod_{j \neq i} N_j)\]
@@ -377,7 +385,7 @@ If only we could compute the pairwise GCD of all RSA moduli on the Internet \dot
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline17}]{Computing pairwise GCDs efficiently}
+\begin{frame}[label={sec:org11ba7d2}]{Computing pairwise GCDs efficiently}
 Let, for example, \(t = 4\).
 
 \begin{center}
@@ -428,20 +436,22 @@ Let, for example, \(t = 4\).
 \end{frame}
 
 \section{The Approximate GCD problem}
-\label{sec:orgheadline24}
-\begin{frame}[label={sec:orgheadline19}]{Quantum attacks on RSA}
+\label{sec:org05860d6}
+\begin{frame}[label={sec:orgb9dc13f}]{Quantum attacks on RSA}
 An adversary with access to a quantum computer with \[ \bigO{\log^2(N) \log\log (N) \log\log\log (N)}\] gates can factor \(N\) using Shor’s algorithm.\footnote{\url{http://www.scottaaronson.com/blog/?p=208}}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline20}]{Quantum attacks on RSA}
+\begin{frame}[label={sec:org93a2aef}]{Quantum attacks on RSA}
+\begin{center}
 \includegraphics[width=.9\linewidth]{./competition.png}
+\end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline21}]{The Approximate GCD problem}
+\begin{frame}[label={sec:org2ceec0e}]{The Approximate GCD problem}
 The \alert{Approximate GCD} problem is the problem of distinguishing \[x_i = q_i ⋅ p  \alert{+ r_i}\] from uniform \(\ZZ ∩ [0, X)\) with \(x_i < X\).
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline22}]{The Approximate GCD problem}
+\begin{frame}[label={sec:org0c4ebc0}]{The Approximate GCD problem}
 \[x_i = q_i ⋅ p  + r_i\]
 
 If \(λ\) is our security parameter (think \(λ=128\)), then
@@ -458,7 +468,7 @@ name & sizeof & DGHV10 \footfullcite{EC:DGHV10} & CheSte15 \footfullcite{EC:CheS
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline23}]{Naive encryption}
+\begin{frame}[label={sec:org5350706}]{Naive encryption}
 \begin{description}
 \item[{KeyGen}] The public key is \(\{x_i = q_i ⋅ p + 2\,r_i\}_{0 ≤ i < t}\) and the private key is \(p\).
 
@@ -475,9 +485,9 @@ This encryption scheme has the same malleability property as naive RSA encryptio
 \end{frame}
 
 \section{Attacks on the Approximate GCD problem}
-\label{sec:orgheadline34}
+\label{sec:org6fb52bc}
 
-\begin{frame}[label={sec:orgheadline25}]{Exhaustive search}
+\begin{frame}[label={sec:orgd333adb}]{Exhaustive search}
 Given \(x_0 = q_0 ⋅ p + r_0\) and \(x_1 + q_1 ⋅ p + r_1\) we know that \[p = \gcd\left((x_0 - r_0), (x_1 - r_1)\right)\]
 
 
@@ -488,7 +498,7 @@ Guess \(r_0\) and \(r_1\)!
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline26}]{Exhaustive search + multiplication}
+\begin{frame}[label={sec:org100f612}]{Exhaustive search + multiplication}
 Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for all \(x_0' = x_0 - j\) with \(0 \leq j < 2^{ρ-1}\).
 
 \begin{block}{Cost}
@@ -496,7 +506,7 @@ Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline27}]{Time-memory trade-off}
+\begin{frame}[label={sec:org55da4cd}]{Time-memory trade-off}
 \begin{itemize}
 \item We can reduce multiplications to \(2^{ρ/2}\) per guess of \(x_0'\).
 \item Define univariate polynomials mod \(x_0'\):
@@ -515,7 +525,7 @@ Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline28}]{Time-memory trade-off}
+\begin{frame}[label={sec:orgc912992}]{Time-memory trade-off}
 Compute \[\gcd\left(x_0', \prod_{k=0}^{2^{ρ/2} -1} f_{2^{ρ/2}}(2^{ρ/2}k) \bmod x_0'\right)\] for all \(x_0' = x_0 - j\) with \(0 \leq j < 2^{ρ-1}\).
 
 \begin{block}{Cost}
@@ -526,7 +536,7 @@ Compute \[\gcd\left(x_0', \prod_{k=0}^{2^{ρ/2} -1} f_{2^{ρ/2}}(2^{ρ/2}k) \bmo
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline29}]{Time-memory trade-off}
+\begin{frame}[label={sec:org316e7b2}]{Time-memory trade-off}
 \begin{itemize}
 \item Computing \(f_{2^{ρ/2}}(x) \bmod x_0'\) can be accomplished in time \(\bigO{2^{ρ/2} ⋅ ρ}\) using the Fast Fourier Transform.
 \item Evaluating \(f_{2^{ρ/2}}(x) \bmod x_0'\) at our \(2^{ρ/2}\) points can be accomplished in time \(\bigO{2^{ρ/2} ⋅ ρ}\) using the Fast Fourier Transform.
@@ -538,7 +548,7 @@ Compute \[\gcd\left(x_0', \prod_{k=0}^{2^{ρ/2} -1} f_{2^{ρ/2}}(2^{ρ/2}k) \bmo
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline30}]{Lattice attacks}
+\begin{frame}[label={sec:orga1e4b65}]{Lattice attacks}
 Given \(x_0  = q_0 p + r_0\) and \(x_1  = q_1 p + r_1\), consider
 
 \begin{eqnarray*}
@@ -556,7 +566,7 @@ We don’t know \(q_i\)!
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline31}]{Lattice attacks}
+\begin{frame}[label={sec:org267464b}]{Lattice attacks}
 Consider the matrix 
 
 \[\vec{B} = \begin{pmatrix}
@@ -576,7 +586,7 @@ multiplying on the left by the vector \(\vec{q} = (q_0, q_1, q_2, \cdots, q_t)\)
 which is a vector with small coefficients compared to \(x_i\).
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline32}]{Finding short vectors}
+\begin{frame}[label={sec:org4282223}]{Finding short vectors}
 We call the set of all integer-linear combinations of the rows of \(\vec{B}\) the \alert{lattice} spanned by (the rows of) \(\vec{B}\).
 
 \begin{description}
@@ -590,7 +600,7 @@ GCD is SVP on the integer lattice \(\ZZ\). For example, \(\vec{B} = {[21, 14]}^T
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline33}]{Reduction to lattice problem}
+\begin{frame}[label={sec:org6140301}]{Reduction to lattice problem}
 We can show that an adversary \alert{has} to solve Gap-SVP.
 
 \begin{block}{AGCD → LWE}
@@ -603,9 +613,9 @@ If there is an algorithm efficiently solving the LWE problem then there exists a
 \end{frame}
 
 \section{Google’s post-quantum experiment: “A New Hope”}
-\label{sec:orgheadline38}
+\label{sec:org2ebc790}
 
-\begin{frame}[label={sec:orgheadline35}]{Ring-LWE}
+\begin{frame}[label={sec:orga9a2bbc}]{Ring-LWE}
 \begin{itemize}
 \item The Learning with Errors problem is essentially the problem of solving a linear system of equations in the presence of noise.
 \item Given \(\vec{A}, \vec{c}\) solve \[\vec{c} = \vec{A} ⋅ \vec{s} + \vec{e} \bmod q\] for \(\vec{s}\) when \(\vec{e}\) is “small”.
@@ -614,24 +624,51 @@ If there is an algorithm efficiently solving the LWE problem then there exists a
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline36}]{A New Hope \footfullcite{EPRINT:ADPS15} : Ring-LWE based key exchange}
+\begin{frame}[fragile,label={sec:org922b6c1}]{A New Hope \footfullcite{EPRINT:ADPS15} : Ring-LWE based key exchange}
+ \lstset{language=plantuml,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+skinparam monochrome true
+skinparam dpi 600
+skinparam backgroundColor transparent
+skinparam classBackgroundColor transparent
+skinparam style strictuml
+skinparam handwritten true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+
+activate Client
+Client -> Server: g<sup>a</sup>
+activate Server
+Client <- Server: g<sup>b</sup>, sign<sub>sk</sub>(g<sup>b</sup>)
+note left: K= g<sup>ab</sup>
+Client -> Server: E<sub>K</sub>(data)
+note right: K= g<sup>ab</sup>
+Server --> Client: E<sub>K</sub>(more data)
+deactivate Server
+deactivate Client
+\end{lstlisting}
+
+\begin{center}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{keyex.png}
 \end{center}
+\end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgheadline37}]{Thank you}
+\begin{frame}[label={sec:orgb7eee94}]{Thank you}
+\begin{center}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./kitten-01.jpg}
+\end{center}
 
 \alert{\Large Questions?}
 \end{center}
 \end{frame}
 
 \section{Bonus}
-\label{sec:orgheadline40}
+\label{sec:org0cd8465}
 
-\begin{frame}[label={sec:orgheadline39}]{Homomorphic encryption}
+\begin{frame}[label={sec:orgc1dbe83}]{Homomorphic encryption}
 Given \(c_i = q_i ⋅ p + m_i'\) with \(m_i' = 2\,r_i + m_i\).
 \begin{itemize}
 \item We can compute \[c' = c_0 ⋅ c_1 = q_0 q_1 p^2 + q_0 m_1' p  + q_1 m_0' p + m_0' ⋅ m_1'\] to get \(c' \bmod p =  m_0' ⋅ m_1'\) and \(m_0' ⋅ m_1' \bmod 2 = m_0 ⋅ m_1\).
