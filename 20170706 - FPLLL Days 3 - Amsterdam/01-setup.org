@@ -1,0 +1,379 @@
+# -*- eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+#+OPTIONS: H:2 toc:t num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LaTeX_CLASS: mbeamer
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'(%s)' % latex(obj) :results raw
+
+#+TITLE: FPLLL
+#+SUBTITLE: Installation, Compilation, Dependencies 
+#+AUTHOR: Martin R. Albrecht
+#+EMAIL: martin.albrecht@royalholloway.ac.uk
+#+DATE: 2017/07/06
+#+STARTUP: beamer indent
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib
+#+LATEX_HEADER: \lstset{basicstyle=\tt\normalsize\relax}
+
+* Build
+
+** TL;DR 
+
+1. ~./autogen.sh~ (when building from Git)
+2. ~./configure~ (optional: \lstinline{--prefix=\$PREFIX})
+3. ~make~ (optional: ~-jX~ for ~X~ cores)
+4. ~make check~
+5. ~make install~
+
+*** Note
+
+If you used a prefix, you might need to use
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ LD_LIBRARY_PATH=$PREFIX/lib fplll …
+#+END_SRC
+
+** Autotools
+
+#+BEGIN_SRC dot :file autotools.pdf :exports results
+digraph autotools {
+        rankdir="LR";
+        margin="0.0";
+        bgcolor="transparent";
+        node [fontname="Fira Sans"];
+        edge [fontname="Fira Sans"];
+        ordering=out;
+        "configure.ac" [shape=box];
+        "Makefile.am" [shape=box];
+        ed [style=invis];
+        ed -> "Makefile.am" [style=invis];
+        "configure.ac" -> aclocal [arrowhead=open];
+        "configure.ac" -> autoconf [arrowhead=open];
+        "configure.ac" -> autoheader [arrowhead=open];
+        "configure.ac" -> automake [arrowhead=open];
+        "aclocal.m4" [shape=box];
+        aclocal -> "aclocal.m4" [style=bold,arrowsize=1.5];
+        "config.h.in" [shape=box];
+        autoheader -> "config.h.in" [style=bold,arrowsize=1.5];
+	"config.h.in" -> automake [arrowhead=open];
+        "Makefile.am" -> automake [arrowhead=open];
+        "Makefile.in" [shape=box];
+        automake -> "Makefile.in" [style=bold,arrowsize=1.5];
+        {rank=same; aclocal autoheader}
+        {rank=same; "aclocal.m4" "config.h.in"}
+        configure [shape=Mcircle,width=2,height=2];
+        "aclocal.m4" -> autoconf [arrowhead=open];
+        autoconf -> configure [style=bold,arrowsize=1.5];
+        "config.h" [shape=box];
+        Makefile [shape=box];
+        {rank=same; "config.h" Makefile}
+        "config.status" [shape=Mcircle];
+        "config.h.in" -> "config.status" [arrowhead=open];
+        "Makefile.in" -> "config.status" [arrowhead=open];
+        dummy0 [style=invis];
+        dummy1 [style=invis];
+        configure -> "config.status" [style=bold,arrowsize=1.5];
+        "config.status" -> dummy0 [style=invis];
+        "config.status" -> "config.h" [style=bold,arrowsize=1.5];
+        "config.status" -> Makefile [style=bold,arrowsize=1.5];
+        "config.status" -> dummy1 [style=invis];
+        "config.h" -> make [arrowhead=open];
+        Makefile -> make [arrowhead=open];
+        dummy1 -> make [style=invis];
+        "executable" [label=<<I>executable</I>>,shape=box,fontname="URW Palladio L"];
+        make -> "executable" [style=bold,arrowsize=1.0];
+        {rank=same; "executable" make}
+}
+#+END_SRC
+
+#+ATTR_LATEX: :width \linewidth
+#+RESULTS:
+[[file:autotools.pdf]]
+
+** Autotools: =./autogen.sh=
+
+#+BEGIN_SRC dot :file autotools-autogen.pdf :exports results
+digraph autotools {
+        rankdir="LR";
+        margin="0.0";
+        bgcolor="transparent";
+        node [fontname="Fira Sans"];
+        edge [fontname="Fira Sans"];
+        ordering=out;
+        "configure.ac" [shape=box];
+        "Makefile.am" [shape=box];
+        ed [style=invis];
+        ed -> "Makefile.am" [style=invis];
+        "configure.ac" -> aclocal [arrowhead=open];
+        "configure.ac" -> autoconf [arrowhead=open];
+        "configure.ac" -> autoheader [arrowhead=open];
+        "configure.ac" -> automake [arrowhead=open];
+        "aclocal.m4" [shape=box];
+        aclocal -> "aclocal.m4" [style=bold,arrowsize=1.5];
+        "config.h.in" [shape=box];
+        autoheader -> "config.h.in" [style=bold,arrowsize=1.5];
+	"config.h.in" -> automake [arrowhead=open];
+        "Makefile.am" -> automake [arrowhead=open];
+        "Makefile.in" [shape=box];
+        automake -> "Makefile.in" [style=bold,arrowsize=1.5];
+        {rank=same; aclocal autoheader}
+        {rank=same; "aclocal.m4" "config.h.in"}
+        configure [shape=Mcircle,width=2,height=2];
+        "aclocal.m4" -> autoconf [arrowhead=open];
+        autoconf -> configure [style=bold,arrowsize=1.5];
+}
+#+END_SRC
+
+#+ATTR_LATEX: :height 0.4\linewidth
+#+RESULTS:
+[[file:autotools-autogen.pdf]]
+
+Calling ~./autogen.sh~
+
+** Autotools: continued
+
+#+BEGIN_SRC dot :file autotools-continued.pdf :exports results
+digraph autotools {
+        rankdir="LR";
+        margin="0.0";
+        bgcolor="transparent";
+        node [fontname="Fira Sans"];
+        edge [fontname="Fira Sans"];
+        ordering=out;
+        "config.h.in" [shape=box];
+        "Makefile.in" [shape=box];
+        configure [shape=Mcircle,width=2,height=2];
+        "config.h" [shape=box];
+        Makefile [shape=box];
+        {rank=same; "config.h" Makefile}
+        "config.status" [shape=Mcircle];
+        "config.h.in" -> "config.status" [arrowhead=open];
+        "Makefile.in" -> "config.status" [arrowhead=open];
+        dummy0 [style=invis];
+        dummy1 [style=invis];
+        configure -> "config.status" [style=bold,arrowsize=1.5];
+        "config.status" -> dummy0 [style=invis];
+        "config.status" -> "config.h" [style=bold,arrowsize=1.5];
+        "config.status" -> Makefile [style=bold,arrowsize=1.5];
+        "config.status" -> dummy1 [style=invis];
+        "config.h" -> make [arrowhead=open];
+        Makefile -> make [arrowhead=open];
+        dummy1 -> make [style=invis];
+        "executable" [label=<<I>executable</I>>,shape=box,fontname="URW Palladio L"];
+        make -> "executable" [style=bold,arrowsize=1.0];
+        {rank=same; "executable" make}
+}
+#+END_SRC
+
+#+ATTR_LATEX: :height 0.4\linewidth
+#+RESULTS:
+[[file:autotools-continued.pdf]]
+
+Calling =./configure && make=
+
+** Files: =configure.ac=
+
+- configuration options
+- finding dependencies and their flags
+- version numbers
+
+** Versions
+
+There are two version numbers attached to each fplll release:
+
+1. human-readable version number
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+   #+BEGIN_SRC shell 
+AC_INIT(fplll, 5.1.0)
+FPLLL_MAJOR_VERSION=`echo AC_PACKAGE_VERSION | awk -F. '{print $1}'`
+FPLLL_MINOR_VERSION=`echo AC_PACKAGE_VERSION | awk -F. '{print $2}'`
+FPLLL_MICRO_VERSION=`echo AC_PACKAGE_VERSION | awk -F. '{print $3}'`
+FPLLL_VERSION=…
+FPLLL_VERSION_NUMBER=…
+   #+END_SRC
+
+2. Application binary interface (ABI) version number[fn:1]
+
+   #+BEGIN_SRC shell
+FPLLL_LT_CURRENT=3
+FPLLL_LT_REVISION=0
+FPLLL_LT_AGE=0
+   #+END_SRC
+
+** ABI Version Number
+
+The version of the libtool library is of the form ~current:revision:age~[fn:2]
+
+When doing a release, they should be updated like this:
+
+1. If no interfaces changed, only implementations: just increment revision.
+2. If interfaces were added, none removed: increment current, set revision to zero and increment age.
+3. If interfaces were removed (breaks backward compatibility): increment current, and set both revision and age to zero.
+
+** Files: =Makefile.am=
+
+- which files belongs to which binary
+- what files to install on top of binaries
+- one ~Makefile.am~ per directory
+
+** Debugging
+
+2. \lstinline{CXXFLAGS="-O0 -ggdb -DDEBUG" ./configure}
+3. ~make V=1~  (~V=1~ gives more detailed outputs)
+4. ~make check~
+5. ~make install~ (our tests use the installed ~libfplll~
+
+** Faster Builds
+
+By default, libtool builds everything twice, one for the static and one for the dynamic library.[fn:3] If you want to avoid this double compiling time you can run =./configure --disable-static= which disables building the static library.
+
+** Prefixes
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+It is highly recommended that you do not install =fplll= into your standard path
+
+- It will break, leaving you without a working =fplll=
+- Comparing your code with the released code will be useful for debugging
+- You may want to compile with debugging flags and without optimisations
+
+#+BEAMER: \framebreak
+
+I use Python virtual environments.
+
+1. Creating a new virtual environment
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+   #+BEGIN_SRC shell
+virtualenv env
+   #+END_SRC
+
+2. Using a virtual environment[fn:4]
+
+   #+BEGIN_SRC shell
+source ./env/bin/activate
+export PKG_CONFIG_PATH="$VIRTUAL_ENV/lib/pkgconfig:$PKG_CONFIG_PATH"
+export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
+./configure --prefix="$VIRTUAL_ENV"
+   #+END_SRC
+
+** Adding a new file
+
+- add filename to e.g. =libfplll_la_SOURCES= in =fplll/Makefile.am=
+- add header filename to =nobase_include_fplll_HEADERS= in =fplll/Makefile.am=
+- add test filename to =tests/Makefile.am=
+
+* Dependencies
+
+** GMP
+
+#+BEGIN_CENTER
+https://gmplib.org
+#+END_CENTER
+
+- used for arbitrary precision integers
+- fplll will refuse to compile without it
+- used by default, but you can also use machine integers[fn:5]
+
+** MPFR
+
+#+BEGIN_CENTER
+http://www.mpfr.org
+#+END_CENTER
+
+- used for arbitrary precision floating-point numbers
+- fplll will refuse to compile without it
+- default is native double precision
+- rule of thumb: if you have to use MPFR, you’re dead performance-wise
+
+** JSON
+
+#+BEGIN_CENTER 
+https://github.com/nlohmann/json
+#+END_CENTER
+
+- used to read BKZ strategies
+- included in fplll
+- could be utilised more for log files etc.
+
+** Optional: QD
+
+#+BEGIN_CENTER
+http://crd-legacy.lbl.gov/~dhbailey/mpdist/
+#+END_CENTER
+
+- used for higher precision floating-point numbers
+- fplll will compile without it
+- contains =double double= and =quad double= type
+- it seems =quad double= is not faster than MPFR [fn:6]
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+#+END_CENTER
+
+
+
+* Build Artefacts                                                                                   :noexport:
+
+** Emacs Config
+
+#+BEGIN_SRC emacs-lisp :tangle .dir-locals.el
+((magit-mode .
+             ((eval .
+                    (and
+                     (visual-line-mode 1)))))
+ (bibtex-mode . ((fill-column . 10000)))
+ (org-mode .
+           ((org-tags-column . -80)
+            (eval .
+                  (and
+                   (visual-fill-column-mode t)
+                   (flyspell-mode t))))))
+#+END_SRC
+
+** Makefile
+
+#+BEGIN_SRC makefile :tangle Makefile
+EMACS=emacs
+EMACSFLAGS=--batch -l ~/.emacs.d/org-export-init.el
+LATEXMK=latexmk
+LATEXMKFLAGS=-xelatex
+
+%.pdf: %.tex
+	$(LATEXMK) $(LATEXMKFLAGS) $<
+
+%.tex: %.org
+	$(EMACS) $(EMACSFLAGS) $< -f org-latex-export-to-latex
+
+clean:
+	rm -f *.bbl *.aux *.out *.synctex.gz *.log *.run.xml *.blg *-blx.bib *.fdb_latexmk *.fls *.toc *.vrb *.snm *.nav
+
+.PHONY: clean all
+.PRECIOUS: %.tex
+#+END_SRC
+
+** Autoexport to PDF
+
+* Footnotes
+
+[fn:1] This will produce a file =libfplll.so.3.0.0=
+
+[fn:2] http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
+
+[fn:3] https://stackoverflow.com/questions/572760/libtool-slowness-double-building
+
+[fn:4] See https://github.com/fplll/fpylll for how to add the exports to =activate=
+
+[fn:5] No idea what difference that makes in terms of performance.
+
+[fn:6]  https://github.com/fplll/fplll/issues/77
+
