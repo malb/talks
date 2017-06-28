@@ -1,0 +1,415 @@
+# -*- eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+#+OPTIONS: H:2 toc:t num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LaTeX_CLASS: mbeamer
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'(%s)' % latex(obj) :results raw
+
+#+TITLE: FPLLL
+#+SUBTITLE: Contributing
+#+AUTHOR: Martin R. Albrecht
+#+EMAIL: martin.albrecht@royalholloway.ac.uk
+#+DATE: 2017/07/06
+#+STARTUP: beamer indent
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib
+#+LATEX_HEADER: \lstset{basicstyle=\tt\normalsize\relax}
+
+** Overview
+
+All contributions to =fplll= 
+
+- are peer-reviewed[fn:1]
+- are automatically tested using =make check=[fn:2]
+- must follow the coding style 
+- are checked for test coverage[fn:3]
+
+Fpylll is not quite there yet.
+
+* Communication
+
+** Channels
+
+- GitHub :: https://github.com/fplll/fplll/issues
+- Mailing List :: https://groups.google.com/forum/#!forum/fplll-devel
+- Slack :: https://fplll.slack.com
+
+It is good for an open-source project to have discussions in public. It shows others that the project is alive and accessible.
+
+* Setup
+
+** Fork on GitHub
+
+#+ATTR_LATEX: :width 0.8\textwidth
+[[./fork.png]]
+
+- Fork =fplll= from [[https://github.com/fplll/fplll]]
+- Fork =fpylll= from [[https://github.com/fplll/fpylll]]
+
+** Clone your Fork Locally
+
+Clone *your* git repo where *my-github-name* is your account name on GitHub:
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ git clone git@github.com:my-github-name/fplll.git
+#+END_SRC
+
+Then run
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ ./autogen.sh
+$ ./configure
+$ make
+$ make check
+#+END_SRC
+
+as usual.
+
+* Reporting Bugs
+
+** Reporting Bugs
+
+- [[https://github.com/fplll/fplll/issues]]. 
+- [[https://groups.google.com/forum/#!forum/fplll-devel]]. 
+
+GitHub is preferred, also for developers
+
+* Topic Branches and Pull Requests
+
+** Why
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+- Isolate each topic or feature into a “topic branch“.
+
+- Commits allow control over how small individual changes are made to the code.
+
+- Branches 
+
+  + *group* a set of commits together that are related to one feature.
+
+  + *isolate* different efforts when you might be working on multiple topics at the same time.
+
+- While it takes some experience to get the right feel about how to break up commits, a topic branch should be limited in scope to a single issue.
+
+#+BEAMER: \framebreak
+
+- GitHub syncs a pull request to a specific branch.
+- Thus, branches are the only way that you can submit more than one fix at a time.
+- If you submit a pull from your =master= branch, you cannot make any more commits to your =master= branch without those getting added to the pull.
+
+** How
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+To create a topic branch, its easiest to use
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell :exports both
+$ git checkout -b fix-broken-thing
+Switched to a new branch 'fix-broken-thing'
+#+END_SRC
+
+*** Names
+
+Use a sufficiently verbose name for your branch so it is clear what it is about.
+
+***                                                                                        :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+#+BEAMER: \framebreak
+
+When you are ready to generate a pull request, either for preliminary review or for consideration of merging into the project, you must first push your local topic branch back up to GitHub:
+
+#+BEGIN_SRC shell
+$ git push origin fix-broken-thing
+#+END_SRC
+
+#+BEAMER: \framebreak
+
+***                                                                                               :B_column:
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_COL: 0.4
+:END:
+
+#+ATTR_LATEX: :width 0.8\textwidth
+[[./branch.png]]
+
+***                                                                                               :B_column:
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_COL: 0.6
+:END:
+
+- Select your topic branch from this list, and then click the "Pull request" button.
+- You can add a comment about your branch.
+- If this in response to a submitted issue, link to that issue in this initial comment.
+- The maintainers will be notified of your pull request and it will be reviewed.
+
+***                                                                                        :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+#+BEAMER: \framebreak
+
+- You can continue to add commits to your topic branch (and push them up to GitHub) either if you see something that needs changing, or in response to a reviewer's comments.
+- If a reviewer asks for changes, you do not need to close the pull and reissue it after making changes.
+- Just make the changes locally, push them to GitHub, then add a comment to the discussion section of the pull request.
+
+** Pull upstream changes into your fork regularly
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+Pull upstream changes from =master= into your fork on a regular basis.
+
+- Putting in a days of hard work into a pull request only to have it rejected because it has diverged too far from master sucks.
+
+- To pull in upstream changes:
+
+  #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+  #+BEGIN_SRC shell
+$ git remote add upstream https://github.com/fplll/fplll.git
+$ git fetch upstream master
+  #+END_SRC
+
+- Check logs if you actually want the changes before merging:
+
+  #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+  #+BEGIN_SRC shell
+$ git log upstream/master
+  #+END_SRC
+
+- Then merge the changes that you fetched:
+
+  #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+  #+BEGIN_SRC shell
+$ git merge upstream/master
+  #+END_SRC
+
+* How to Get your Pull rEquest Accepted
+
+** Run tests!
+
+Before you submit a pull request, run tests:
+
+  #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ make check
+#+END_SRC
+
+These checks are also run on [[https://travis-ci.org/fplll/fplll][Travis-CI]] automatically for every pull request. Nothing failing tests will be accepted.[fn:4]
+
+** If you add Code, add Tests
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+#+BEGIN_CENTER 
+_Code that isn't tested is broken._
+#+END_CENTER
+
+#+BEAMER: \framebreak
+
+Keep your tests simple.
+- Complex tests end up requiring their own tests.
+- We would rather see duplicated assertions across test methods then cunning utility methods that magically determine which assertions are needed at a particular stage.
+
+#+BEGIN_CENTER 
+_Explicit is better than implicit._
+#+END_CENTER
+
+#+BEAMER: \framebreak
+
+- The nature of =fplll= means that sometimes it is hard to properly test the behaviour of a change quickly. 
+- Running BKZ for several minutes takes way too long for a test.
+- In this case, we should at least test that a particular piece of code compiles and runs.
+
+
+*** Discussion
+
+Should we have =make check-long=?
+
+** Keep your Pull Requests limited to a Single Issue
+
+#+BEGIN_CENTER 
+_Pull requests should be as small/atomic as possible._
+#+END_CENTER
+
+** Coding Conventions
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+- =fplll= is written in [[https://en.wikipedia.org/wiki/C%2B%2B11][C++11]]
+- We try to make use of its modern features to make the library readable.
+
+- Keep your code as clean and straightforward as possible.
+- Code is written for the consumption by compilers *and for the consumption by human beings*.
+- By making code clear and easy to understand, others can build on it and fix issues should they arise.
+
+#+BEAMER: \framebreak
+
+Our naming convention is close to Python's [[https://www.python.org/dev/peps/pep-0008/][naming convention]].
+- Classes are in =CamelCase=.
+- Functions, methods, parameters and local variables in =lower_case= .
+- Curly braces go on the next line and we [[https://nakedsecurity.sophos.com/2014/02/24/anatomy-of-a-goto-fail-apples-ssl-bug-explained-plus-an-unofficial-patch/][prefer explicit curly braces]], e.g.
+
+  #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+  #+BEGIN_SRC C++
+if (foo)
+{
+  do_something_good();
+}
+  #+END_SRC
+
+  instead of:
+
+  #+BEGIN_SRC C++
+if (foo)
+  do_something_bad();
+  #+END_SRC
+
+
+#+BEAMER: \framebreak
+
+The pixel shortage is over. We want to see:
+
+- =package= instead of =pkg=
+- =grid= instead of =g=
+- =my_function_that_does_things= instead of =mftdt=
+
+** Enforcement of the Coding Convention
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+- The coding convention is enforced throughout the whole project.
+- In particular, the code of every pull request has to strictly adhere to the coding convention, and the Travis build will error when it is not the case.
+- Automatic formatting can (and should) be performed by the command
+
+  #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+  #+BEGIN_SRC shell
+$ make check-style
+  #+END_SRC
+
+#+BEAMER: \framebreak
+
+In order to improve readability, some situations might require manual formatting. Clang-format [[http://llvm.org/releases/3.9.0/tools/clang/docs/ClangFormatStyleOptions.html#disabling-formatting-on-a-piece-of-code][includes a comment trigger]] to /locally/ disable the formatting.
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC C++
+int formatted_code;
+// clang-format off
+    void    unformatted_code  ;
+// clang-format on
+void formatted_code_again;
+#+END_SRC
+
+** Attribution
+
+- Do not forget to add yourself as a contributor in =README.md= if you make a non-trivial contribution.
+- You may want to claim copyright in the copyright headers of each file.
+
+* Documentation
+
+** Doxygen
+
+fplll uses [[http://www.stack.nl/~dimitri/doxygen/][doxygen]] with a [[https://github.com/Velron/doxygen-bootstrapped][bootstrap theme]] to generate API documentation. To produce API documentation run
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ doxygen Doxyfile
+#+END_SRC
+
+- Our documentation is served at [[https://fplll.github.io/fplll/]] using [[https://pages.github.com][GitHub pages]].
+- To update the documentation, check out the =gh-pages= branch and update the html files in there.
+
+** GitHub.io
+
+Doxygen writes its outputs to =doc/html=, you can arrange it that this directory holds the =gh-pages= branch of the fplll repository:
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ cd doc
+$ git clone -b gh-pages git@github.com::<my-github-name>/fplll.git html
+$ cd ..
+#+END_SRC
+
+- Now, whenever you run =doxygen= it will write its outputs to a directory which holds the right branch.
+- If you push it to your remote, you can then check it at [[http://my-github-name.github.io/fplll]].
+
+** Clean
+
+Before generating documentation with Doxygen to push to [[https://fplll.github.io/fplll/]] please run 
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC shell
+$ make maintainer-clean 
+#+END_SRC
+ 
+in the fplll root directory.
+
+- This removes =config.h= and =fplll_config.h=, i.e. it prevents your local, machine-specific configuration to be pushed as part of the official API documentation.
+- Review the changes in the =gh-pages= branch before committing and pushing.
+
+* Build Artefacts                                                                                   :noexport:
+
+** Emacs Config
+
+#+BEGIN_SRC emacs-lisp :tangle .dir-locals.el
+((magit-mode .
+             ((eval .
+                    (and
+                     (visual-line-mode 1)))))
+ (bibtex-mode . ((fill-column . 10000)))
+ (org-mode .
+           ((org-tags-column . -80)
+            (eval .
+                  (and
+                   (visual-fill-column-mode t)
+                   (flyspell-mode t))))))
+#+END_SRC
+
+** Makefile
+
+#+BEGIN_SRC makefile :tangle Makefile
+EMACS=emacs
+EMACSFLAGS=--batch -l ~/.emacs.d/org-export-init.el
+LATEXMK=latexmk
+LATEXMKFLAGS=-xelatex
+
+%.pdf: %.tex
+	$(LATEXMK) $(LATEXMKFLAGS) $<
+
+%.tex: %.org
+	$(EMACS) $(EMACSFLAGS) $< -f org-latex-export-to-latex
+
+clean:
+	rm -f *.bbl *.aux *.out *.synctex.gz *.log *.run.xml *.blg *-blx.bib *.fdb_latexmk *.fls *.toc *.vrb *.snm *.nav
+
+.PHONY: clean all
+.PRECIOUS: %.tex
+#+END_SRC
+
+** Autoexport to PDF
+
+* Footnotes
+
+[fn:1] This is a lie, some quick fixes are sometimes sneaked through directly
+
+[fn:2] https://travis-ci.org/fplll/fplll
+
+[fn:3]  https://codecov.io/gh/fplll/fplll
+
+[fn:4] https://travis-ci.org/fplll/fplll, https://travis-ci.org/fplll/fpylll
+

@@ -226,6 +226,10 @@ When doing a release, they should be updated like this:
 4. ~make check~
 5. ~make install~ (our tests use the installed ~libfplll~
 
+*** Note
+
+You can also use =./configure --disable-silent-rules= to enable more verbose output when building by default.
+
 ** Faster Builds
 
 By default, libtool builds everything twice, one for the static and one for the dynamic library.[fn:3] If you want to avoid this double compiling time you can run =./configure --disable-static= which disables building the static library.
@@ -360,8 +364,6 @@ clean:
 .PHONY: clean all
 .PRECIOUS: %.tex
 #+END_SRC
-
-** Autoexport to PDF
 
 * Footnotes
 
