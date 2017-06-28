@@ -1,0 +1,636 @@
+# -*- eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+#+OPTIONS: H:2 toc:t num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LaTeX_CLASS: mbeamer
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'(%s)' % latex(obj) :results raw
+
+#+TITLE: FPLLL
+#+SUBTITLE: fp\textbf{Y}lll
+#+AUTHOR: Martin R. Albrecht
+#+EMAIL: martin.albrecht@royalholloway.ac.uk
+#+DATE: 2017/07/06
+#+STARTUP: beamer indent
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib
+#+LATEX_HEADER: \lstdefinelanguage{Cython}[]{Python}{morekeywords={True,False,sage,cdef,new,namespace,extern,cppclass,cimport,IF,ELSE,ctypedef,union,nogil,with},sensitive=true}
+#+LATEX_HEADER: \lstset{basicstyle=\tt\scriptsize\relax}
+
+** FPYLLL
+
+- =fpylll= is a Python (2 and 3) library for performing lattice reduction on lattices over the Integers
+- It is based on the =fplll=.
+- =fpylll= also implements a few algorithms beyond =fplll= and provides some interface niceties
+
+#+BEGIN_CENTER
+https://github.com/fplll/fpylll
+#+END_CENTER
+
+** A Mission Statement
+
+Make implementing lattice-reduction strategies so easy that we can demand that people publish their code.
+
+#+BEAMER: \pause
+
+… and make it easy for everyone else in the process, too.
+
+** Why
+
+#+BEGIN_QUOTE
+“Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: _premature optimization is the root of all evil._ Yet we should not pass up our opportunities in that critical 3%.” — *Donald Knuth*
+#+END_QUOTE
+
+#+BEAMER: \pause
+
+*** 2015, a mild autumn afternoon in Bochum
+
+- Léo :: Wouldn’t it be great if we could play with lattice reduction in Python
+- Martin :: Hold my beer …
+
+* How
+
+** Python
+
+- *Python* is a nice, high-level language commonly used for computational mathematics (*NumPy*, *SageMath*, …)
+- It is, however, not very fast.
+- Yet, many lattice-reduction algorithms or algorithms calling lattice-reduction string together lower-level but long-ish running algorithms (LLL, enumeration, Gram-Schmidt orthogonalisation)
+
+We don’t need the performance of C++ everywhere. At higher levels, expressiveness and ease-of-use beat raw performance.[fn:1]
+
+** Cython
+
+*Cython*[fn:2] is an optimising static compiler for both the Python programming language and the extended Cython programming language. 
+
+- Write Python code that calls back and forth from and to C or C++ code natively at any point.
+- Easily tune readable Python code into plain C performance by adding static type declarations.
+- Integrate natively with existing code and data from legacy, low-level or high-performance libraries and applications.
+
+** Dependencies
+
+*fpylll* relies on the following C/C++ libraries:
+
+-  [[https://gmplib.org][GMP]] or [[http://mpir.org][MPIR]] for arbitrary precision integer arithmetic.
+-  [[http://www.mpfr.org][MPFR]] for arbitrary precision floating point arithmetic.
+-  [[http://crd-legacy.lbl.gov/~dhbailey/mpdist/][QD]] for double double and quad double arithmetic (optional).
+-  [[https://github.com/fplll/fplll][fplll]] for pretty much everything.
+
+*fpylll* also relies on
+
+-  [[http://cython.org][Cython]] for linking Python and C/C++.
+-  [[https://github.com/sagemath/cysignals][cysignals]] for signal handling such as interrupting C++ code.
+-  [[http://pytest.org/latest/][py.test]] for testing Python.
+-  [[https://flake8.readthedocs.org/en/latest/][flake8]] for linting.
+
+We also suggest
+
+-  [[https://ipython.org][IPython]] for interacting with Python
+-  [[http://www.numpy.org][Numpy]] for numerical computations
+
+** Getting it
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+1. Create a new virtualenv and activate it:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ virtualenv env
+$ source ./env/bin/activate
+   #+END_SRC
+
+2. Install the required libraries - [[https://gmplib.org][GMP]] or [[http://mpir.org][MPIR]] and [[http://www.mpfr.org][MPFR]] - if not available already. You may also want to install [[http://crd-legacy.lbl.gov/~dhbailey/mpdist/][QD]].
+3. Install *fplll*:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ (fpylll) ./install-dependencies.sh $VIRTUAL_ENV
+   #+END_SRC
+
+4. Install Cython and Python requirements:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ (fpylll) pip install Cython
+$ (fpylll) pip install -r requirements.txt
+   #+END_SRC
+
+   #+BEAMER: \framebreak
+
+5. If you are so inclined, run:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ (fpylll) pip install -r suggestions.txt
+   #+END_SRC
+
+   to install suggested Python packages as well.
+
+6. Build *fpylll*:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ (fpylll) export PKG_CONFIG_PATH="$VIRTUAL_ENV/lib/pkgconfig"
+$ (fpylll) python setup.py build
+$ (fpylll) python setup.py install
+   #+END_SRC
+
+7. To run *fpylll*, you will need to:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ (fpylll) export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
+   #+END_SRC
+
+   so that Python can find *fplll* and friends.
+
+   #+BEAMER: \framebreak
+
+8. Start Python:
+
+   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+   #+BEGIN_SRC shell
+$ (fpylll) ipython
+   #+END_SRC
+
+To reactivate the virtual environment later:[fn:3]
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+#+BEGIN_SRC shell
+$ source ./env/bin/activate
+export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
+#+END_SRC
+
+*** Alternatives
+
+*fpylll* is also available via [[https://pypi.python.org/pypi/fpylll/][PyPI]], [[https://conda-forge.github.io][Conda-Forge]] for [[https://conda.io/docs/][Conda]] and in [[http://sagemath.org][SagMath]].
+
+* Implementation
+** Declaration
+
+Declaring C++ classes
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+# fpylll/fplll/fplll.pxd
+
+cdef extern from "fplll/nr/matrix.h" namespace "fplll":
+    cdef cppclass ZZ_mat[T]:
+
+        ZZ_mat()
+        ZZ_mat(int r, int c)
+
+        …
+
+        int get_cols() nogil
+#+END_SRC
+
+Declaring Cython classes
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+# fpylll/fplll/integer_matrix.pxd
+
+from fpylll.gmp.types cimport mpz_t
+from fplll cimport ZZ_mat
+
+cdef class IntegerMatrix:
+    cdef ZZ_mat[mpz_t]  *_core
+#+END_SRC
+
+** Implementation (Constructor)
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+# fpylll/fplll/integer_matrix.pyx
+
+from fpylll.gmp.types cimport mpz_t
+from fplll cimport ZZ_mat
+
+cdef class IntegerMatrix:
+    def __init__(self, arg0, arg1=None):
+        cdef int i, j
+
+        if PyIndex_Check(arg0) and PyIndex_Check(arg1):
+            if arg0 < 0:
+                raise ValueError("Number of rows must be >0")
+
+            if arg1 < 0:
+                raise ValueError("Number of columns must be >0")
+
+            self._core = new ZZ_mat[mpz_t](arg0, arg1)
+            return
+        …
+
+        else:
+            raise TypeError("Parameters arg0 and arg1 not understood")
+#+END_SRC
+
+** Implementation (Method)
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC python
+# fpylll/fplll/integer_matrix.pyx
+
+@property
+def ncols(self):
+    """Number of Columns
+
+    :returns: number of columns
+
+    >>> from fpylll import IntegerMatrix
+    >>> IntegerMatrix(10, 10).ncols
+    10
+
+    """
+    return self._core.get_cols()
+#+END_SRC
+
+** Catching Errors and Interrupts
+
+Errors and =abort()= calls do not have to crash your Python shell. You can also interrupt long running computations.
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+# fpylll/fplll/lll.pyx
+
+from cysignals.signals cimport sig_on, sig_off
+
+sig_on()
+self._core.mpz_double.lll(kappa_min, kappa_start, kappa_end, \
+                          size_reduction_start)
+r = self._core.mpz_double.status
+sig_off()
+#+END_SRC
+
+** Dark Side: Declaration
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+# fpylll/fplll/decl.pxd
+
+IF HAVE_QD:
+    ctypedef union mat_gso_core_t:
+        MatGSO[Z_NR[mpz_t], FP_NR[double]] *mpz_double
+        MatGSO[Z_NR[mpz_t], FP_NR[longdouble]] *mpz_ld
+        MatGSO[Z_NR[mpz_t], FP_NR[dpe_t]] *mpz_dpe
+        MatGSO[Z_NR[mpz_t], FP_NR[dd_real]] *mpz_dd
+        MatGSO[Z_NR[mpz_t], FP_NR[qd_real]] *mpz_qd
+        MatGSO[Z_NR[mpz_t], FP_NR[mpfr_t]] *mpz_mpfr
+ELSE:
+    ctypedef union mat_gso_core_t:
+        MatGSO[Z_NR[mpz_t], FP_NR[double]] *mpz_double
+        MatGSO[Z_NR[mpz_t], FP_NR[longdouble]] *mpz_ld
+        MatGSO[Z_NR[mpz_t], FP_NR[dpe_t]] *mpz_dpe
+        MatGSO[Z_NR[mpz_t], FP_NR[mpfr_t]] *mpz_mpfr
+#+END_SRC
+
+** Dark Side: Implementation
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+# fpylll/fplll/gso.pyx
+
+@property
+def d(self):
+    if self._type == mpz_double:
+        return self._core.mpz_double.d
+    IF HAVE_LONG_DOUBLE:
+        if self._type == mpz_ld:
+            return self._core.mpz_ld.d
+    if self._type == mpz_dpe:
+        return self._core.mpz_dpe.d
+    IF HAVE_QD:
+        if self._type == mpz_dd:
+            return self._core.mpz_dd.d
+        if self._type == mpz_qd:
+            return self._core.mpz_qd.d
+    if self._type == mpz_mpfr:
+        return self._core.mpz_mpfr.d
+
+    raise RuntimeError("MatGSO object '%s' has no core."%self)
+#+END_SRC
+
+* What
+** FPLLL Modules
+
+- IntegerMatrix :: matrices over =mpz_t= but not over =long=
+- GSO :: complete API for plain Gram-Schmidt objects, all floating point types, not Gram variant
+- LLL :: complete API (?)
+- BKZParam :: complete API
+- BKZ :: only high-level =reduction= routine
+- Wrapper :: high-level =reduction= routine
+- Enumeration :: complete API (?)
+- Pruner :: complete API (?)
+- GaussSieve :: complete API (?)
+- SVP :: complete API (?)
+- CVP :: complete API (?)
+
+** Extended API for Integer Matrices
+
+- =mul= :: naive matrix × matrix products
+- =mod= :: apply modular reduction modulo $q$ to a matrix
+- =apply_transform= :: apply transformation matrix $U$ to a matrix.
+- =submatrix= :: construct a new submatrix
+- =multiply_left= :: $v\cdot A$
+
+** Extended API for GSO
+
+- =from_canonical= :: Given a vector $\mathbf{v}$ wrt the canonical basis $\mathbb{Z}^n$ return a vector wrt the Gram-Schmidt basis $\mathbf{B}^*$
+
+- =to_canonical= :: Given a vector $\mathbf{v}$ wrt the Gram-Schmidt basis $\mathbf{B}^*$ return a vector wrt the canonical basis $\mathbb{Z}^n$
+
+- =babai= :: Return lattice vector close to $\mathbf{v}$ using Babai's nearest plane algorithm
+
+** New Modules
+
+_Have:_
+
+- BKZStats :: collecting trees of statistics for BKZ-like algorithms
+- SimpleBKZ :: simple, proof-of-concept implementation of BKZ2
+- SimpleDBKZ :: simple, proof-of-concept implementation of Self-Dual BKZ
+- BKZ2 :: feature-complete re-implementation of BKZ as implemented in *fplll*
+
+_Want:_
+
+- DBKZ :: a re-implementation of the full Self-Dual BKZ in Python
+- Wrapper :: a re-implementation of the *fplll* LLL wrapper in Python
+- ???
+
+** Simple BKZ
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+We need to import some modules
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+from __future__ import absolute_import  # Python 3
+from fpylll import IntegerMatrix, GSO, LLL, BKZ
+from fpylll import Enumeration
+#+END_SRC
+
+We need a =GSO= object and an =LLL= object
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+class BKZReduction:
+    def __init__(self, A):
+        self.A = A
+        self.m = GSO.Mat(A, flags=GSO.ROW_EXPO)
+        self.m.update_gso()
+        self.lll_obj = LLL.Reduction(self.m)
+        self.lll_obj() # run LLL 
+#+END_SRC
+
+#+BEAMER: \framebreak
+
+BKZ simply runs tours aka looks until nothing changes or the abort condition is met.
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax   
+#+BEGIN_SRC cython
+    def __call__(self, block_size):
+        auto_abort = BKZ.AutoAbort(self.m, self.A.nrows)
+
+        while True:
+            clean = self.bkz_loop(block_size, 0, self.A.nrows)
+            if clean:
+                break
+            if auto_abort.test_abort():
+                break
+#+END_SRC
+
+#+BEAMER: \framebreak
+
+A tour simply proceeds index by index and records if something changed
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+    def bkz_loop(self, block_size, min_row, max_row):
+        clean = True
+        for kappa in range(min_row, max_row-1):
+            bs = min(block_size, max_row - kappa)
+            clean &= self.svp_reduction(kappa, bs)
+        return clean
+#+END_SRC
+
+#+BEAMER: \framebreak
+
+Preprocessing
+    
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
+#+BEGIN_SRC cython
+    def svp_reduction(self, kappa, block_size):
+        clean = True
+
+        self.lll_obj(0, kappa, kappa + block_size)
+        if self.lll_obj.nswaps > 0:
+            clean = False
+#+END_SRC
+
+Enumeration
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+#+BEGIN_SRC cython
+        max_dist, expo = self.m.get_r_exp(kappa, kappa)
+        delta_max_dist = self.lll_obj.delta * max_dist
+
+        solution, max_dist = Enumeration(self.m).enumerate(kappa, \
+           kappa + block_size, max_dist, expo, pruning=None)[0]
+
+        if max_dist >= delta_max_dist * (1<<expo):
+            return clean
+#+END_SRC
+
+#+BEAMER: \framebreak
+
+Insert found vector into basis
+
+#+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
+#+BEGIN_SRC cython
+        d = self.m.d
+        self.m.create_row()
+
+        with self.m.row_ops(d, d+1):
+            for i in range(block_size):
+                self.m.row_addmul(d, kappa + i, solution[i])
+
+        self.m.move_row(d, kappa)
+        self.lll_obj(kappa, kappa, kappa + block_size + 1)
+        self.m.move_row(kappa + block_size, d)
+
+        self.m.remove_last_row()
+
+        return False
+#+END_SRC
+
+** Tests
+
+*fpylll* runs tests on every check-in for Python 2 and 3. As an added benefit, this extends test coverage for *fplll* as well.
+
+#+BEGIN_SRC python
+def test_lll_lll():
+    for m, n in dimensions:
+        A = make_integer_matrix(m, n)
+        b00 = []
+        for float_type in float_types:
+            B = copy(A)
+            M = GSO.Mat(B, float_type=float_type)
+            lll = LLL.Reduction(M)
+            lll()
+            if (m, n) == (0, 0):
+                continue
+            b00.append(B[0, 0])
+        for i in range(1, len(b00)):
+            assert b00[0] == b00[i]
+#+END_SRC
+
+** Multicore
+
+Of course, *fpylll* being a Python library means you can use your favourite Python libraries with it. 
+
+For example, say, we want to LLL reduce many matrices in parallel, using all our cores, and to compute the norm of the shortest vector across all matrices after LLL reduction. 
+
+** Multicore
+
+We’ll make use of Python’s [[https://docs.python.org/2/library/multiprocessing.html][multiprocessing]]:
+
+#+BEGIN_SRC python
+from multiprocessing import Pool
+#+END_SRC
+
+#+RESULTS:
+
+For this example, we want dimension 40, four worker processes and 32 matrices:
+
+#+BEGIN_SRC python
+from fpylll import *
+q = 1073741789
+workers = 4
+tasks = 32
+A  = []
+
+for i in range(tasks):
+    A.append(IntegerMatrix.random(40, "qary", q=q, k=20))
+
+#+END_SRC
+
+** Multicore
+
+Let’s get to work: we create a pool of workers and kick off the computation:
+
+#+BEGIN_SRC python
+pool = Pool(workers)
+A = pool.map(LLL.reduction, A)
+#+END_SRC
+
+#+RESULTS:
+
+Finally, we output the minimal norm found:
+
+#+BEGIN_SRC python
+min([A_[0].norm() for A_ in A])
+#+END_SRC
+
+#+RESULTS:
+7194.54515588
+
+** Sage Integration
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+*fpylll* integrates reasonably nicely with [[http://sagemath.org][Sage]]: converting back and forth between data types is seamless. For example:
+
+#+BEGIN_SRC sage
+sage: A = random_matrix(ZZ, 10, 10)
+sage: from fpylll import IntegerMatrix, LLL
+sage: B = IntegerMatrix.from_matrix(A)
+sage: LLL.reduction(B)
+sage: B.to_matrix(A)[0]
+#+END_SRC
+
+#+RESULTS:
+(-2, 1, 0, -1, 0, 0, 1, -2, 0, 0)
+
+#+BEAMER: \framebreak
+
+In fact, when installed inside Sage, element access for =IntegerMatrix= accepts and returns =sage.rings.integer.Integer= directly, instead of Python integers.
+
+#+BEGIN_SRC sage
+sage: type(B[0,0])
+<type 'sage.rings.integer.Integer'>
+#+END_SRC
+
+* Contributing
+
+** Contributing
+
+Yes, please!
+
+** Contributing
+
+All contributions to =fpylll= 
+
+- are automatically tested using =py.test=
+- must follow the coding style 
+
+_Project ideas_
+
+- extend interface to cover LLL on Gram Matrices
+- check API coverage of =fplll=
+- function-level and high-level documentation
+- automated attacks/scripts for challenges (SVP, LWE, NTRU)
+- port API extensions down to =fpylll=
+
+* Build Artefacts                                                                                   :noexport:
+
+** Emacs Config
+
+#+BEGIN_SRC emacs-lisp :tangle .dir-locals.el
+((magit-mode .
+             ((eval .
+                    (and
+                     (visual-line-mode 1)))))
+ (bibtex-mode . ((fill-column . 10000)))
+ (org-mode .
+           ((org-tags-column . -80)
+            (eval .
+                  (and
+                   (visual-fill-column-mode t)
+                   (flyspell-mode t))))))
+#+END_SRC
+
+** Makefile
+
+#+BEGIN_SRC makefile :tangle Makefile
+EMACS=emacs
+EMACSFLAGS=--batch -l ~/.emacs.d/org-export-init.el
+LATEXMK=latexmk
+LATEXMKFLAGS=-xelatex
+
+%.pdf: %.tex
+	$(LATEXMK) $(LATEXMKFLAGS) $<
+
+%.tex: %.org
+	$(EMACS) $(EMACSFLAGS) $< -f org-latex-export-to-latex
+
+clean:
+	rm -f *.bbl *.aux *.out *.synctex.gz *.log *.run.xml *.blg *-blx.bib *.fdb_latexmk *.fls *.toc *.vrb *.snm *.nav
+
+.PHONY: clean all
+.PRECIOUS: %.tex
+#+END_SRC
+
+** Autoexport to PDF
+
+* Footnotes
+
+[fn:1] Okay, to be fair modern C++11 looks kinda like Python, but there’s still the compile-and-run cycle.
+
+[fn:2] http://cython.org
+
+[fn:3] See https://github.com/fplll/fpylll for how to automate the =export= step.
+
