@@ -95,7 +95,7 @@ We also suggest
 1. Create a new virtualenv and activate it:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ virtualenv env
 $ source ./env/bin/activate
    #+END_SRC
@@ -104,14 +104,14 @@ $ source ./env/bin/activate
 3. Install *fplll*:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ (fpylll) ./install-dependencies.sh $VIRTUAL_ENV
    #+END_SRC
 
 4. Install Cython and Python requirements:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ (fpylll) pip install Cython
 $ (fpylll) pip install -r requirements.txt
    #+END_SRC
@@ -121,7 +121,7 @@ $ (fpylll) pip install -r requirements.txt
 5. If you are so inclined, run:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ (fpylll) pip install -r suggestions.txt
    #+END_SRC
 
@@ -130,7 +130,7 @@ $ (fpylll) pip install -r suggestions.txt
 6. Build *fpylll*:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ (fpylll) export PKG_CONFIG_PATH="$VIRTUAL_ENV/lib/pkgconfig"
 $ (fpylll) python setup.py build
 $ (fpylll) python setup.py install
@@ -139,7 +139,7 @@ $ (fpylll) python setup.py install
 7. To run *fpylll*, you will need to:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ (fpylll) export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
    #+END_SRC
 
@@ -150,14 +150,14 @@ $ (fpylll) export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
 8. Start Python:
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 $ (fpylll) ipython
    #+END_SRC
 
 To reactivate the virtual environment later:[fn:3]
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax        
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ source ./env/bin/activate
 export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
 #+END_SRC
@@ -584,6 +584,18 @@ _Project ideas_
 - function-level and high-level documentation
 - automated attacks/scripts for challenges (SVP, LWE, NTRU)
 - port API extensions down to =fpylll=
+ 
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+
+[[./kitten-3.jpg]]
+#+END_CENTER
+
 
 * Build Artefacts                                                                                   :noexport:
 

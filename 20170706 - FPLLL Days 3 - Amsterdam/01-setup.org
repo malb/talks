@@ -21,7 +21,7 @@
 ** TL;DR 
 
 1. ~./autogen.sh~ (when building from Git)
-2. ~./configure~ (optional: \lstinline{--prefix=\$PREFIX})
+2. ~./configure~ (optional: \lstinline{--prefix=$PREFIX})
 3. ~make~ (optional: ~-jX~ for ~X~ cores)
 4. ~make check~
 5. ~make install~
@@ -31,7 +31,7 @@
 If you used a prefix, you might need to use
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ LD_LIBRARY_PATH=$PREFIX/lib fplll …
 #+END_SRC
 
@@ -173,6 +173,12 @@ digraph autotools {
 
 Calling =./configure && make=
 
+** See also
+
+#+BEGIN_CENTER 
+https://autotools.io/index.html
+#+END_CENTER
+
 ** Files: =configure.ac=
 
 - configuration options
@@ -186,7 +192,7 @@ There are two version numbers attached to each fplll release:
 1. human-readable version number
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-   #+BEGIN_SRC shell 
+   #+BEGIN_SRC sh 
 AC_INIT(fplll, 5.1.0)
 FPLLL_MAJOR_VERSION=`echo AC_PACKAGE_VERSION | awk -F. '{print $1}'`
 FPLLL_MINOR_VERSION=`echo AC_PACKAGE_VERSION | awk -F. '{print $2}'`
@@ -197,7 +203,7 @@ FPLLL_VERSION_NUMBER=…
 
 2. Application binary interface (ABI) version number[fn:1]
 
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 FPLLL_LT_CURRENT=3
 FPLLL_LT_REVISION=0
 FPLLL_LT_AGE=0
@@ -216,7 +222,7 @@ When doing a release, they should be updated like this:
 ** Files: =Makefile.am=
 
 - which files belongs to which binary
-- what files to install on top of binaries
+- what files to install in addition to binaries
 - one ~Makefile.am~ per directory
 
 ** Debugging
@@ -252,13 +258,13 @@ I use Python virtual environments.
 1. Creating a new virtual environment
 
    #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 virtualenv env
    #+END_SRC
 
 2. Using a virtual environment[fn:4]
 
-   #+BEGIN_SRC shell
+   #+BEGIN_SRC sh
 source ./env/bin/activate
 export PKG_CONFIG_PATH="$VIRTUAL_ENV/lib/pkgconfig:$PKG_CONFIG_PATH"
 export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
@@ -322,9 +328,9 @@ http://crd-legacy.lbl.gov/~dhbailey/mpdist/
 
 #+BEGIN_CENTER
 \Huge \alert{Thank You}
+
+[[./kitten-1.jpg]]
 #+END_CENTER
-
-
 
 * Build Artefacts                                                                                   :noexport:
 

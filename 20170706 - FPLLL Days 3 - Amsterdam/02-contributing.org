@@ -35,7 +35,7 @@ Fpylll is not quite there yet.
 - Mailing List :: https://groups.google.com/forum/#!forum/fplll-devel
 - Slack :: https://fplll.slack.com
 
-It is good for an open-source project to have discussions in public. It shows others that the project is alive and accessible.
+It is good for an open-source project to have discussions in public. It shows to others that the project is alive and accessible.
 
 * Setup
 
@@ -52,14 +52,14 @@ It is good for an open-source project to have discussions in public. It shows ot
 Clone *your* git repo where *my-github-name* is your account name on GitHub:
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ git clone git@github.com:my-github-name/fplll.git
 #+END_SRC
 
 Then run
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ ./autogen.sh
 $ ./configure
 $ make
@@ -107,10 +107,8 @@ GitHub is preferred, also for developers
 :BEAMER_OPT: allowframebreaks
 :END:
 
-To create a topic branch, its easiest to use
-
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell :exports both
+#+BEGIN_SRC sh :exports both
 $ git checkout -b fix-broken-thing
 Switched to a new branch 'fix-broken-thing'
 #+END_SRC
@@ -128,7 +126,7 @@ Use a sufficiently verbose name for your branch so it is clear what it is about.
 
 When you are ready to generate a pull request, either for preliminary review or for consideration of merging into the project, you must first push your local topic branch back up to GitHub:
 
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ git push origin fix-broken-thing
 #+END_SRC
 
@@ -177,7 +175,7 @@ Pull upstream changes from =master= into your fork on a regular basis.
 - To pull in upstream changes:
 
   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-  #+BEGIN_SRC shell
+  #+BEGIN_SRC sh
 $ git remote add upstream https://github.com/fplll/fplll.git
 $ git fetch upstream master
   #+END_SRC
@@ -185,25 +183,25 @@ $ git fetch upstream master
 - Check logs if you actually want the changes before merging:
 
   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-  #+BEGIN_SRC shell
+  #+BEGIN_SRC sh
 $ git log upstream/master
   #+END_SRC
 
 - Then merge the changes that you fetched:
 
   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-  #+BEGIN_SRC shell
+  #+BEGIN_SRC sh
 $ git merge upstream/master
   #+END_SRC
 
-* How to Get your Pull rEquest Accepted
+* How to Get your Pull Request Accepted
 
 ** Run tests!
 
 Before you submit a pull request, run tests:
 
   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ make check
 #+END_SRC
 
@@ -298,13 +296,13 @@ The pixel shortage is over. We want to see:
 - Automatic formatting can (and should) be performed by the command
 
   #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-  #+BEGIN_SRC shell
+  #+BEGIN_SRC sh
 $ make check-style
   #+END_SRC
 
 #+BEAMER: \framebreak
 
-In order to improve readability, some situations might require manual formatting. Clang-format [[http://llvm.org/releases/3.9.0/tools/clang/docs/ClangFormatStyleOptions.html#disabling-formatting-on-a-piece-of-code][includes a comment trigger]] to /locally/ disable the formatting.
+In order to improve readability, some situations might require manual formatting. Clang-format [[http://llvm.org/releases/3.9.0/tools/clang/docs/ClangFormatStyleOptions.html#disabling-formatting-on-a-piece-of-code][includes a comment trigger]] to *locally* disable the formatting.
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
 #+BEGIN_SRC C++
@@ -327,7 +325,7 @@ void formatted_code_again;
 fplll uses [[http://www.stack.nl/~dimitri/doxygen/][doxygen]] with a [[https://github.com/Velron/doxygen-bootstrapped][bootstrap theme]] to generate API documentation. To produce API documentation run
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ doxygen Doxyfile
 #+END_SRC
 
@@ -339,7 +337,7 @@ $ doxygen Doxyfile
 Doxygen writes its outputs to =doc/html=, you can arrange it that this directory holds the =gh-pages= branch of the fplll repository:
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ cd doc
 $ git clone -b gh-pages git@github.com::<my-github-name>/fplll.git html
 $ cd ..
@@ -353,7 +351,7 @@ $ cd ..
 Before generating documentation with Doxygen to push to [[https://fplll.github.io/fplll/]] please run 
 
 #+ATTR_LATEX: :options basicstyle=\tt\scriptsize\relax
-#+BEGIN_SRC shell
+#+BEGIN_SRC sh
 $ make maintainer-clean 
 #+END_SRC
  
@@ -361,6 +359,18 @@ in the fplll root directory.
 
 - This removes =config.h= and =fplll_config.h=, i.e. it prevents your local, machine-specific configuration to be pushed as part of the official API documentation.
 - Review the changes in the =gh-pages= branch before committing and pushing.
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+
+#+ATTR_LATEX: :width 0.6\textwidth
+[[./kitten-2.jpg]]
+#+END_CENTER
 
 * Build Artefacts                                                                                   :noexport:
 
