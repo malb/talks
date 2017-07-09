@@ -164,7 +164,7 @@ export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"
 
 *** Alternatives
 
-*fpylll* is also available via [[https://pypi.python.org/pypi/fpylll/][PyPI]], [[https://conda-forge.github.io][Conda-Forge]] for [[https://conda.io/docs/][Conda]] and in [[http://sagemath.org][SagMath]].
+*fpylll* is also available via [[https://pypi.python.org/pypi/fpylll/][PyPI]], [[https://conda-forge.github.io][Conda-Forge]] for [[https://conda.io/docs/][Conda]] and in [[http://sagemath.org][SageMath]].
 
 * Implementation
 ** Declaration
