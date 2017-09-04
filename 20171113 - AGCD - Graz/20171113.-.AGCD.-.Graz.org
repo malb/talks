@@ -162,7 +162,7 @@ If only we could compute the pairwise GCD of all RSA moduli on the Internet \dot
 #+ATTR_BEAMER: :overlay +-
 - Naively, we’d have to compute $\bigO{\tau^2}$ GCDs to check all $\tau$ moduli against each other.
 - We can do better by performing \(\tau\) GCD computations \[\gcd(N_i, \prod_{j \neq i} N_j)\]
-- We will use the identity \[x \bmod N_0 \equiv (x \bmod N_0⋅N_1) \bmod N_0\]
+- We will use the identity[fn:1] \[x \bmod N_0 \equiv (x \bmod N_0⋅N_1) \bmod N_0\]
 
 ** Computing pairwise GCDs efficiently
 
@@ -252,7 +252,7 @@ If $λ$ is our security parameter (think $λ=128$), then
 
 *** Caution
 
-This encryption scheme has the same malleability property as naive RSA encryption![fn:1]
+This encryption scheme has the same malleability property as naive RSA encryption![fn:2]
 
 * Attacks on the Approximate GCD problem
 
@@ -438,7 +438,7 @@ Given $c_i = q_i ⋅ p + m_i'$ with $m_i' = 2\,r_i + m_i$.
 - We can compute \[c' = c_0 ⋅ c_1 = q_0 q_1 p^2 + q_0 m_1' p  + q_1 m_0' p + m_0' ⋅ m_1'\] to get \(c' \bmod p =  m_0' ⋅ m_1'\) and \( m_0' ⋅ m_1' \bmod 2 = m_0 ⋅ m_1\).
 - We can also compute \[c' = c_0 + c_1 = (q_0 + q_1) p + (m_0' + m_1')\] to get $c' \bmod p \bmod 2 = m_0 \oplus m_1$.
 
-We can compute with encrypted data.[fn:2]
+We can compute with encrypted data.[fn:3]
 
 * Build Artefacts                                                     :noexport:
 ** Emacs Config
@@ -480,13 +480,15 @@ rm -f *.bbl *.aux *.out *.synctex.gz *.log *.run.xml *.blg *-blx.bib *.fdb_latex
 
 ** Autoexport to PDF
 
-   # Local Variables:
-   # eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
-   # End:
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+# End:
 
 * Footnotes
 
-[fn:1] In contrast to naive RSA, this scheme offers indistinguishability security under chosen plaintext attacks (IND-CPA).
+[fn:1] https://factorable.net/fastgcd-1.0.tar.gz
 
-[fn:2] https://crypto.stanford.edu/craig/easy-fhe.pdf
+[fn:2] In contrast to naive RSA, this scheme offers indistinguishability security under chosen plaintext attacks (IND-CPA).
+
+[fn:3] https://crypto.stanford.edu/craig/easy-fhe.pdf
 
