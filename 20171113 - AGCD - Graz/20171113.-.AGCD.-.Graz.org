@@ -9,13 +9,10 @@
 #+EXCLUDE_TAGS: noexport
 
 #+LaTeX_CLASS: mbeamer
-#+LaTeX_HEADER: \newcommand{\ZZ}[1][blank]{\ensuremath{\ifthenelse{\equal{#1}{blank}}{\mathbb{Z}}{\mathbb{Z}\left[#1\right]}\xspace}}
 #+LATEX_HEADER: \usepackage{filecontents}
 #+LATEX_HEADER: \usepackage{url}
 #+LATEX_HEADER: \usefonttheme[onlymath]{serif}
 #+LATEX_HEADER: \renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}\xspace}
-#+LATEX_HEADER: \newcommand{\sample}{\ensuremath{\leftarrow_{\$}}}
-#+LATEX_HEADER: \newcommand{\ovec}[1]{\ensuremath{\overline{\vec{#1}}}\xspace}
 #+LATEX_HEADER: \newcommand{\bigsoftO}[1]{\ensuremath{\tilde{\mathcal{O}}}\left({#1}\right)\xspace}
 #+LATEX_HEADER: \setbeamercolor{example text}{fg=mDarkBrown}
 
@@ -156,6 +153,27 @@ If only we could compute the pairwise GCD of all RSA moduli on the Internet \dot
 #+BEGIN_QUOTE
 [W]e are able to compute the private keys for 64,000 (0.50%) of the TLS hosts and 108,000 (1.06%) of the SSH hosts from our scan data alone by exploiting known weaknesses of RSA and DSA when used with insufficient randomness.footfullcite:USENIX:HDWH12
 #+END_QUOTE
+
+** Grabbing all RSA Moduli
+
+#+ATTR_LATEX: :options basicstyle=\tt\tiny\relax
+#+BEGIN_SRC bash
+malb@computer:: ~ > sudo zmap -p 22 -r 10000 -i eth0 -o ssh.csv
+malb@computer:: ~ > tail -n +2 ssh.csv | zgrab --port=22 --ssh=true --output-file='ssh.json'
+...
+{"ip":"REDACTED",
+  "data":{"ssh":{
+    "server_protocol":{
+       "raw_banner":"SSH-2.0-OpenSSH_6.7p1 Debian-5\r\n",
+       "protocol_version":"2.0",
+        "software_version":"OpenSSH_6.7p1",
+        "comments":"Debian-5"},...}}}
+#+END_SRC
+
+#+BEGIN_CENTER
+https://zmap.io
+#+END_CENTER
+
 
 ** Computing pairwise GCDs efficiently
 
