@@ -54,7 +54,7 @@ For comparison, integer multiplication costs $\bigO{κ \log κ \log\log κ}$ usi
 
   - $N = p \cdot q$ where $p$ and $q$ prime,
   - $e$ coprime to $\phi(N) = (p-1)(q-1)$ and
-  - $d$ such that $e \cdot d \equiv 1 \mod{φ(N)}$.
+  - $d$ such that $e \cdot d \equiv 1 \mod{\phi(N)}$.
 
 - Enc :: $c \equiv m^e \bmod{N}$
 
@@ -116,17 +116,18 @@ This does not mean an adversary _has_ to factor to solve RSA.
 
 Random bits can be gathered from the environment using various sensors, e.g.
 
--  time,
--  process IDs currently running on the machine,
--  the harddisk,
--  the content of uninitialised memory,
--  hardware sensors (temperature etc.).
+- time,
+- process IDs currently running on the machine,
+- the harddisk,
+- the content of uninitialised memory,
+- hardware sensors (temperature etc.).
+- your phone’s camera is an excellent source of randomness.[fn:1]
 
 ** What could possibly go wrong?
 
 Assume a router generating an RSA modulus on booting for the first time.
 
-- It might not know the time but retrieve it once booted.
+- It might not know the time but retrieves after boot.
 - Whenever it boots the same processes are running.
 - The harddisk has the same files on it for every router.
 - Uninitialised memory is just full of zeros.
@@ -143,7 +144,7 @@ If two routers compute the same $N = p \cdot q$ then their respective users can 
 What if two routers generate moduli $N_0 = q_0 ⋅ p$ and $N_1 = q_1 \cdot p$, i.e. moduli with shared factors, due to bad randomness?
 
 - We assume that factoring each of $N_0$ or $N_1$ is hard.
-- On the other hand, computing $\gcd(N_0, N_1)$ reveals $p$ but costs only $\bigO{\log^2 N}$ operations.
+- On the other hand, computing $\gcd(N_0, N_1)$ reveals $p$ but costs only $\bigO{\kappa \log^2 \kappa \log \log \kappa}$ operations when $N_i \approx 2^\kappa$.
 
 #+BEAMER: \pause
 If only we could compute the pairwise GCD of all RSA moduli on the Internet \dots
@@ -180,7 +181,7 @@ https://zmap.io
 #+ATTR_BEAMER: :overlay +-
 - Naively, we’d have to compute $\bigO{\tau^2}$ GCDs to check all $\tau$ moduli against each other.
 - We can do better by performing \(\tau\) GCD computations \[\gcd(N_i, \prod_{j \neq i} N_j)\]
-- We will use the identity[fn:1] \[x \bmod N_0 \equiv (x \bmod N_0⋅N_1) \bmod N_0\]
+- We will use the identity[fn:2] \[x \bmod N_0 \equiv (x \bmod N_0⋅N_1) \bmod N_0\]
 
 ** Computing pairwise GCDs efficiently
 
@@ -270,7 +271,7 @@ If $λ$ is our security parameter (think $λ=128$), then
 
 *** Caution
 
-This encryption scheme has the same malleability property as naive RSA encryption![fn:2]
+This encryption scheme has the same malleability property as naive RSA encryption![fn:3]
 
 * Attacks on the Approximate GCD problem
 
@@ -293,9 +294,13 @@ Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for
 
 $2^ρ$ GCDs, $2^{2ρ}$ multiplications
 
-** Time-Memory Trade Off: Multiplication
+** Time-Memory Trade Off
 
+#+BEGIN_lemma
 Assume that we have $τ$ samples $x_0 , … ,x_{τ-1}$ of a given prime $p$, of the hidden form $x_i = q_i ⋅ p + r_i$, then $p$ can then be recovered with overwhelming probability in time $\tilde{\mathcal{O}}(2^{\frac{τ+1}{τ-1}ρ})$. footfullcite:EC:CorNacTib12
+#+END_lemma
+
+** Time-Memory Trade Off: Multiplication
 
 The algorithm proceeds by computing \[y_i = \prod_{j=0}^{2^ρ-1} (x_i - j)\] for $0 ≤ i < τ$. Each $y_i$ can be computed in quasilinear time in $2^{ρ}$, i.e. \[\bigO{2^ρ ⋅ γ \cdot \log^2 (2^ρ ⋅ γ) \cdot \log \log (2^ρ ⋅ γ)}\] using a product tree.
 
@@ -362,7 +367,7 @@ Te set of all integer-linear combinations of the rows of $\vec{B}$ the *lattice*
 
 *** Easy SVP
 
-GCD is SVP on the integer lattice $\ZZ$. For example, $\vec{B} = {[21, 14]}^T$, $\vec{v} = (-1,1)$, $\vec{v} ⋅\vec{B} = 7$.
+GCD is SVP on $\ZZ^2$. For example, $\vec{B} = {[21, 14]}^T$, $\vec{v} = (-1,1)$, $\vec{v} ⋅\vec{B} = 7$.
 
 ** Reduction to presumed hard lattice problem
 
@@ -456,7 +461,7 @@ Given $c_i = q_i ⋅ p + m_i'$ with $m_i' = 2\,r_i + m_i$.
 - We can compute \[c' = c_0 ⋅ c_1 = q_0 q_1 p^2 + q_0 m_1' p  + q_1 m_0' p + m_0' ⋅ m_1'\] to get \(c' \bmod p =  m_0' ⋅ m_1'\) and \( m_0' ⋅ m_1' \bmod 2 = m_0 ⋅ m_1\).
 - We can also compute \[c' = c_0 + c_1 = (q_0 + q_1) p + (m_0' + m_1')\] to get $c' \bmod p \bmod 2 = m_0 \oplus m_1$.
 
-We can compute with encrypted data.[fn:3]
+We can compute with encrypted data.[fn:4]
 
 * Build Artefacts                                                     :noexport:
 ** Emacs Config
@@ -504,9 +509,11 @@ rm -f *.bbl *.aux *.out *.synctex.gz *.log *.run.xml *.blg *-blx.bib *.fdb_latex
 
 * Footnotes
 
-[fn:1] https://factorable.net/fastgcd-1.0.tar.gz
+[fn:1] https://blog.cloudflare.com/lavarand-in-production-the-nitty-gritty-technical-details/ 
 
-[fn:2] In contrast to naive RSA, this scheme offers indistinguishability security under chosen plaintext attacks (IND-CPA).
+[fn:2] https://factorable.net/fastgcd-1.0.tar.gz
 
-[fn:3] https://crypto.stanford.edu/craig/easy-fhe.pdf
+[fn:3] In contrast to naive RSA, this scheme offers indistinguishability security under chosen plaintext attacks (IND-CPA).
+
+[fn:4] https://crypto.stanford.edu/craig/easy-fhe.pdf
 
