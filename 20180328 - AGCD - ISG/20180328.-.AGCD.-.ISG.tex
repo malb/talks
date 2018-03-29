@@ -1,0 +1,514 @@
+% Created 2018-03-27 Tue 20:31
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation,smaller]{beamer}
+\RequirePackage{etex}
+\RequirePackage[l2tabu,orthodox]{nag}            %% Warn about obsolete commands and packages
+\RequirePackage{amsmath,amsfonts,amssymb,amsthm} %% Math
+\RequirePackage{ifxetex,ifluatex}                %% Detect XeTeX and LuaTeX
+\RequirePackage{fixltx2e}                        %% provides \textsubscript
+\RequirePackage{xspace}
+\RequirePackage{graphicx}
+\RequirePackage{comment}
+\RequirePackage{url}
+\RequirePackage{relsize}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage[normalem]{ulem}
+\RequirePackage[all]{xy}
+\RequirePackage{etoolbox}
+
+%%%
+%%% Code Listings
+%%%
+
+\RequirePackage{listings}
+\lstdefinelanguage{Sage}[]{Python}{morekeywords={True,False,sage,cdef,cpdef,ctypedef,self},sensitive=true}
+
+\lstset{frame=none,
+  showtabs=False,
+  showspaces=False,
+  showstringspaces=False,
+  commentstyle={\color{gray}},
+  keywordstyle={\color{mLightBrown}\textbf},
+  stringstyle ={\color{mDarkBrown}},
+  frame=single,
+  basicstyle=\tt\scriptsize\relax,
+  backgroundcolor=\color{gray!190!black},
+  inputencoding=utf8,
+  literate={…}{{\ldots}}1,
+  belowskip=0.0em,
+}
+
+\makeatletter
+\patchcmd{\@verbatim}
+  {\verbatim@font}
+  {\verbatim@font\scriptsize}
+  {}{}
+\makeatother
+
+%%%
+%%% Tikz
+%%%
+
+\RequirePackage{tikz,pgfplots}
+
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{automata}
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{fit,}
+\usetikzlibrary{shapes.symbols}
+\usetikzlibrary{chains}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{graphs}
+
+%% Cache
+
+\ifdefined\tikzcaching  % chktex 1
+  \usetikzlibrary{external}
+  \tikzexternalize[prefix=build/]
+  \tikzset{external/up to date check=diff}  %% MD5 fails from within emacs
+\fi
+
+%%%
+%%% SVG (Inkscape)
+%%%
+
+\ifxetex % chktex 1
+\newcommand{\executeiffilenewer}[3]{%
+  {\immediate\write18{#3}} % hack
+}
+\else
+\newcommand{\executeiffilenewer}[3]{%
+  \ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+    {\pdffilemoddate{#2}}>0%
+    {\immediate\write18{#3}}
+  \fi%
+}
+\fi
+
+\newcommand{\includesvg}[2][1.0\textwidth]{%
+ \executeiffilenewer{#1.svg}{#1.pdf}%
+ {inkscape -z -D --file=#2.svg --export-pdf=#2.pdf --export-latex --export-area-page}%
+ \def\svgwidth{#1} 
+ \input{#2.pdf_tex}%
+} 
+
+%%%
+%%% Metropolis Theme
+%%%
+
+\usetheme{metropolis}
+\metroset{color/block=fill}
+\metroset{numbering=none}
+\metroset{outer/progressbar=foot}
+\metroset{titleformat=smallcaps}
+
+\setbeamercolor{description item}{fg=mLightBrown}
+% \setbeamerfont{alerted text}{series=\bfseries}
+\setbeamerfont{footnote}{size=\scriptsize}
+\setbeamercolor{example text}{fg=mDarkBrown}
+\setbeamercolor{block title alerted}{fg=white, bg=mDarkBrown}
+
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+%%%
+%%% UTF-8 & Fonts
+%%% 
+
+\RequirePackage{unicodesymbols} % after metropolis which loads fontspec
+
+\setmonofont[BoldFont={Cousine Bold},
+             ItalicFont={Cousine Italic},
+             BoldItalicFont={Cousine Bold Italic}, % Scale=MatchLowercase
+             ]{Cousine}
+
+%%%
+%%% BibLaTeX
+%%%
+
+\RequirePackage[backend=bibtex,
+            style=alphabetic,
+            maxnames=4,
+            citestyle=alphabetic]{biblatex}
+
+\bibliography{local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib}
+
+\DeclareFieldFormat{title}{\alert{#1}}
+\DeclareFieldFormat[book]{title}{\alert{#1}}
+\DeclareFieldFormat[thesis]{title}{\alert{#1}}
+\DeclareFieldFormat[inproceedings]{title}{\alert{#1}}
+\DeclareFieldFormat[incollection]{title}{\alert{#1}}
+\DeclareFieldFormat[article]{title}{\alert{#1}}
+\DeclareFieldFormat[misc]{title}{\alert{#1}}
+
+%%% 
+%%% Microtype
+%%%
+
+\IfFileExists{upquote.sty}{\RequirePackage{upquote}}{}
+\IfFileExists{microtype.sty}{\RequirePackage{microtype}}{}
+
+\setlength{\parindent}{0pt}                   %%
+\setlength{\parskip}{6pt plus 2pt minus 1pt}  %%
+\setlength{\emergencystretch}{3em}            %% prevent overfull lines
+\setcounter{secnumdepth}{0}                   %%
+
+%%% Local Variables:
+%%% mode: latex
+%%% End:
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{newunicodechar}
+\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda,landau,advantage]{cryptocode}
+\usepackage{xspace}
+\usepackage{units}
+\usepackage{nicefrac}
+\usepackage{gensymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[color=yellow!40]{todonotes}
+\usepackage{filecontents}
+\usepackage{url}
+\usefonttheme[onlymath]{serif}
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}\xspace}
+\newcommand{\bigsoftO}[1]{\ensuremath{\tilde{\mathcal{O}}}\left({#1}\right)\xspace}
+\setbeamercolor{example text}{fg=mDarkBrown}
+\usetheme{default}
+\author{Martin R. Albrecht}
+\date{28 March 2018}
+\title{The Approximate GCD Problem}
+\subtitle{A post-quantum problem that is easier to understand than RSA}
+\hypersetup{
+pdfauthor={Martin R. Albrecht},
+pdftitle={The Approximate GCD Problem},
+pdfkeywords={},
+pdfsubject={},
+pdfcreator={Emacs 25.2.2 (Org mode 9.1.8)},
+pdflang={English},
+colorlinks,
+citecolor=gray,
+filecolor=gray,
+linkcolor=gray,
+urlcolor=gray
+}
+\begin{document}
+
+\maketitle
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+
+\section{Greatest Common Divisors}
+\label{sec:org1749bee}
+
+\begin{frame}[fragile,label={sec:org0c20302}]{Euclidean algorithm}
+ Given two integers \(a, b < N = 2^κ\) the Euclidean algorithm computes their greatest common divisor \(\gcd(a,b)\).
+
+\lstset{language=Python,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+def gcd(a, b):
+    if b == 0:
+        return a
+    else:
+        return gcd(b, a % b)
+\end{lstlisting}
+
+The Euclidean algorithm runs in time \(\bigO{κ^2}\).
+
+Best known algorithm runs in time \(\bigO{κ \log^2 κ \log\log κ}\). \footfullcite{ANTS:SteZim04}
+
+For comparison, integer multiplication costs \(\bigO{κ \log κ \log\log κ}\) using the Schönhage–Strassen algorithm.
+\end{frame}
+
+\section{RSA}
+\label{sec:org73b4419}
+
+\begin{frame}[label={sec:org4cfd7c3}]{Public key encryption}
+\begin{description}
+\item[{KeyGen}] Bob generates a key pair \((sk, pk)\) and publishes \(pk\).
+
+\item[{Enc}] Alice uses \(pk\) to encrypt message \(m\) for Bob as \(c\).
+
+\item[{Dec}] Bob uses \(sk\) to decrypt \(c\) to recover \(m\).
+\end{description}
+\end{frame}
+
+\begin{frame}[label={sec:orgbb1aa2e}]{Naive RSA}
+\begin{description}
+\item[{KeyGen}] The public key is \((N,e)\) and the private key is \(d\), with
+
+\begin{itemize}
+\item \(N = p \cdot q\) where \(p\) and \(q\) prime,
+\item \(e\) coprime to \(\phi(N) = (p-1)(q-1)\) and
+\item \(d\) such that \(e \cdot d \equiv 1 \mod{\phi(N)}\).
+\end{itemize}
+
+\item[{Enc}] \(c \equiv m^e \bmod{N}\)
+
+\item[{Dec}] \(m \equiv c^d \equiv m^{e \cdot d} \equiv m^{1} \bmod{N}\)
+\end{description}
+
+\begin{block}{Caution}
+This naive version of RSA only achieves a very weak form of security — OW-CPA — even against classical adversaries: it is hard to recover random messages.
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:orgd9a7b9b}]{Classical attacks on RSA}
+\begin{itemize}
+\item An adversary who can factor large integers can break RSA.
+
+\item The best known classical algorithm for factoring is the Number Field Sieve (NFS)
+
+\item It has a \alert{super-polynomial} but \alert{sub-exponential} (in \(\log N\) ) complexity of \[\bigO{e^{1.9 (\log^{1/3} N) (\log\log^{2/3}N)}}\] operations.
+\end{itemize}
+
+
+\pause
+
+\begin{block}{Caution}
+This does not mean an adversary \textbf{has} to factor to solve RSA.
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org7a7fefc}]{Shared factors}
+What if two users generate moduli \(N_0 = q_0 ⋅ p\) and \(N_1 = q_1 \cdot p\), i.e. moduli with shared factors?
+
+\begin{itemize}
+\item We assume that factoring each of \(N_0\) or \(N_1\) is hard.
+\item On the other hand, computing \(\gcd(N_0, N_1)\) reveals \(p\) but costs only \(\bigO{\kappa \log^2 \kappa \log \log \kappa}\) operations when \(N_i \approx 2^\kappa\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgba2f8f7}]{Quantum attacks on RSA}
+An adversary with access to a quantum computer with \[ \bigO{\log^2(N) \log\log (N) \log\log\log (N)}\] gates can factor \(N\) using Shor’s algorithm.\footfullcite{FOCS:Shor94}
+\end{frame}
+
+\section{The Approximate GCD problem}
+\label{sec:org27fab4b}
+
+\begin{frame}[label={sec:orgfaf6116}]{The Approximate GCD problem}
+The \alert{Approximate GCD} problem is the problem of distinguishing \[x_i = q_i ⋅ p  \alert{+ r_i}\] from uniform \(\ZZ ∩ [0, X)\) with \(x_i < X\) (\(q_i\), \(r_i\) and \(p\) are secret).
+\end{frame}
+
+\begin{frame}[label={sec:org6802ef9}]{The Approximate GCD problem}
+\[x_i = q_i ⋅ p  + r_i\]
+
+If \(λ\) is our security parameter (think \(λ=128\)), then
+
+\begin{center}
+\begin{tabular}{rrll}
+name & sizeof & DGHV10 \footfullcite{EC:DGHV10} & CheSte15 \footfullcite{EC:CheSte15}\\
+\hline
+\(γ\) & \(x_i\) & \(λ^5\) & \(λ \log λ\)\\
+\(η\) & \(p\) & \(λ^2\) & \(λ + \log λ\)\\
+\(ρ\) & \(r_i\) & \(λ\) & \(λ\)\\
+\end{tabular}
+
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org0e238e4}]{Naive encryption}
+\begin{description}
+\item[{KeyGen}] The public key is \(\{x_i = q_i ⋅ p + 2\,r_i\}_{0 ≤ i < t}\) and the private key is \(p\).
+
+\item[{Enc}] For \(m \in \{0,1\}\) output \(c = m + \sum b_i ⋅ x_i\) with \(b_i \sample \{0,1\}\).
+
+\item[{Dec}] \(m = (c \bmod p) \bmod 2\).
+\end{description}
+
+\pause
+
+\begin{block}{Note}
+This encryption scheme is not IND-CCA secure but it is IND-CPA secure if the AGCD problem is hard.
+\end{block}
+\end{frame}
+
+\section{Attacks on the Approximate GCD problem}
+\label{sec:org13dc86f}
+
+\begin{frame}[label={sec:org622d0b7}]{Exhaustive search}
+Given \(x_0 = q_0 ⋅ p + r_0\) and \(x_1 = q_1 ⋅ p + r_1\) we know that \[p \mid \gcd\left((x_0 - r_0), (x_1 - r_1)\right)\]
+
+
+Guess \(r_0\) and \(r_1\)!
+
+\begin{block}{Cost}
+\(2^{2ρ}\) GCDs
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org01476e9}]{Exhaustive search + multiplication}
+Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for all \(x_0' = x_0 - j\) with \(0 \leq j < 2^{ρ-1}\).
+
+\begin{block}{Cost}
+\(2^ρ\) GCDs, \(2^{2ρ}\) multiplications
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org0fba55b}]{Time-Memory Trade Off}
+\begin{lemma}
+Assume that we have \(τ\) samples \(x_0 , … ,x_{τ-1}\) of a given prime \(p\), of the hidden form \(x_i = q_i ⋅ p + r_i\), then \(p\) can then be recovered with overwhelming probability in time \(\tilde{\mathcal{O}}(2^{\frac{τ+1}{τ-1}ρ})\). \footfullcite{EC:CorNacTib12}
+\end{lemma}
+\end{frame}
+
+\begin{frame}[label={sec:org4c10cd1}]{Lattice attacks}
+Given \(x_0  = q_0 p + r_0\) and \(x_1  = q_1 p + r_1\), consider
+
+\begin{eqnarray*}
+q_0 x_1 - q_1 x_0 & = & q_0 (q_1 p + r_1) - q_1 (q_0 p - r_0)\\
+                  & = & q_0 q_1 p + q_0 r_1 - q_1 q_0 p - q_1 r_0\\
+& = & q_0 r_1 - q_1 r_0
+\end{eqnarray*}
+
+and note that \[q_0 x_1 - q_1 x_0 \ll x_i\]
+
+\pause
+
+\begin{block}{Non-starter?}
+We don’t know \(q_i\)!
+\end{block}
+\end{frame}
+\begin{frame}[label={sec:orgf7f462d}]{Lattice attacks}
+Consider the matrix 
+
+\[\vec{B} = \begin{pmatrix}
+2^{\rho + 1}  & x_1  & x_2   & \cdots  & x_t\\
+              & -x_0 &       &         & \\
+              &      &  -x_0 &         & \\
+              &      &       &  \ddots & \\
+              &      &       &         &  -x_0\\
+\end{pmatrix}\]
+
+multiplying on the left by the vector \(\vec{q} = (q_0, q_1, q_2, \cdots, q_t)\) gives
+\begin{align*}
+\vec{v} &= (q_0, q_1, \cdots, q_t) \cdot \vec{B} \\
+        &= (q_0\, 2^{ρ+1}, q_0 x_1 - q_1 x_0, \cdots, q_0 x_t - q_t x_0)\\
+        &= (q_0\, \alert{2^{ρ+1}}, q_0 \alert{r_1} - q_1 \alert{r_0}, \cdots, q_0 \alert{r_t} - q_t \alert{r_0})
+\end{align*}
+which is a vector with small coefficients compared to \(x_i\).
+\end{frame}
+
+\begin{frame}[label={sec:org0f46ccb}]{Finding short vectors}
+Te set of all integer-linear combinations of the rows of \(\vec{B}\) the \alert{lattice} spanned by (the rows of) \(\vec{B}\).
+
+\begin{description}
+\item[{SVP}] finding a \alert{shortest} non-zero vector on \alert{general} lattices is NP-hard.
+
+\item[{Gap-SVP\(_\gamma\)}] Differentiating between instances of SVP in which the answer is at most 1 or larger than \(\gamma\) on \alert{general} lattices is a well-known and presumed quantum-hard problem for \(\gamma\) polynomial in lattice dimension.
+\end{description}
+
+\begin{block}{Easy SVP}
+GCD is SVP on \(\ZZ^2\). For example, \(\vec{B} = {[21, 14]}^T\), \(\vec{v} = (-1,1)\), \(\vec{v} ⋅\vec{B} = 7\).
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org99f3910}]{Reduction to presumed hard lattice problem}
+We can show that an adversary \alert{has} to solve Gap-SVP.
+
+\begin{block}{AGCD → LWE}
+If there is an algorithm efficiently solving the AGCD problem then there exists an algorithm which solves the \textbf{Learning with Errors} (LWE) problem with essentially the same performance. \footfullcite{EC:CheSte15} 
+\end{block}
+
+\begin{block}{LWE → Gap-SVP}
+If there is an algorithm efficiently solving the LWE problem then there exists a quantum algorithm which solves worst-case Gap-SVP instances.\footfullcite{STOC:Regev05}
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org3f1dbc5}]{Learning with Errors (in normal form)}
+Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZ_q^{m}\), \(\vec{A} \in \ZZ_q^{m × n}\), small \(\vec{s} \in \ZZ^{n}\) and small \(\vec{e} \in \ZZ^{m}\) is
+
+\[
+\left(\begin{array}{c}
+\\
+\\
+\\ 
+\vec{c} \\
+\\
+\\
+\\
+\end{array} \right) = \left(
+\begin{array}{ccc}
+\leftarrow & n & \rightarrow \\
+\\
+\\ 
+& \vec{A} & \\
+\\
+\\
+\\
+\end{array} \right) \times \left( \begin{array}{c}
+\\
+\vec{s} \\
+\\
+\end{array} \right) + \left(
+\begin{array}{c}
+\\
+\\
+\\ 
+\vec{e} \\
+\\
+\\
+\\
+\end{array} 
+\right)
+\]
+
+or \(\vec{c} \sample \mathcal{U}(\ZZ_q^{m})\).
+\end{frame}
+
+\begin{frame}[label={sec:org11219d7}]{From vectors to scalars}
+LWE with modulus \(q^n\) and dimension \(1\) is as hard as LWE with modulus \(q\) and dimension \(1\).
+
+\[q^{d-1} \cdot \Angle{\vec{a},\vec{s}} \approx \left(\sum_{i=0}^{n-1} q^{i} \cdot a_{i}\right) \cdot \left(\sum_{i=0}^{d-1} q^{d-i-1} \cdot s_{i}\right) \bmod q^{d} = \tilde{a} \cdot \tilde{s} \bmod q^{d}.\] 
+
+\begin{block}{Example}
+\begin{align*}
+\left(a_0 + q\cdot a_1\right) \cdot \left(q \cdot s_0 + \cdot s_1\right) &= q(a_0\cdot s_0 + a_1 \cdot s_1) + (a_1 \cdot s_1) + q^2 (a_1 \cdot s_0)\\
+&\equiv q(a_0\cdot s_0 + a_1 \cdot s_1) + (a_1 \cdot s_1) \bmod q^2\\
+&\approx q(a_0\cdot s_0 + a_1 \cdot s_1) \bmod q^2
+\end{align*}
+\end{block}
+\end{frame}
+
+
+
+\begin{frame}[standout,label={sec:orgff646ac}]{Fin}
+\begin{center}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./kitten-01.jpg}
+\end{center}
+
+\alert{\Large Questions?}
+\end{center}
+\end{frame}
+
+\section{Bonus}
+\label{sec:org57bb053}
+
+\begin{frame}[label={sec:orgc88c16d}]{Homomorphic encryption}
+Given \(c_i = q_i ⋅ p + m_i'\) with \(m_i' = 2\,r_i + m_i\).
+\begin{itemize}
+\item We can compute \[c' = c_0 ⋅ c_1 = q_0 q_1 p^2 + q_0 m_1' p  + q_1 m_0' p + m_0' ⋅ m_1'\] to get \(c' \bmod p =  m_0' ⋅ m_1'\) and \(m_0' ⋅ m_1' \bmod 2 = m_0 ⋅ m_1\).
+\item We can also compute \[c' = c_0 + c_1 = (q_0 + q_1) p + (m_0' + m_1')\] to get \(c' \bmod p \bmod 2 = m_0 \oplus m_1\).
+\end{itemize}
+
+We can compute with encrypted data.\footnote{\url{https://crypto.stanford.edu/craig/easy-fhe.pdf}}
+\end{frame}
+\end{document}
