@@ -156,7 +156,7 @@ Assume that we have $τ$ samples $x_0 , … ,x_{τ-1}$ of a given prime $p$, of 
 Given \(x_0  = q_0 p + r_0\) and \(x_1  = q_1 p + r_1\), consider
 
 \begin{eqnarray*}
-q_0 x_1 - q_1 x_0 & = & q_0 (q_1 p + r_1) - q_1 (q_0 p - r_0)\\
+q_0 x_1 - q_1 x_0 & = & q_0 (q_1 p + r_1) - q_1 (q_0 p + r_0)\\
                   & = & q_0 q_1 p + q_0 r_1 - q_1 q_0 p - q_1 r_0\\
 & = & q_0 r_1 - q_1 r_0
 \end{eqnarray*}
@@ -190,7 +190,7 @@ which is a vector with small coefficients compared to $x_i$.
 
 ** Finding short vectors
 
-Te set of all integer-linear combinations of the rows of $\vec{B}$ the *lattice* spanned by (the rows of) $\vec{B}$.
+The set of all integer-linear combinations of the rows of $\vec{B}$ the *lattice* spanned by (the rows of) $\vec{B}$.
 
 - SVP :: finding a *shortest* non-zero vector on *general* lattices is NP-hard.
 

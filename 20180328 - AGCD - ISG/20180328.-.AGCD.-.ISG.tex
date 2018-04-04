@@ -1,4 +1,4 @@
-% Created 2018-03-27 Tue 20:31
+% Created 2018-04-04 Wed 18:41
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,smaller]{beamer}
 \RequirePackage{etex}
@@ -200,7 +200,7 @@ pdfauthor={Martin R. Albrecht},
 pdftitle={The Approximate GCD Problem},
 pdfkeywords={},
 pdfsubject={},
-pdfcreator={Emacs 25.2.2 (Org mode 9.1.8)},
+pdfcreator={Emacs 25.2.2 (Org mode 9.1.9)},
 pdflang={English},
 colorlinks,
 citecolor=gray,
@@ -217,9 +217,9 @@ urlcolor=gray
 
 
 \section{Greatest Common Divisors}
-\label{sec:org1749bee}
+\label{sec:org4d9ffc3}
 
-\begin{frame}[fragile,label={sec:org0c20302}]{Euclidean algorithm}
+\begin{frame}[fragile,label={sec:org61adb3c}]{Euclidean algorithm}
  Given two integers \(a, b < N = 2^κ\) the Euclidean algorithm computes their greatest common divisor \(\gcd(a,b)\).
 
 \lstset{language=Python,label= ,caption= ,captionpos=b,numbers=none}
@@ -239,9 +239,9 @@ For comparison, integer multiplication costs \(\bigO{κ \log κ \log\log κ}\) u
 \end{frame}
 
 \section{RSA}
-\label{sec:org73b4419}
+\label{sec:org6ad670b}
 
-\begin{frame}[label={sec:org4cfd7c3}]{Public key encryption}
+\begin{frame}[label={sec:orgeaafe69}]{Public key encryption}
 \begin{description}
 \item[{KeyGen}] Bob generates a key pair \((sk, pk)\) and publishes \(pk\).
 
@@ -251,7 +251,7 @@ For comparison, integer multiplication costs \(\bigO{κ \log κ \log\log κ}\) u
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgbb1aa2e}]{Naive RSA}
+\begin{frame}[label={sec:orgfc8c7c6}]{Naive RSA}
 \begin{description}
 \item[{KeyGen}] The public key is \((N,e)\) and the private key is \(d\), with
 
@@ -271,7 +271,7 @@ This naive version of RSA only achieves a very weak form of security — OW-CPA 
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgd9a7b9b}]{Classical attacks on RSA}
+\begin{frame}[label={sec:org6dae885}]{Classical attacks on RSA}
 \begin{itemize}
 \item An adversary who can factor large integers can break RSA.
 
@@ -288,7 +288,7 @@ This does not mean an adversary \textbf{has} to factor to solve RSA.
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org7a7fefc}]{Shared factors}
+\begin{frame}[label={sec:org48cc41e}]{Shared factors}
 What if two users generate moduli \(N_0 = q_0 ⋅ p\) and \(N_1 = q_1 \cdot p\), i.e. moduli with shared factors?
 
 \begin{itemize}
@@ -297,18 +297,18 @@ What if two users generate moduli \(N_0 = q_0 ⋅ p\) and \(N_1 = q_1 \cdot p\),
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgba2f8f7}]{Quantum attacks on RSA}
+\begin{frame}[label={sec:orgd14fd7d}]{Quantum attacks on RSA}
 An adversary with access to a quantum computer with \[ \bigO{\log^2(N) \log\log (N) \log\log\log (N)}\] gates can factor \(N\) using Shor’s algorithm.\footfullcite{FOCS:Shor94}
 \end{frame}
 
 \section{The Approximate GCD problem}
-\label{sec:org27fab4b}
+\label{sec:org4facea2}
 
-\begin{frame}[label={sec:orgfaf6116}]{The Approximate GCD problem}
+\begin{frame}[label={sec:org6e8f5dc}]{The Approximate GCD problem}
 The \alert{Approximate GCD} problem is the problem of distinguishing \[x_i = q_i ⋅ p  \alert{+ r_i}\] from uniform \(\ZZ ∩ [0, X)\) with \(x_i < X\) (\(q_i\), \(r_i\) and \(p\) are secret).
 \end{frame}
 
-\begin{frame}[label={sec:org6802ef9}]{The Approximate GCD problem}
+\begin{frame}[label={sec:org12e1a2b}]{The Approximate GCD problem}
 \[x_i = q_i ⋅ p  + r_i\]
 
 If \(λ\) is our security parameter (think \(λ=128\)), then
@@ -325,7 +325,7 @@ name & sizeof & DGHV10 \footfullcite{EC:DGHV10} & CheSte15 \footfullcite{EC:CheS
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org0e238e4}]{Naive encryption}
+\begin{frame}[label={sec:orgb1c7436}]{Naive encryption}
 \begin{description}
 \item[{KeyGen}] The public key is \(\{x_i = q_i ⋅ p + 2\,r_i\}_{0 ≤ i < t}\) and the private key is \(p\).
 
@@ -342,9 +342,9 @@ This encryption scheme is not IND-CCA secure but it is IND-CPA secure if the AGC
 \end{frame}
 
 \section{Attacks on the Approximate GCD problem}
-\label{sec:org13dc86f}
+\label{sec:org7472cbe}
 
-\begin{frame}[label={sec:org622d0b7}]{Exhaustive search}
+\begin{frame}[label={sec:org810e709}]{Exhaustive search}
 Given \(x_0 = q_0 ⋅ p + r_0\) and \(x_1 = q_1 ⋅ p + r_1\) we know that \[p \mid \gcd\left((x_0 - r_0), (x_1 - r_1)\right)\]
 
 
@@ -355,7 +355,7 @@ Guess \(r_0\) and \(r_1\)!
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org01476e9}]{Exhaustive search + multiplication}
+\begin{frame}[label={sec:org456c381}]{Exhaustive search + multiplication}
 Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for all \(x_0' = x_0 - j\) with \(0 \leq j < 2^{ρ-1}\).
 
 \begin{block}{Cost}
@@ -363,17 +363,17 @@ Compute \[\gcd\left(x_0', \prod_{i=0}^{2^ρ-1} (x_1 - i) \bmod x_0'\right)\] for
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org0fba55b}]{Time-Memory Trade Off}
+\begin{frame}[label={sec:org879bf7c}]{Time-Memory Trade Off}
 \begin{lemma}
 Assume that we have \(τ\) samples \(x_0 , … ,x_{τ-1}\) of a given prime \(p\), of the hidden form \(x_i = q_i ⋅ p + r_i\), then \(p\) can then be recovered with overwhelming probability in time \(\tilde{\mathcal{O}}(2^{\frac{τ+1}{τ-1}ρ})\). \footfullcite{EC:CorNacTib12}
 \end{lemma}
 \end{frame}
 
-\begin{frame}[label={sec:org4c10cd1}]{Lattice attacks}
+\begin{frame}[label={sec:orgdaa0716}]{Lattice attacks}
 Given \(x_0  = q_0 p + r_0\) and \(x_1  = q_1 p + r_1\), consider
 
 \begin{eqnarray*}
-q_0 x_1 - q_1 x_0 & = & q_0 (q_1 p + r_1) - q_1 (q_0 p - r_0)\\
+q_0 x_1 - q_1 x_0 & = & q_0 (q_1 p + r_1) - q_1 (q_0 p + r_0)\\
                   & = & q_0 q_1 p + q_0 r_1 - q_1 q_0 p - q_1 r_0\\
 & = & q_0 r_1 - q_1 r_0
 \end{eqnarray*}
@@ -386,7 +386,7 @@ and note that \[q_0 x_1 - q_1 x_0 \ll x_i\]
 We don’t know \(q_i\)!
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:orgf7f462d}]{Lattice attacks}
+\begin{frame}[label={sec:org2de19d3}]{Lattice attacks}
 Consider the matrix 
 
 \[\vec{B} = \begin{pmatrix}
@@ -406,8 +406,8 @@ multiplying on the left by the vector \(\vec{q} = (q_0, q_1, q_2, \cdots, q_t)\)
 which is a vector with small coefficients compared to \(x_i\).
 \end{frame}
 
-\begin{frame}[label={sec:org0f46ccb}]{Finding short vectors}
-Te set of all integer-linear combinations of the rows of \(\vec{B}\) the \alert{lattice} spanned by (the rows of) \(\vec{B}\).
+\begin{frame}[label={sec:orgbaebb79}]{Finding short vectors}
+The set of all integer-linear combinations of the rows of \(\vec{B}\) the \alert{lattice} spanned by (the rows of) \(\vec{B}\).
 
 \begin{description}
 \item[{SVP}] finding a \alert{shortest} non-zero vector on \alert{general} lattices is NP-hard.
@@ -420,7 +420,7 @@ GCD is SVP on \(\ZZ^2\). For example, \(\vec{B} = {[21, 14]}^T\), \(\vec{v} = (-
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org99f3910}]{Reduction to presumed hard lattice problem}
+\begin{frame}[label={sec:orgdb291c2}]{Reduction to presumed hard lattice problem}
 We can show that an adversary \alert{has} to solve Gap-SVP.
 
 \begin{block}{AGCD → LWE}
@@ -432,7 +432,7 @@ If there is an algorithm efficiently solving the LWE problem then there exists a
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org3f1dbc5}]{Learning with Errors (in normal form)}
+\begin{frame}[label={sec:org1f4bd90}]{Learning with Errors (in normal form)}
 Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZ_q^{m}\), \(\vec{A} \in \ZZ_q^{m × n}\), small \(\vec{s} \in \ZZ^{n}\) and small \(\vec{e} \in \ZZ^{m}\) is
 
 \[
@@ -473,7 +473,7 @@ Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZ_q^{m}\), \(\vec{A} \in \ZZ_q^
 or \(\vec{c} \sample \mathcal{U}(\ZZ_q^{m})\).
 \end{frame}
 
-\begin{frame}[label={sec:org11219d7}]{From vectors to scalars}
+\begin{frame}[label={sec:orgf87bcfc}]{From vectors to scalars}
 LWE with modulus \(q^n\) and dimension \(1\) is as hard as LWE with modulus \(q\) and dimension \(1\).
 
 \[q^{d-1} \cdot \Angle{\vec{a},\vec{s}} \approx \left(\sum_{i=0}^{n-1} q^{i} \cdot a_{i}\right) \cdot \left(\sum_{i=0}^{d-1} q^{d-i-1} \cdot s_{i}\right) \bmod q^{d} = \tilde{a} \cdot \tilde{s} \bmod q^{d}.\] 
@@ -489,7 +489,7 @@ LWE with modulus \(q^n\) and dimension \(1\) is as hard as LWE with modulus \(q\
 
 
 
-\begin{frame}[standout,label={sec:orgff646ac}]{Fin}
+\begin{frame}[standout,label={sec:org3fe42e1}]{Fin}
 \begin{center}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./kitten-01.jpg}
@@ -500,9 +500,9 @@ LWE with modulus \(q^n\) and dimension \(1\) is as hard as LWE with modulus \(q\
 \end{frame}
 
 \section{Bonus}
-\label{sec:org57bb053}
+\label{sec:org1e9c060}
 
-\begin{frame}[label={sec:orgc88c16d}]{Homomorphic encryption}
+\begin{frame}[label={sec:orgbea4b6c}]{Homomorphic encryption}
 Given \(c_i = q_i ⋅ p + m_i'\) with \(m_i' = 2\,r_i + m_i\).
 \begin{itemize}
 \item We can compute \[c' = c_0 ⋅ c_1 = q_0 q_1 p^2 + q_0 m_1' p  + q_1 m_0' p + m_0' ⋅ m_1'\] to get \(c' \bmod p =  m_0' ⋅ m_1'\) and \(m_0' ⋅ m_1' \bmod 2 = m_0 ⋅ m_1\).
