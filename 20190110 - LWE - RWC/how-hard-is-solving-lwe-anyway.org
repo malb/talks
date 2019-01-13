@@ -1,0 +1,877 @@
+#+TITLE: So how hard is solving LWE/NTRU anyway? 
+#+SUBTITLE:  
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [xcolor=table,10pt,aspectratio=169]
+#+LATEX_HEADER: \input{talk-header.tex}
+#+LATEX_HEADER: \def\enumquadfit{\(0.000784314\, \beta^2 + 0.366078\,\beta - 6.125\)}
+#+LATEX_HEADER: \def\enumlinfit{\(0.18728\, \beta \log(\beta) - 1.0192\,\beta + 16.10\)}
+#+LATEX_HEADER: \def\robl{\rowcolor{DarkBlue!20}}
+#+LATEX_HEADER: \def\rore{\rowcolor{DarkRed!20}}
+#+LATEX_HEADER: \def\rogr{\rowcolor{gray!20}}
+#+AUTHOR: Martin R. Albrecht *@martinralbrecht*
+#+DATE: 10 January 2019, RWC@@beamer:\vfill \begin{scriptsize}Based on joint work with Alex Davidson, Amit Deo, Benjamin R. Curtis, Eamonn W. Postlethwaite, Elena Kirshanova, Fernando Virdia, Florian Göpfert, Gottfried Herold, Léo Ducas, Marc Stevens, Rachel Player, Sam Scott and Thomas Wunderer as well as the work of many other authors.\end{scriptsize}@@
+
+
+#+OPTIONS: H:2 toc:nil num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'\[%s\]' % latex(obj) :results raw
+#+STARTUP: beamer
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bibx
+
+* Introduction
+** NIST Process: Selected Non-Quantum Security Estimates
+
+#+BEGIN_EXPORT latex
+\rowcolors[]{3}{gray!20}{gray!10}
+#+END_EXPORT
+
+#+BEGIN_CENTER
+#+BEAMER: \small{
+#+ATTR_LaTeX: :center nil
+|   _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU'_ |
+|      _Cost Model_ |         |        |            |             |          |
+|-------------------+---------+--------+------------+-------------+----------|
+|               <r> |         |        |            |             |          |
+|     _Kyber_[fn:1] |     180 |    218 |        112 |         136 |      155 |
+|      _Lima_[fn:2] |     196 |    234 |        129 |         152 |      171 |
+|  _R EMBLEM_[fn:3] |     210 |    248 |        142 |         165 |      184 |
+| _NTRU HRSS_[fn:4] |     456 |    587 |        242 |         313 |      370 |
+|    _SNTRU’_[fn:5] |     535 |    722 |        270 |         350 |      410 |
+#+BEAMER: }
+#+END_CENTER
+
+#+BEAMER:  \scriptsize{
+Source: fullcite:SCN:ACDDPP18, https://estimate-all-the-lwe-ntru-schemes.github.io/docs/
+#+BEAMER: }
+
+\vspace{1em}
+
+** Learning with Errors
+
+Given \((\mathbf{A},\vec{c})\), find \(\vec{s}\) when
+
+#+BEGIN_EXPORT LaTeX
+\[
+\left(\begin{array}{c}
+\\
+\\
+\\ 
+\vec{c} \\
+\\
+\\
+\\
+\end{array} \right) \equiv \left(
+\begin{array}{ccc}
+\leftarrow & n & \rightarrow \\
+\\
+\\ 
+& \mathbf{A} & \\
+\\
+\\
+\\
+\end{array} \right) \cdot \left( \begin{array}{c}
+\\\
+\\
+\vec{s} \\
+\\
+\\
+\end{array} \right) + \left(
+\begin{array}{c}
+\\
+\\
+\\ 
+\vec{e} \\
+\\
+\\
+\\
+\end{array} 
+\right)
+\]
+#+END_EXPORT
+
+for $\vec{c} \in \ZZ_q^{m}$, $\mathbf{A} \in \ZZ_q^{m \times n}$, and $\vec{s} \in \ZZ^{n}$ and $\vec{e} \in \ZZ^{m}$ having small coefficients.
+
+* Primal Attack
+** Unique SVP Approach
+
+We can reformulate \(\vec{c} - \mathbf{A} \cdot \vec{s} \equiv \vec{e} \bmod q\)  over the Integers as:
+#+BEGIN_EXPORT latex
+\[
+  \begin{pmatrix}
+    q\mathbf{I} & -\mathbf{A}\\
+    0 & \mathbf{I}\\
+  \end{pmatrix} \cdot
+  \begin{pmatrix}
+    \mathbf{*}\\
+    \mathbf{s}
+  \end{pmatrix} +
+  \begin{pmatrix}
+    \vec{c}\\
+    \vec{0}
+  \end{pmatrix} = 
+  \begin{pmatrix}
+    \vec{e}\\
+    \vec{s}
+  \end{pmatrix}
+\]
+#+END_EXPORT
+Alternatively:
+#+BEGIN_EXPORT latex
+\[
+  \mathbf{B} = \begin{pmatrix}
+    q\mathbf{I} & -\mathbf{A} & \vec{c}\\
+    0 & \mathbf{I} & 0\\
+    0 & 0 & 1\\
+  \end{pmatrix}, \qquad
+  \mathbf{B} \cdot
+  \begin{pmatrix}
+    \vec{*}\\
+    \vec{s}\\
+    1
+  \end{pmatrix} = 
+  \begin{pmatrix}
+    \vec{e}\\
+    \vec{s}\\
+    1
+  \end{pmatrix}
+\]
+#+END_EXPORT 
+
+In other words, there exists an integer-linear combination of the columns of \(\mathbf{B}\) that produces a vector with “unusually” small coefficients \(\rightarrow\) a unique shortest vector.
+
+** Computational Problem
+
+*** Unique Shortest Vector Problem
+
+Find a unique shortest vector amongst the integer combinations of the columns of:
+#+BEGIN_EXPORT latex
+\[
+  \mathbf{B} = \begin{pmatrix}
+    q\mathbf{I} & -\mathbf{A} & \vec{c}\\
+    0 & \mathbf{I} & 0\\
+    0 & 0 & 1\\
+  \end{pmatrix}
+\]
+#+END_EXPORT
+where \(\mat{B} \in \ZZ^{d \times d}\).
+
+* Lattice Reduction
+** Length of Gram-Schmidt Vectors
+
+It will be useful to consider the lengths of the Gram-Schmidt vectors.
+
+The vector $\vec{b}^*_i$ is the orthogonal projection of \(\vec{b}_i\) to the space spanned by the vectors \(\vec{b}_0, \ldots, \vec{b}_{i-1}\).
+
+***                                                                 :B_column:BMCOL:
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.45
+:END:
+
+Informally, this means taking out the contributions in the directions of previous vectors  \(\vec{b}_0, \ldots, \vec{b}_{i-1}\).
+
+***                                                             :B_column:BMCOL:
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.45
+:END:
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+\pgfplotsset{width=\textwidth, height=0.6\textwidth}
+\draw[->] (0,0) -- (3,1);
+\node[] at (3.2,1.2) {$\vec{b}_0$};
+\only<1>{\draw[->] (0,0) -- (1,2);}
+\only<1>{\node[] at (1.2,2.2) {$\vec{b}_1$};}
+\only<2>{\draw[->,color=lightgray] (0,0) -- (1,2);}
+\only<2>{\node[color=lightgray] at (1.2,2.2) {$\vec{b}_1$};}
+\only<2>{\draw[->,gray] (0,0) -- (-0.5,1.5);}
+\only<2>{\node[] at (-0.3,1.7) {$\vec{b}^*_1$};}
+\only<1>{\node[] at (-0.3,1.7) {\phantom{$\vec{b}^*_1$}};}
+\end{tikzpicture}
+#+END_EXPORT
+
+** Example
+
+#+BEGIN_SRC sage :exports none
+sage: from fpylll import IntegerMatrix, GSO, LLL, FPLLL
+sage: FPLLL.set_random_seed(1337)
+sage: plot_kwds = {"figsize":(15, 4), 
+                   "color": 'darkorange', 
+                   "thickness": 3,
+                   "axes_labels": ("$i$","$\log_2 \|\mathbf{b}_i^*\|$")}
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC sage :file gram-schmidt-norms.png
+sage: A = IntegerMatrix.random(120, "qary", k=60, bits=20)[::-1]
+sage: M = GSO.Mat(A); M.update_gso()
+sage: lg = [(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())]
+sage: line(lg, **plot_kwds)
+#+END_SRC
+
+#+RESULTS:
+[[file:gram-schmidt-norms.png]]
+
+** Example - LLL
+
+#+BEGIN_SRC sage :file gram-schmidt-norms-lll.png
+sage: A = LLL.reduction(A)
+sage: M = GSO.Mat(A); M.update_gso()
+sage: lg = [(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())]
+sage: line(lg, **plot_kwds)
+#+END_SRC
+
+#+RESULTS:
+[[file:gram-schmidt-norms-lll.png]]
+
+_Geometric Series Assumption:_ The shape after lattice reduction is a line with a flatter slope as lattice reduction gets stronger.
+
+** Success Condition for uSVP
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+\begin{axis}[/pgf/number format/.cd,fixed,ymin = 1,legend pos=north east,legend style={fill=white}, xlabel=,ylabel=$\log_2(\norm \cdot)$,width=\columnwidth, height=0.4\columnwidth, xmin = 1, xmax = 183,legend cell align=left,]
+%      \draw[->] (-3,0) -- (4.2,0) node[right] {$x$};
+%      \draw[->] (0,-3) -- (0,4.2) node[above] {$y$};
+\addplot[domain=1:183,smooth,variable=\x,black] plot ({\x},{log2(1.01170246711949^(-2*(\x-1)+183)*54.5751087741536)});
+\addlegendentry{GSA for $\norm{\vec b_i^*}$}
+
+\addplot[domain=1:183,samples=1000, smooth,variable=\x,darkgray,dotted,thick] plot ({\x},{log2( 3.19153824321146 * sqrt(183 - \x + 1) )});
+
+\addlegendentry{length of projection of $(\vec{e},\vec{s},1)$}
+
+\draw[dashed] (127,1) -- (127,820) node[pos = 0.06, right] {$d-\beta+1$};
+\end{axis}
+\end{tikzpicture}
+#+END_EXPORT
+
+#+BEAMER: \scriptsize{
+
+fullcite:USENIX:ADPS16
+
+fullcite:AC:AGVW17
+
+#+BEAMER: }
+
+** Slope
+
+The slope depends on the _root Hermite factor_ \(\delta\) which depends on the “block size” \(\beta\).
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+\pgfplotsset{width=\textwidth, height=0.4\textwidth}
+
+\begin{axis}[xlabel={$\beta$},ylabel={$\delta$},legend pos=north east, legend style={fill=none},  yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=4}]
+         	
+\addplot[black, thick] coordinates {
+(50, 1.01206486355485) (60, 1.01145310214785) (70, 1.01083849117278)
+(80, 1.01026264533039) (90, 1.00973613406057) (100, 1.00925872103633)
+(110, 1.00882653150498) (120, 1.00843474281592) (130, 1.00807860284815)
+(140, 1.00775378902354) (150, 1.00745650119215) (160, 1.00718344897388)
+(170, 1.00693180103572) (180, 1.00669912477197) (190, 1.00648332800111)
+(200, 1.00628260691082) (210, 1.00609540127612) (220, 1.00592035664374)
+(230, 1.00575629268952) (240, 1.00560217684407) (250, 1.00545710232739)
+};
+\addlegendentry{$(\frac{\beta}{2\pi e} \cdot (\pi\, \beta)^{1/\beta} )^{\frac{1}{2(\beta-1)}}$};
+
+\end{axis}
+\end{tikzpicture}
+#+END_EXPORT
+
+#+BEAMER: \small{
+
+fullcite:PhD:Chen13
+
+#+BEAMER: }
+
+** Strong Lattice Reduction: BKZ Algorithm
+
+#+BEGIN_EXPORT latex
+\centering
+\(
+ \left(
+     \begin{array}{ccccccccc}
+                 &           &           &           &           &           &           &           &           \\
+                 &           &           &           &           &           &           &           &           \\
+                 &           &           &           &           &           &           &           &           \\
+         \only<1-2>{\vec{b}_{0}}   \only<3->{{\color{LightRed} \vec{b}_{0}}}          &
+         \only<1-5>{\vec{b}_{1}}   \only<6->{{\color{LightRed} \vec{b}_{1}}}          &
+         \only<1-8>{\vec{b}_{2}}   \only<9->{{\color{LightRed} \vec{b}_{2}}}          &
+         {\vec{b}_{3}}                                                             &
+         {\vec{b}_{4}}                                                             &
+         {\vec{b}_{5}}                                                             &
+         {\vec{b}_{6}}                                                             &
+         {\vec{b}_{7}}                                                             &
+         \dots   \\
+                 &           &           &           &           &           &           &           &           \\
+                 &           &           &           &           &           &           &           &           \\
+                 &           &           &           &           &           &           &           &
+     \end{array}
+        \right)
+    \)
+    \begin{tikzpicture}[remember picture, overlay]
+      \tikzset{shift={(current page.center)},yshift=-1.5cm}
+      \node[] at (0,0) (origin) {};
+      {\color{DarkBlue} %
+        \only<1-3>{%
+          \draw (-.1,3) -- (-.1,2) {};
+          \draw (-.1,1) -- (-.1,0) {};
+          \draw (-3,3) -- (-3,2) {};
+          \draw (-3,1) -- (-3,0) {};
+          \draw[decorate,decoration={brace,amplitude=10pt}]
+          (-3,3.2) -- (-.1,3.2) node [black,midway,yshift=.6cm]
+          {$\beta = 5$};
+          \only<2>{%
+            \draw[decorate,decoration={brace,amplitude=10pt}]
+            (-.1,-.2) -- (-3,-.2) {};
+          }
+        }
+        \only<4-6>{%
+          \draw (.6,3) -- (.6,2) {};
+          \draw (.6,1) -- (.6,0) {};
+          \draw (-2.3,3) -- (-2.3,2) {};
+          \draw (-2.3,1) -- (-2.3,0) {};
+          \draw[decorate,decoration={brace,amplitude=10pt}]
+          (-2.3,3.2) -- (.6,3.2) node [black,midway,yshift=.6cm]
+          {$\beta = 5$};
+          \only<5>{%
+            \draw[decorate,decoration={brace,amplitude=10pt}]
+            (.6,-.2) -- (-2.3,-.2) {};
+          }
+        }
+        \only<7-9>{%
+          \draw (1.3,3) -- (1.3,2) {};
+          \draw (1.3,1) -- (1.3,0) {};
+          \draw (-1.6,3) -- (-1.6,2) {};
+          \draw (-1.6,1) -- (-1.6,0) {};
+          \draw[decorate,decoration={brace,amplitude=10pt}]
+          (-1.6,3.2) -- (1.3,3.2) node [black,midway,yshift=.6cm]
+          {$\beta = 5$};
+          \only<8>{%
+            \draw[decorate,decoration={brace,amplitude=10pt}]
+            (1.3,-.2) -- (-1.6,-.2) {};
+          }
+        }
+      }
+      \node (oracle) at (-4,-1.8) {\includegraphics[scale=0.9]{oracle.png}};
+      \only<2>{%
+        \draw[->] (-2.8,-.5) to[in=70,out=160] (-4,-.8);
+        \draw[->] (-3,-2) to [in=270,out=20] (-0.5,-.5);
+      }
+      \only<5>{%
+        \draw[->] (-2.1,-.5) to[in=70,out=160] (-4,-.8);
+        \draw[->] (-3,-2) to [in=270,out=20] (.2,-.5);
+      }
+      \only<8>{%
+        \draw[->] (-1.4,-.5) to[in=70,out=160] (-4,-.8);
+        \draw[->] (-3,-2) to [in=270,out=20] (.2,-.5);      
+      }
+      \node at (5, -2.5) {\tiny{Picture credit: Eamonn Postlethwaite}};
+\end{tikzpicture}
+#+END_EXPORT
+
+** BKZ Algorithm
+
+#+BEGIN_EXPORT latex
+\begin{algorithm}[H]
+  \KwData{LLL-reduced lattice basis \(\mat{B}\)}
+  \KwData{block size \(\beta\)}
+  \SetKwFor{MRepeat}{repeat}{}{}
+  \MRepeat{until no more change}{
+    \For{\(\kappa \gets 0\) \KwTo{} \(d-1\)}{
+        LLL  on local projected block \([\kappa,\ldots,\kappa+\beta-1]\)\; 
+        \(\vec{v} \gets \) find shortest vector in local projected block \([\kappa,\ldots,\kappa+\beta-1]\)\;
+        insert $\vec{v}$ into $\vec{B}$\;
+    }
+  }
+\end{algorithm}
+#+END_EXPORT
+
+*** Jargon
+
+An outer loop iteration is called a “tour”.
+** Behaviour in Practice: BKZ-60 in Dimension 120
+
+#+BEGIN_SRC sage :tangle lecture-bkz-quality.sage :exports none
+# -*- coding: utf-8 -*-
+from fpylll import *
+from fpylll.algorithms.bkz2 import BKZReduction as BKZ2
+from fpylll.tools.bkz_simulator import simulate
+
+colours = ["#4D4D4D", "#5DA5DA", "#FAA43A", "#60BD68", 
+           "#F17CB0", "#B2912F", "#B276B2", "#DECF3F", "#F15854"]
+
+def log2(x):
+    return log(x, 2)/2
+
+set_random_seed(1337)
+n, bits = 120, 20
+beta = 60
+tours = 4
+
+A = IntegerMatrix.random(n, "qary", k=n/2, bits=bits)
+q = A[-1,-1]
+A = LLL.reduction(A)
+M = GSO.Mat(A)
+_ = M.update_gso()
+
+delta_0 = (beta/(2*pi*e) * (pi*beta)^(1/ZZ(beta)))^(1/(2*beta-1))
+alpha = delta_0^(-2*n/(n-1))
+
+# GSA
+g  = line([(i, 2*log2((alpha^i * delta_0^n * q^(1/2)))) for i in range(n)],
+          legend_label="GSA", color=colours[0],
+          frame=True, axes=False, transparent=True,
+          axes_labels=["$i$", "$\\log_2 \\|\\mathbf{b}^*_i\\|$"])
+
+# Simulator
+
+g += line(zip(range(n), map(log2, simulate(M, BKZ.EasyParam(block_size=beta))[0])),
+              legend_label="simulator", linestyle=":", color=colours[0])
+
+# LLL
+
+g += line(zip(range(n), map(log2, M.r())), legend_label="lll", color=colours[1])
+
+B = BKZ2(M)
+
+for i in range(tours):
+    _  = B(BKZ.EasyParam(block_size=beta, max_loops=1))
+    g += line(zip(range(n), map(log2, M.r())), legend_label="tour %d"%i, color=colours[i+2])
+        
+g.save("bkz-quality.pdf", figsize=(8,4), dpi=300)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 1.0\textwidth
+[[./bkz-quality.pdf]]
+#+END_CENTER
+
+** Number of Tours
+
+#+BEGIN_scriptsize
+|                          _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU’_ |
+|                             _Cost Model_ |         |        |            |             |          |
+|------------------------------------------+---------+--------+------------+-------------+----------|
+|                                      <r> |         |        |            |             |          |
+|                           \(0.292\beta\) |     180 |    218 |        112 |         136 |      155 |
+|              \rogr \(0.292\beta + 16.4\) |     196 |    234 |        129 |         152 |      171 |
+| \rogr \(0.292\beta + \log(8d) + 16.4\)   |     210 |    248 |        142 |         165 |      184 |
+|                    \enumlinfit{} \(+ 7\) |     456 |    587 |        242 |         313 |      370 |
+|        \enumquadfit{} \(+ \log(8d) + 7\) |     535 |    722 |        270 |         350 |      410 |
+#+END_scriptsize
+
+After 4 to 8 tours the output does not change much. Thus, some authors write \(8d \cdot t_{SVP}\). Others argue that we need to call the SVP oracle at least once and write \(t_{SVP}\).
+
+*** Open Question
+
+\(8d\) is too large footfullcite:RSA:LiuNgu13 but it is not clear how far this factor can be reduced in practice.
+
+* Solving SVP
+** Solving SVP
+
+
+#+BEGIN_scriptsize
+|                          _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU’_ |
+|                             _Cost Model_ |         |        |            |             |          |
+|------------------------------------------+---------+--------+------------+-------------+----------|
+|                                      <r> |         |        |            |             |          |
+|                    \rore  \(0.292\beta\) |     180 |    218 |        112 |         136 |      155 |
+|              \rore \(0.292\beta + 16.4\) |     196 |    234 |        129 |         152 |      171 |
+| \rore \(0.292\beta + \log(8d) + 16.4\)   |     210 |    248 |        142 |         165 |      184 |
+|              \robl \enumlinfit{} \(+ 7\) |     456 |    587 |        242 |         313 |      370 |
+|   \robl  \enumquadfit \(+ \log(8d) + 7\) |     535 |    722 |        270 |         350 |      410 |
+#+END_scriptsize
+
+
+*** 
+:PROPERTIES:
+:BEAMER_env: columns
+:BEAMER_OPT: t
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+@@beamer:{\color{LightRed}@@ _Sieving_ @@beamer:}@@
+
+
+- Produce new, shorter vectors by considering sums and differences of existing vectors
+- _Time:_ \(2^{\bigO{\beta}}\)
+- _Memory:_ \(2^{\bigO{\beta}}\)
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+@@beamer:{\color{DarkBlue}@@ _Enumeration_ @@beamer:}@@
+
+- Search through vectors smaller than a given bound: project down to 1-dim problem, lift to 2-dim problem …
+- _Time:_ \(2^{\bigO{\beta \log \beta}}\) or \(2^{\bigO{\beta^2}}\)
+- _Memory:_ \(\poly[\beta]\)
+
+** Enumeration Estimates
+
+Both estimates extrapolate the same data set
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+    \begin{axis}[xmin=100,height=0.4\textwidth]
+      \addplot table [x=d, y=Chen13, col sep=comma]{data/cn11-simulations.csv};
+      \addlegendentry{simulation \cite{PhD:Chen13}};
+        \addplot+ [domain=100:350, samples=250]{0.000784*x^2 + 0.3667*x - 6.1};
+        \addlegendentry{\enumquadfit};
+        \addplot+ [domain=100:350, samples=250]{0.187*x*log2(x) -1.019*x + 16.1};
+        \addlegendentry{\enumlinfit};
+    \end{axis}
+  \end{tikzpicture}
+#+END_EXPORT
+
+** Extended Enumeration Simulation
+
+Both estimates compared to our simulation
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+  \begin{axis}[xmin=100,height=0.4\textwidth]
+    \addplot table [x=d, col sep=comma, y expr = log2(\thisrowno{2})]{data/fplll-simulations,qary.csv};
+    \addlegendentry{FP(y)LLL simulation};
+    \addplot+ [domain=100:350, samples=250]{0.000784*x^2 + 0.3667*x - 6.1};
+    \addlegendentry{\enumquadfit};
+    \addplot+ [domain=100:350, samples=250]{0.187*x*log2(x) + -1.019*x + 16.1};
+    \addlegendentry{\enumlinfit};
+  \end{axis}
+\end{tikzpicture}
+#+END_EXPORT
+
+** Enumeration Simulation vs Experiments
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+  \begin{axis}[height=0.4\textwidth]
+    \addplot table [x=d, col sep=comma, y expr = log2(\thisrowno{2} * 3.3 * 10.0^9/100.0)]{data/fplll-observations,qary,one-tour.csv};
+    \addlegendentry{FP(y)LLL: running time};
+    \addplot table [x=d, col sep=comma, y expr = log2(\thisrowno{3}+1 )]{data/fplll-observations,qary,one-tour.csv};
+    \addlegendentry{FP(y)LLL: visited nodes};
+    \addplot table [x=d, col sep=comma, y expr = log2(\thisrowno{2}), select coords between index={0}{97}]{data/fplll-simulations,qary.csv};
+    \addlegendentry{FP(y)LLL simulation};
+  \end{axis}
+\end{tikzpicture}
+#+END_EXPORT
+
+#+BEGIN_CENTER
+assuming 1 node \approx 100 cpu cycles
+#+END_CENTER
+
+** Enumeration Wors-Case Complexity 
+
+#+BEGIN_scriptsize
+|                    _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU’_ |
+|                       _Cost Model_ |         |        |            |             |          |
+|------------------------------------+---------+--------+------------+-------------+----------|
+|                                <r> |         |        |            |             |          |
+|                     \(0.292\beta\) |     180 |    218 |        112 |         136 |      155 |
+|              \(0.292\beta + 16.4\) |     196 |    234 |        129 |         152 |      171 |
+| \(0.292\beta + \log(8d) + 16.4\)   |     210 |    248 |        142 |         165 |      184 |
+|        \rogr \enumlinfit{} \(+ 7\) |     456 |    587 |        242 |         313 |      370 |
+|       \rogr \enumquadfit{} \(+ 7\) |     535 |    722 |        270 |         350 |      410 |
+#+END_scriptsize
+
+Known worst-case hardness of Kannan’s enumeration is footfullcite:C:HanSte07 \[\beta^{1/(2e) \beta + o(\beta)} \approx \beta^{0.1839\, \beta + o(\beta)}\] 
+ 
+*** Open Question
+
+Can we do better than worst-case hardness inside BKZ?
+
+** Sieving vs Enumeration
+
+#+BEGIN_scriptsize
+|                          _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU’_ |
+|                             _Cost Model_ |         |        |            |             |          |
+|------------------------------------------+---------+--------+------------+-------------+----------|
+|                                      <r> |         |        |            |             |          |
+|                    \rore  \(0.292\beta\) |     180 |    218 |        112 |         136 |      155 |
+|              \rore \(0.292\beta + 16.4\) |     196 |    234 |        129 |         152 |      171 |
+| \rore \(0.292\beta + \log(8d) + 16.4\)   |     210 |    248 |        142 |         165 |      184 |
+|              \robl \enumlinfit{} \(+ 7\) |     456 |    587 |        242 |         313 |      370 |
+|              \robl  \enumquadfit \(+ 7\) |     535 |    722 |        270 |         350 |      410 |
+#+END_scriptsize
+
+*** 
+
+Sieving is asymptotically faster than enumeration, but does it beat enumeration in practical or cryptographic dimensions?
+
+** Sieving: G6K
+
+G6K footfullcite:ADHKPS19 is a Python/C++ framework for experimenting with sieving algorithms (inside and outside BKZ)
+- Does not take the “oracle” view appealed to earlier but considers sieves as stateful machines.
+- Implements several sieve algorithms[fn:6] (but not the asymptotically fastest footfullcite:SODA:BDGL16  ones)
+- Applies many recent tricks and adds new tricks for improving performance of sieving
+
+** Sieving: SVP
+
+#+BEGIN_CENTER
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+    \begin{semilogyaxis}[ylabel=seconds, xlabel=\(\beta\), legend style={fill=}, legend pos=north west, height=0.5\textwidth]
+        \addplot+ [only marks] table [x=d, y=FPLLL, col sep=comma]{data/exact-svp.csv};
+        \addlegendentry{BKZ + pruned enum (FPLLL)};
+        \addplot+ [only marks] table [x=d, y=G6K, col sep=comma]{data/exact-svp.csv};
+        \addlegendentry{G6K WorkOut};
+    \end{semilogyaxis}
+\end{tikzpicture}
+#+END_EXPORT
+Average time in seconds for solving exact SVP
+#+END_CENTER
+
+** Darmstadt HSVP_{1.05} Challenges
+
+#+BEGIN_CENTER
+#+BEGIN_EXPORT latex
+  \begin{tikzpicture}
+    \begin{axis}[xlabel=\(\beta\),ylabel=\(\log_2(\textnormal{cycles})\),height=0.5\textwidth]
+      \addplot table [x=d, col sep=comma, y expr = log2(100*\thisrowno{2}),, select coords between index={0}{50} ]{data/fplll-simulations,svp-challenge.csv};
+      \addlegendentry{HSVP\(_{1.05}\) non-parallel enum sim};
+
+      \addplot table [x=d, col sep=comma, y expr = log2(100*\thisrowno{2}), select coords between index={70}{166}]{data/fplll-simulations,qary.csv};
+      \addlegendentry{SVP non-parallel enum sim};
+      
+      \addplot+ [only marks] table [unbounded coords=discard,x=d, col sep=comma, y expr = %
+      log2(\thisrowno{3}*3600*2*10.0^9)%
+      ]{data/svp-challenge-observations.csv};
+      \addlegendentry{HoF:FK15};
+
+      \addplot+ [only marks] table [unbounded coords=discard,x=d, col sep=comma, y expr = %
+      log2(\thisrowno{4}*3600*2*10.0^9)%
+      ]{data/svp-challenge-observations.csv};
+      \addlegendentry{HoF:KT17};
+
+      \addplot+ [only marks] table [unbounded coords=discard,x=d, col sep=comma, y expr = %
+      log2(\thisrowno{5}*3600*2*10.0^9)%
+      ]{data/svp-challenge-observations.csv};
+      \addlegendentry{G6K};
+                
+    \end{axis}
+  \end{tikzpicture}
+#+END_EXPORT
+
+Estimated and reported costs for solving Darmstadt SVP Challenges.
+#+END_CENTER
+
+** Sieving: Open Questions
+
+- G6K does not support coarse grained parallelism across different machines yet: not clear how exponential memory requirement scales in this regime
+- Practical performance of asymptotically faster sieves still unclear
+- Dedicated hardware …
+
+** Quantum Estimates
+
+
+#+BEGIN_scriptsize
+|          _Type_ |                             _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU’_ |
+|                 |                                _Cost Model_ |         |        |            |             |          |
+|-----------------+---------------------------------------------+---------+--------+------------+-------------+----------|
+|             <r> |                                         <r> |         |        |            |             |          |
+| \rore classical | \(\mathbf{0.292}\beta + \log(8d) + 16.4\)   |     210 |    248 |        142 |         165 |      184 |
+|   \rore quantum | \(\mathbf{0.265}\beta + \log(8d) + 16.4\)   |     193 |    228 |        131 |         153 |      170 |
+| \robl classical |                               \enumlinfit{} |     456 |    587 |        242 |         313 |      370 |
+|  \robl  quantum |           \(\mathbf{1/2}\,\)(\enumlinfit{}) |     228 |    294 |        121 |         157 |      187 |
+#+END_scriptsize
+
+ - @@beamer:{\color{LightRed}@@ _Sieving_ @@beamer:}@@ :: Given some vector \(\vec{w}\) and a list of vectors \(L\), apply Grover’s algorithm to find \(\{\vec{v} \in L \textnormal{ s.t. } \|\vec{v} \pm \vec{w}\| \leq \|\vec{w}\|\}\).footfullcite:PhD:Laarhoven15 
+
+ - @@beamer:{\color{DarkBlue}@@ _Enumeration_ @@beamer:}@@ :: Apply Montanaro’s quantum backtracking algorithm for quadratic speed-up.footfullcite:EPRINT:AonNguShe18
+  
+** Quantum Sieving
+
+- A quantum sieve needs list of \(2^{0.2075 \beta}\) vectors before pairwise search with Grover
+
+- Newer sieves use that the search is structured, Grover does unstructured search
+  + Quantum Gauss Sieve \[2^{(0.2075 + \frac{1}{2} 0.2075)\, \beta + o(\beta)} = 2^{0.311\, \beta + o(\beta)} \textnormal{ time},\qquad 2^{0.2075\, \beta + o(\beta)} \textnormal{ memory}\]
+  + Classical BGJ Sieve footfullcite:EPRINT:BecGamJou15 \[\phantom{2^{(0.2075 + \frac{1}{2} 0.2075)\, \beta + o(\beta)} = }2^{0.311\, \beta + o(\beta)}\textnormal{ time}, \qquad 2^{0.2075\, \beta + o(\beta)} \textnormal{ memory}\]
+- Asymptotically fastest sieves have small lists and thus less Grover speed-up potential
+
+** A Word on Lower Bounds
+
+#+BEGIN_EXPORT latex
+\rowcolors[]{3}{gray!20}{gray!10}
+#+END_EXPORT
+
+#+BEGIN_scriptsize
+|    _Type_ |                                             _Scheme_      / | _Kyber_ | _Lima_ | _R EMBLEM_ | _NTRU HRSS_ | _SNTRU’_ |
+|           |                                                _Cost Model_ |         |        |            |             |          |
+|-----------+-------------------------------------------------------------+---------+--------+------------+-------------+----------|
+|       <r> |                                                         <r> |         |        |            |             |          |
+| classical |                           \(0.292\beta\) cite:USENIX:ADPS16 |     180 |    218 |        112 |         136 |      155 |
+|   quantum |                           \(0.265\beta\) cite:USENIX:ADPS16 |     163 |    198 |        102 |         123 |      140 |
+| classical | \(0.123\,\beta\log(\beta) -0.70\beta +  6.1\) cite:C:ANSS18 |     276 |    358 |        142 |         186 |      224 |
+|   quantum |  \(0.061\,\beta\log(\beta) -0.35\beta + 2.6\) cite:C:ANSS18 |     135 |    175 |         69 |          91 |      109 |
+#+END_scriptsize
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+
+
+These estimates ignore:
+
+- (large) polynomial factors hidden in \(o(\beta)\)
+- MAXDEPTH of quantum computers
+- cost of a Grover iteration
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+Thus:
+
+- cannot claim parameters need to be adjusted when these estimates are lowered
+- must be careful about conclusions drawn in these models: some attacks don’t work here but work in reality
+
+*** :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+
+#+BEGIN_SRC sage :exports none :tolatex lambda x: str(x)
+load('https://bitbucket.org/malb/lwe-estimator/raw/HEAD/estimator.py')
+n = 768
+sd = 1.4142135623730951
+q = 7681
+alpha = sqrt(2*pi)*sd/RR(q)
+m = n
+secret_distribution = "normal"
+success_probability = 0.99
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.123*beta*log(beta,2) -0.7*beta +  6.1)
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.061*beta*log(beta,2) -0.35*beta + 2.6)
+primal_usvp(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=reduction_cost_model)
+#+END_SRC
+
+#+BEGIN_SRC sage :exports none :tolatex lambda x: str(x)
+load('https://bitbucket.org/malb/lwe-estimator/raw/HEAD/estimator.py')
+n = 1024
+sd = 3.1622776601683795
+q = 133121
+alpha = sqrt(2*pi)*sd/RR(q)
+m = n
+secret_distribution = "normal"
+success_probability = 0.99
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.123*beta*log(beta,2) -0.7*beta +  6.1)
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.061*beta*log(beta,2) -0.35*beta + 2.6)
+primal_usvp(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=reduction_cost_model)
+#+END_SRC
+
+#+BEGIN_SRC sage :exports none :tolatex lambda x: str(x)
+load('https://bitbucket.org/malb/lwe-estimator/raw/HEAD/estimator.py')
+n = 512
+sd = 25
+q = 65536
+alpha = sqrt(2*pi)*sd/RR(q)
+m = n
+secret_distribution = (-1, 1)
+success_probability = 0.99
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.123*beta*log(beta,2) -0.7*beta +  6.1)
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.061*beta*log(beta,2) -0.35*beta + 2.6)
+primald = partial(drop_and_solve, primal_usvp, postprocess=False, decision=False)
+primald(n, alpha, q, secret_distribution=secret_distribution, m=m,  success_probability=success_probability, reduction_cost_model=reduction_cost_model)
+#+END_SRC
+
+#+BEGIN_SRC sage :exports none :tolatex lambda x: str(x)
+load('https://bitbucket.org/malb/lwe-estimator/raw/HEAD/estimator.py')
+n = 700
+sd = 0.7905694150420949
+q = 8192
+alpha = sqrt(2*pi)*sd/RR(q)
+m = n
+secret_distribution = ((-1, 1), 437)
+success_probability = 0.99
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.123*beta*log(beta,2) -0.7*beta +  6.1)
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.061*beta*log(beta,2) -0.35*beta + 2.6)
+primald = partial(drop_and_solve, primal_usvp, postprocess=False, decision=False)
+primald(n, alpha, q, secret_distribution=secret_distribution, m=m,  success_probability=success_probability, reduction_cost_model=reduction_cost_model, rotations=True)
+#+END_SRC
+
+#+BEGIN_SRC sage :exports none :tolatex lambda x: str(x)
+load('https://bitbucket.org/malb/lwe-estimator/raw/HEAD/estimator.py')
+n = 761
+sd = 0.816496580927726
+q = 4591
+alpha = sqrt(2*pi)*sd/RR(q)
+m = n
+secret_distribution = ((-1, 1), 286)
+success_probability = 0.99
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.123*beta*log(beta,2) -0.7*beta +  6.1)
+reduction_cost_model =  lambda beta, d, B: ZZ(2)**(0.061*beta*log(beta,2) -0.35*beta + 2.6)
+primald = partial(drop_and_solve, primal_usvp, postprocess=False, decision=False)
+primald(n, alpha, q, secret_distribution=secret_distribution, m=m,  success_probability=success_probability, reduction_cost_model=reduction_cost_model, rotations=True)
+#+END_SRC
+
+** More Open Questions
+
+- Many submissions use small and sparse secrets where combinatorial techniques apply. Cost of these not fully understood.
+- (Structured) Ideal-SVP is easier than General SVP on a quantum computer.footfullcite:EC:CraDucWes17 Ring-LWE (but for a choice of parameters typically not used in practice) is at least as hard as Ideal-SVP, but it is not clear if it is harder, e.g. if those attacks extend.
+- The effect of decryption failures in probabilistic encryption based on LWE not fully understood. Some submissions completely eliminate these.
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+#+END_CENTER
+
+** References
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+#+BEGIN_EXPORT LaTeX
+\renewcommand*{\bibfont}{\scriptsize}
+\printbibliography[heading=none]
+#+END_EXPORT
+
+* Build Artefacts                                                     :noexport:
+** Autoexport to PDF
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+# End:
+
+* Footnotes
+
+
+[fn:1] \(0.292\beta\) cite:USENIX:ADPS16, *this is an explicit underestimate*
+
+[fn:2] \(0.292\beta + 16.4\) cite:NISTPQC-R1:LIMA17, *this is a somewhat explicit underestimate*
+
+[fn:3] \(0.292\beta + \log(8d) + 16.4\) cite:JMC:AlbPlaSco15
+
+[fn:4] \enumlinfit{} \(+ 7\) cite:JMC:AlbPlaSco15
+
+[fn:5] \enumquadfit{} \(\log(8d) + 7\) cite:EPRINT:HPSSWZ15a
+
+[fn:6] Gauss, NV, BGJ1 (fullcite:EPRINT:BecGamJou15; with one level of filtration)
+
