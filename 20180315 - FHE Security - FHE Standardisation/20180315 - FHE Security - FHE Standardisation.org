@@ -1,0 +1,234 @@
+#+TITLE: Lattice Reduction Attacks on HE Schemes
+#+OPTIONS: H:1 toc:nil num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LaTeX_CLASS: mbeamer
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'(%s)' % latex(obj) :results raw
+
+#+LATEX_HEADER: \newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}\xspace}
+#+LATEX_HEADER: \renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}\xspace}
+#+LATEX_HEADER: \usepackage[]{algorithm2e}
+
+#+AUTHOR: Martin R. Albrecht
+#+EMAIL: martin.albrecht@royalholloway.ac.uk
+#+DATE: 15/03/2018
+#+STARTUP: beamer
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib
+
+* Instructions                                                        :noexport:
+
+- Introduction and your background in lattice/RLWE/HE security.
+- Your opinions on why HE standardization, and in particular HE (RLWE) parameter/scheme standardization matters.
+- High-level outline of best known attacks.
+- High-level outline of security estimates; are the estimates expected to be conservative?
+- Other comments and observations on the security white paper.
+
+* Learning with Errors
+
+The Learning with Errors (LWE) problem was deﬁned by Oded Regev.footfullcite:STOC:Regev05
+
+Given $(\vec{A},\vec{c})$ with uniform $\vec{A} \in \ZZ_q^{m × n}$, uniform $\vec{s} \in \ZZ_q^{n}$ and small $\vec{e} \in \ZZ^{m}$ is $\vec{c} \sample \mathcal{U}({\ZZ_q^{m}})$ or
+
+#+BEGIN_EXPORT LaTeX
+\[
+\left(\begin{array}{c}
+\\
+\\
+\\ 
+\vec{c} \\
+\\
+\\
+\\
+\end{array} \right) = \left(
+\begin{array}{ccc}
+\leftarrow & n & \rightarrow \\
+\\
+\\ 
+& \vec{A} & \\
+\\
+\\
+\\
+\end{array} \right) \cdot \left( \begin{array}{c}
+\\
+\vec{s} \\
+\\
+\end{array} \right) + \left(
+\begin{array}{c}
+\\
+\\
+\\ 
+\vec{e} \\
+\\
+\\
+\\
+\end{array} 
+\right).
+\]
+#+END_EXPORT
+
+
+* Introduction
+
+** Where it all began …
+
+fullcite:EPRINT:ACFP14
+
+**                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+- We were writing a paper on using Gröbner bases for solving LWE instances.
+- Ludovic Perret asked me to write the related work section.
+- Our paper on using Gröbner bases for solving LWE still has not been published.
+
+
+I am still working on that related work section.
+
+* “Related Work”
+
+*Primal Attack* (=primal_usvp=, =primal_decode=)
+
+Solve Bounded Distance Decoding problem (BDD), i.e. \[
+\textnormal{ find } \vec{s'} \textnormal{ s.t. } \|\vec{w} - \vec{c}\| \textnormal{is minimised, with } \vec{w} = \vec{A} ⋅ \vec{s'} \textnormal{ using}\]
+uSVP embedding or Babai's nearest planes resp. enumeration.
+
+*Dual Attack* (=dual=, =dual_scale=)
+
+Solve Short Integer Solutions problem (SIS) in the left kernel of $\vec{A}$, i.e. \[\textnormal{ find a short } \vec{w} \textnormal{ such that } \vec{w} ⋅ \vec{A} = 0\]
+and check if $\Angle{\vec{w},\vec{c}} = \vec{w} ⋅ \left(\vec{A} ⋅ \vec{s} + \vec{e}\right) = \Angle{\vec{w},\vec{e}}$ is short.
+
+* Bounded Distance Decoding and unique SVP
+
+Given \(\vec{A}, \vec{c}\) with \(\vec{c} = \vec{A} ⋅ \vec{s} + \vec{e}\), we know that for some \(\vec{s}'\) we have that $\vec{A}⋅\vec{s}' - \vec{c} \pmod q$ is rather small.
+
+\(\Rightarrow\) we know there is an unusually short vector in the \(q\)-ary lattice \[\vec{B}=\left(\begin{array}{cc}
+          \vec{A}^T &  0 \\
+          \vec{c}^T   & t \\
+        \end{array} \right) \in \ZZ_q^{(n+1) \times (m+1)}\] since \[(\vec{s} \mid -1) ⋅ \vec{B} = (\vec{e} \mid -t) \bmod q\]
+and use lattice reduction to find it.
+
+* Success Condition (ADPS16)
+
+#+BEGIN_EXPORT latex
+\begin{tikzpicture}
+\begin{axis}[/pgf/number format/.cd,fixed, grid=both,ymin = 1,legend pos=north east, xlabel=index $i$ ,ylabel=$\log_2(\norm \cdot)$,width=\columnwidth, height=0.6\columnwidth, xmin = 1, xmax = 183,legend cell align=left,]
+%      \draw[->] (-3,0) -- (4.2,0) node[right] {$x$};
+%      \draw[->] (0,-3) -- (0,4.2) node[above] {$y$};
+\addplot[domain=1:183,smooth,variable=\x,black] plot ({\x},{log2(1.01170246711949^(-2*(\x-1)+183)*54.5751087741536)});
+\addlegendentry{GSA for $\norm{\vec b_i^*}$}
+
+\addplot[gray,thick,x filter/.code={\pgfmathparse{\pgfmathresult+1.0}}] coordinates {
+   (  0,  8.78) (  1,  8.78) (  2,  8.77) (  3,  8.72) (  4,  8.71) (  5,  8.69) (  6,  8.66) (  7,  8.63) (  8,  8.62) (  9,  8.59) ( 10,  8.54) ( 11,  8.53) ( 12,  8.51) ( 13,  8.47) ( 14,  8.43) ( 15,  8.39) ( 16,  8.36) ( 17,  8.34) ( 18,  8.30) ( 19,  8.28) ( 20,  8.24) ( 21,  8.20) ( 22,  8.16) ( 23,  8.13) ( 24,  8.10) ( 25,  8.07) ( 26,  8.04) ( 27,  7.99) ( 28,  7.96) ( 29,  7.94) ( 30,  7.91) ( 31,  7.88) ( 32,  7.84) ( 33,  7.79) ( 34,  7.76) ( 35,  7.73) ( 36,  7.69) ( 37,  7.65) ( 38,  7.61) ( 39,  7.59) ( 40,  7.55) ( 41,  7.52) ( 42,  7.48) ( 43,  7.44) ( 44,  7.39) ( 45,  7.37) ( 46,  7.33) ( 47,  7.31) ( 48,  7.27) ( 49,  7.24) ( 50,  7.21) ( 51,  7.18) ( 52,  7.15) ( 53,  7.09) ( 54,  7.07) ( 55,  7.03) ( 56,  7.00) ( 57,  6.97) ( 58,  6.95) ( 59,  6.91) ( 60,  6.87) ( 61,  6.83) ( 62,  6.79) ( 63,  6.74) ( 64,  6.72) ( 65,  6.67) ( 66,  6.64) ( 67,  6.62) ( 68,  6.59) ( 69,  6.55) ( 70,  6.52) ( 71,  6.46) ( 72,  6.44) ( 73,  6.40) ( 74,  6.38) ( 75,  6.34) ( 76,  6.31) ( 77,  6.28) ( 78,  6.24) ( 79,  6.21) ( 80,  6.15) ( 81,  6.13) ( 82,  6.09) ( 83,  6.06) ( 84,  6.02) ( 85,  6.00) ( 86,  5.97) ( 87,  5.92) ( 88,  5.88) ( 89,  5.86) ( 90,  5.82) ( 91,  5.78) ( 92,  5.75) ( 93,  5.73) ( 94,  5.71) ( 95,  5.66) ( 96,  5.64) ( 97,  5.59) ( 98,  5.55) ( 99,  5.51) (100,  5.47) (101,  5.43) (102,  5.41) (103,  5.36) (104,  5.36) (105,  5.31) (106,  5.28) (107,  5.25) (108,  5.23) (109,  5.18) (110,  5.13) (111,  5.09) (112,  5.04) (113,  5.01) (114,  5.00) (115,  4.96) (116,  4.92) (117,  4.86) (118,  4.83) (119,  4.79) (120,  4.77) (121,  4.72) (122,  4.68) (123,  4.66) (124,  4.63) (125,  4.60) (126,  4.56) (127,  4.52) (128,  4.50) (129,  4.45) (130,  4.43) (131,  4.40) (132,  4.36) (133,  4.34) (134,  4.30) (135,  4.27) (136,  4.24) (137,  4.22) (138,  4.18) (139,  4.16) (140,  4.12) (141,  4.09) (142,  4.06) (143,  4.03) (144,  4.01) (145,  3.95) (146,  3.91) (147,  3.89) (148,  3.85) (149,  3.81) (150,  3.77) (151,  3.75) (152,  3.71) (153,  3.66) (154,  3.62) (155,  3.59) (156,  3.55) (157,  3.51) (158,  3.47) (159,  3.43) (160,  3.39) (161,  3.37) (162,  3.29) (163,  3.27) (164,  3.23) (165,  3.19) (166,  3.13) (167,  3.08) (168,  3.03) (169,  2.99) (170,  2.94) (171,  2.89) (172,  2.84) (173,  2.79) (174,  2.76) (175,  2.72) (176,  2.68) (177,  2.65) (178,  2.61) (179,  2.58) (180,  2.51) (181,  2.54) (182,  2.56) };
+\addlegendentry{Average for $\norm{\vec b_i^*}$}
+
+\addplot[domain=1:183,samples=1000, smooth,variable=\x,darkgray,dotted,thick] plot ({\x},{log2( 3.19153824321146 * sqrt(183 - \x + 1) )});
+
+\addlegendentry{Expectation for $\norm{\pi_i(\vec v)}$}
+
+\draw[dashed] (127,1) -- (127,820) node[pos = 0.06, right] {$d-\beta+1$};
+\end{axis}
+\end{tikzpicture}
+#+END_EXPORT
+
+* Don’t treat block-wise lattice reduction as a black box
+
+- fullcite:USENIX:ADPS16
+
+- fullcite:AC:AGVW17
+
+* Dual Attack
+  
+Given samples $\vec{A}, \vec{c}$:
+
+1) Find a short $\vec{y}$ solving SIS on $\vec{A}$. 
+2) Compute $\Angle{\vec{y}, \vec{c}}$. 
+
+Either $\vec{c} = \vec{A}\cdot \vec{s} + \vec{e}$ or $\vec{c}$ uniformly random:
+
+- If $\vec{c}$ is uniformly random, so is $\Angle{\vec{y}, \vec{c}}$.
+- If $\vec{c} = \vec{A} \cdot \vec{s} + \vec{e}$, then $\Angle{\vec{y}, \vec{c}} = \Angle{\vec{y} \cdot \vec{A}, \vec{s}} + \Angle{\vec{y}, \vec{e}} \equiv \Angle{\vec{y}, \vec{e}} \pmod{q}$. If $\vec{y}$ is sufficiently short, then $\Angle{\vec{y}, \vec{e}}$ will also be short, since $\vec{e}$ is also small.
+
+* Algorithm Sketch
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+#+BEGIN_EXPORT latex
+\begin{small}
+\begin{algorithm}[H]
+  \SetKwFor{MRepeat}{repeat}{}{}
+  \(ε_{d} \gets \exp(-π{({\mathrm{Exp}[\vecnorm{\vec{y}_{i}}]}⋅α)}^{2})\)\; 
+  \(m \gets \lceil2\,\log(2 - 2\,\alert{ε_{t}})/\log(1 - 4\, ε_{d}^{2})\rceil\); 
+ 
+  \(\mat{P} \sample\) \(n \times n\) permutation matrices\;
+  \([\mat{A}_{0} \mid \mat{A}_{1}] \gets \mat{A} ⋅ \mat{P}\) with \(\mat{A}_{0} \in \ZZ_{q}^{m \times (n-\alert{k})}\)\;
+  \(\mat{L} \gets\) basis for \(\{(\vec{y}, \vec{x}/\alert{c}) \in \ZZ^m × {({1}/{c} ⋅ \ZZ)}^n : \vec{y} ⋅ \mat{A}_{0} ≡ \vec{x} \bmod q\}\)\;
+  \(\mat{L}' \gets\) BKZ-\(\alert{β}\) reduced basis for \(\mat{L}\)\;
+  \For{\(i \gets 0\) \KwTo{} \(m-1\)}{
+    \(\mat{U} \sample \) a sparse unimodular matrix with small entries\;
+    \(\mat{L}_{i} \gets \) \(\mat{U} ⋅ \mat{L}'\)\;
+    \(\mat{L}'_{i} \gets \) BKZ-\(\alert{β'}\) reduced basis for \(\mat{L}_{i}\)\;
+    \((\vec{w}_{i},\vec{v}_{i}) \gets\) shortest row vector in \(\mat{L}'_{i}\)\;
+    \(e'_{i} \gets \langle{\vec{w}_{i}},{\vec{c}}\rangle\)\;      
+  }
+  \lIf{\(e'_{i}\) follow discrete Gaussian distribution}{\Return\(\top\)}
+  \Return\(\bot\)\;
+\end{algorithm}
+\end{small}
+#+END_EXPORT
+
+* Opening Black Boxes
+
+- Lattice reduction returns more than one somewhat short vector
+
+- Inner products have algebraic meaning beyond returning somewhat short elements
+
+** 
+
+fullcite:EC:Albrecht17
+
+* Sources for future refinements
+
+- There are more black boxes to be opened, e.g.:
+  + enumeration/sieving inside BKZ footfullcite:EPRINT:Ducas17
+  + BDD enumeration and small/sparse secrets
+- Cost of lattice reduction not fully understood
+
+** Note
+
+Estimates in standards document are quite conservative and price some of these anticipated improvements in.
+
+* Code = Research
+
+#+BEGIN_CENTER 
+https://bitbucket.org/malb/lwe-estimator
+#+END_CENTER
+
+- relied upon :: NIST PQC submissions and HE standard security document
+- one man show :: about 300 commits, mostly by me
+- quality control :: tests, documentation but _no peer review_
+- bugs :: there have been bugs leading to false security estimates and plenty of potential for more: numerical stability, heuristics for pruning branches in a search tree, …
+
+* Dummy Slide                                                         :noexport:
+
+Some text[fn:1]
+
+* Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+#+END_CENTER
+
+* Footnotes
+
+[fn:1] A footnote
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+# End:
