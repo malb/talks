@@ -1,6 +1,6 @@
-% Created 2019-02-28 Thu 10:18
+% Created 2019-03-04 Mon 21:50
 % Intended LaTeX compiler: pdflatex
-\documentclass[xcolor=table,10pt,aspectratio=169,handout]{beamer}
+\documentclass[xcolor=table,10pt,aspectratio=169]{beamer}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage{longtable}
@@ -48,9 +48,9 @@ urlcolor=gray
 \maketitle
 
 \section{Introduction}
-\label{sec:org8ee60c1}
+\label{sec:org96455c9}
 
-\begin{frame}[label={sec:org15cad8d}]{About Me}
+\begin{frame}[label={sec:org63d07b9}]{About Me}
 \begin{itemize}
 \item Reader in the Information Security Group, Royal Holloway, University of London
 \item Working on post-quantum cryptography with a focus on lattice-based cryptography \footfullcite{ADHKPS19}
@@ -58,7 +58,7 @@ urlcolor=gray
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgeaceadb}]{Essential Cryptographic Primitives}
+\begin{frame}[label={sec:orgbc040a7}]{Essential Cryptographic Primitives}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \textbf{Symmetric Primitives}
@@ -91,7 +91,7 @@ TLS, SSH, banking, smart cards, hard disk encryption …
 \vspace{7.2em}
 \end{frame}
 
-\begin{frame}[label={sec:orge688afb}]{Essential Cryptographic Primitives: Theoretical Perspective}
+\begin{frame}[label={sec:org93b4a64}]{Essential Cryptographic Primitives: Theoretical Perspective}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \textbf{Minicrypt}
@@ -130,7 +130,7 @@ TLS, SSH, banking, smart cards, hard disk encryption …
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgcab693c}]{Symmetric v Asymmetric Primitives}
+\begin{frame}[label={sec:orgf1cc1eb}]{Symmetric v Asymmetric Primitives}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \textbf{Symmetric Primitives}
@@ -154,7 +154,7 @@ All widely deployed asymmetric cryptography relies on the hardness of
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org8dbc810}]{Symmetric v Asymmetric Primitives: Quantum Computing Perspective}
+\begin{frame}[label={sec:orged723bc}]{Symmetric v Asymmetric Primitives: Quantum Computing Perspective}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \textbf{Symmetric Primitives}
@@ -183,8 +183,8 @@ All widely deployed asymmetric cryptography relies on the hardness of
 \end{frame}
 
 \section{Post-Quantum Cryptography}
-\label{sec:org5225089}
-\begin{frame}[label={sec:orgf7e7803}]{Post-Quantum Cryptography}
+\label{sec:org4e51d49}
+\begin{frame}[label={sec:org89ed6e9}]{Post-Quantum Cryptography}
 \begin{definition}
 Asymmetric cryptographic algorithms run on classical computers that resist attacks using classical and quantum computers.
 \end{definition}
@@ -196,7 +196,7 @@ Post-quantum cryptography is entirely distinct from quantum cryptography such as
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:org96c0615}]{Post-Quantum Standardisation}
+\begin{frame}[label={sec:orgc6e6eee}]{Post-Quantum Standardisation}
 \begin{description}
 \item[{NIST}] \textbf{Post Quantum {\color{lightgray}{Competition} }Process}\footnote{“NIST anticipates that the evaluation process for these post-quantum cryptosystems may be significantly more complex than the evaluation of the SHA-3 and AES candidates. … NIST believes that its post-quantum standards development process should not be treated as a competition; in some cases, it may not be possible to make a well-supported judgment that one candidate is ‘better’ than another.“}
 \item[{ETSI}] Cyber Working Group for Quantum Safe Cryptography
@@ -212,7 +212,7 @@ Essentially, everyone is waiting for NIST.
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:org6ac6c5f},fragile]{NIST PQC {\color{lightgray}{Competition} }Process}
+\begin{frame}[label={sec:orge1f7d32},fragile]{NIST PQC {\color{lightgray}{Competition} }Process}
  \textbf{Timeline}
 
 \begin{itemize}
@@ -251,7 +251,7 @@ Essentially, everyone is waiting for NIST.
 NIST also asked for public-key encryption but this is less important as it can be built generically from a KEM and a block cipher.
 \end{frame}
 
-\begin{frame}[label={sec:org91b6d1e}]{Security Notions}
+\begin{frame}[label={sec:org93cb285}]{Security Notions}
 \begin{description}
 \item[{KEM}] \textbf{IND-CCA}: Given some challenge ciphertext \(c\) and some key \(k\), the adversary gets an oracle to decapsulate (“decrypt”) any other ciphertext but still cannot decide if \(c\) encapsulates (“encrypts”) the key \(k\).
 
@@ -272,7 +272,7 @@ NIST also asked for public-key encryption but this is less important as it can b
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org073f174}]{Post-Quantum Candidate Families}
+\begin{frame}[label={sec:org107d7e3}]{Post-Quantum Candidate Families}
 \begin{columns}[t]
 \begin{column}{0.4\columnwidth}
 \begin{itemize}
@@ -288,7 +288,7 @@ NIST also asked for public-key encryption but this is less important as it can b
 \textbf{NIST PQC 2nd Round}
 
 \begin{description}
-\item[{17 KEMs}] \alert<1>{BIKE}, \alert<1>{Classic McEliece}, \alert<5,7>{CRYSTALS-KYBER}, \alert<5,7>{FrodoKEM}, HQC, \alert<5,7>{LAC}, \alert<1>{LEDAcrypt}, \alert<5,7>{NewHope}, \alert<5,7>{NTRU}, \alert<5,7>{NTRU Prime}, \alert<1>{NTS-KEM}, \alert<1>{ROLLO}, \alert<5,7>{Round5}, \alert<1>{RQC}, \alert<5,7>{SABER}, \alert<4>{SIKE}, \alert<5,7>{Three Bears}.
+\item[{17 KEMs}] \alert<1>{BIKE}, \alert<1>{Classic McEliece}, \alert<5,7>{CRYSTALS-KYBER}, \alert<5,7>{FrodoKEM}, \alert{@@beamer:<1>*HQC}, \alert<5,7>{LAC}, \alert<1>{LEDAcrypt}, \alert<5,7>{NewHope}, \alert<5,7>{NTRU}, \alert<5,7>{NTRU Prime}, \alert<1>{NTS-KEM}, \alert<1>{ROLLO}, \alert<5,7>{Round5}, \alert<1>{RQC}, \alert<5,7>{SABER}, \alert<4>{SIKE}, \alert<5,7>{Three Bears}.
 
 \item[{9 SIGs}] \alert<6,7>{CRYSTALS-DILITHIUM}, \alert<6,7>{FALCON}, \alert<2>{GeMSS}, \alert<2>{LUOV}, \alert<2>{MQDSS}, \alert<3>{Picnic}, \alert<6,7>{qTESLA}, \alert<2>{Rainbow}, \alert<3>{SPHINCS+}.
 \end{description}
@@ -296,7 +296,7 @@ NIST also asked for public-key encryption but this is less important as it can b
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org03b38d8}]{KEM: Code-based}
+\begin{frame}[label={sec:orgac36fdd}]{KEM: Code-based}
 \textbf{Idea}: Take error-correcting code for up to \(t\) errors. Keep decoding algorithm secret, hide structure of the code.
 
 \begin{columns}[t]
@@ -330,7 +330,7 @@ Public key & 1,419,704 bytes\\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org4db4699}]{KEM: Lattice-based}
+\begin{frame}[label={sec:orgc593ec2}]{KEM: Lattice-based}
 \textbf{Idea}: Noisy linear algebra mod \(q\) is hard and equivalent to finding short vectors in lattices. Encrypt as solution to noisy linear equations.
 
 \begin{columns}[t]
@@ -364,7 +364,7 @@ Public key & 1,088 bytes\\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgd470cb2}]{KEM: SIKE}
+\begin{frame}[label={sec:orgd0ed514}]{KEM: SIKE}
 \textbf{Idea}: Hard problem is finding a rational map that preserves structure \textbf{between} elliptic curves.
 
 \begin{columns}[t]
@@ -395,7 +395,7 @@ Public key & 378 bytes\\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org9c758d7}]{SIG: OWF-based}
+\begin{frame}[label={sec:org75c3702}]{SIG: OWF-based}
 \textbf{Idea}: Start from one-time digital signature based on hash functions. Build Merkle trees on top to produce many-time signature schemes.
 
 \begin{columns}[t]
@@ -425,7 +425,7 @@ Verification key & 1,056 bytes\\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org12b1869}]{SIG: Lattice-based (Hash-and-Sign)}
+\begin{frame}[label={sec:org55cf6cb}]{SIG: Lattice-based (Hash-and-Sign)}
 \textbf{Idea:} Verification key is matrix \(\mathbf{A}\). Hash message \(m\) to vector \(H(m)\). Signature is a \textbf{short} vector \(\vec{s}\) such that \(H(m) = \mathbf{A}\cdot \vec{s}\).
 
 \begin{columns}[t]
@@ -457,7 +457,7 @@ Verification key & 1441 bytes\\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org99dd120}]{SIG: MQ-based}
+\begin{frame}[label={sec:org82c4a85}]{SIG: MQ-based}
 \textbf{Idea:} Hard problem is to find solution to system of \textbf{quadratic} equations in many variables over a finite field.
 
 \begin{columns}[t]
@@ -489,14 +489,14 @@ Verification key & 30,240 bytes\\
 \end{frame}
 
 \section{The Road Ahead}
-\label{sec:org73d0530}
-\begin{frame}[label={sec:org9b9f270}]{Parameters Matter}
+\label{sec:org967212d}
+\begin{frame}[label={sec:orga903856}]{Parameters Matter}
 \begin{quote}
 One cannot hope to simply “plug in” a key of 10\textsuperscript{6} or 10\textsuperscript{9} bits into a protocol designed to work for keys of 10\textsuperscript{3} bits and expect it to work as is, and so such results could bring about significant changes to the way we do security over the Internet.  For example, it could lead to a centralization of power, where key exchange will be so expensive that users would share public-keys with only a few large corporations and governments, and smaller companies would have to route their communication through these larger corporations. \footfullcite{EPRINT:Barak17}
 \end{quote}
 \end{frame}
 
-\begin{frame}[label={sec:org73daa0b}]{PQ Candidates are not DH}
+\begin{frame}[label={sec:org392e707}]{PQ Candidates are not DH}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 Diffie-Hellman is extremely versatile:
@@ -542,7 +542,7 @@ Lattices are extremely versatile:
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org67000f4}]{Alternatives: QKD?}
+\begin{frame}[label={sec:org10cd065}]{Alternatives: QKD?}
 \begin{quote}
 QKD: has fundamental practical limitations; does not address large parts of the security problem; is poorly understood in terms of potential attacks.
 
@@ -557,7 +557,7 @@ By contrast, post-quantum public key cryptography appears to offer much more eff
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org68957c2}]{The Road Ahead}
+\begin{frame}[label={sec:org2ac1c04}]{The Road Ahead}
 \begin{itemize}
 \item We need to understand the underlying hard problems better
 \item Resistance to side-channel attacks
@@ -567,7 +567,7 @@ By contrast, post-quantum public key cryptography appears to offer much more eff
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgd5ff95e}]{Don’t Jump the Gun!}
+\begin{frame}[label={sec:org3acc15f}]{Don’t Jump the Gun!}
 \begin{itemize}
 \item Temptation to pick one of the NIST candidates as drop-in replacement for deployment in existing protocols \alert{now}
 
@@ -591,7 +591,7 @@ By contrast, post-quantum public key cryptography appears to offer much more eff
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org07f153f},standout]{Fin}
+\begin{frame}[label={sec:org4cd0309},standout]{Fin}
 \begin{center}
 \Huge \alert{Thank You}
 \end{center}
