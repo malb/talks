@@ -322,7 +322,7 @@ NIST also asked for public-key encryption but this is less important as it can b
 
 _NIST PQC 2nd Round_
 
-- 17 KEMs :: *@@beamer:<1>@@BIKE*, *@@beamer:<1>@@Classic McEliece*, *@@beamer:<5,7>@@CRYSTALS-KYBER*, *@@beamer:<5,7>@@FrodoKEM*, *@@beamer:<1>*HQC*, *@@beamer:<5,7>@@LAC*, *@@beamer:<1>@@LEDAcrypt*, *@@beamer:<5,7>@@NewHope*, *@@beamer:<5,7>@@NTRU*, *@@beamer:<5,7>@@NTRU Prime*, *@@beamer:<1>@@NTS-KEM*, *@@beamer:<1>@@ROLLO*, *@@beamer:<5,7>@@Round5*, *@@beamer:<1>@@RQC*, *@@beamer:<5,7>@@SABER*, *@@beamer:<4>@@SIKE*, *@@beamer:<5,7>@@Three Bears*.
+- 17 KEMs :: *@@beamer:<1>@@BIKE*, *@@beamer:<1>@@Classic McEliece*, *@@beamer:<5,7>@@CRYSTALS-KYBER*, *@@beamer:<5,7>@@FrodoKEM*, *@@beamer:<1>@@HQC*, *@@beamer:<5,7>@@LAC*, *@@beamer:<1>@@LEDAcrypt*, *@@beamer:<5,7>@@NewHope*, *@@beamer:<5,7>@@NTRU*, *@@beamer:<5,7>@@NTRU Prime*, *@@beamer:<1>@@NTS-KEM*, *@@beamer:<1>@@ROLLO*, *@@beamer:<5,7>@@Round5*, *@@beamer:<1>@@RQC*, *@@beamer:<5,7>@@SABER*, *@@beamer:<4>@@SIKE*, *@@beamer:<5,7>@@Three Bears*.
 
 - 9 SIGs :: *@@beamer:<6,7>@@CRYSTALS-DILITHIUM*, *@@beamer:<6,7>@@FALCON*, *@@beamer:<2>@@GeMSS*, *@@beamer:<2>@@LUOV*, *@@beamer:<2>@@MQDSS*, *@@beamer:<3>@@Picnic*, *@@beamer:<6,7>@@qTESLA*, *@@beamer:<2>@@Rainbow*, *@@beamer:<3>@@SPHINCS+*.
 
