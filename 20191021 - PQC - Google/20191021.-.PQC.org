@@ -1,0 +1,827 @@
+#+TITLE: The Road to Post-Quantum Cryptography
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [xcolor=table,10pt,aspectratio=169]
+#+LATEX_HEADER: \input{talk-header.tex}
+#+AUTHOR: Martin R. Albrecht
+#+DATE: https://malb.io
+
+#+OPTIONS: H:2 toc:nil num:t todo:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'\[%s\]' % latex(obj) :results raw
+#+STARTUP: beamer
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib
+
+* Introduction
+** About Me
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+#+ATTR_LATEX: :width \linewidth
+[[./rhul.jpeg]]
+
+Reader in the Information Security Group, Royal Holloway, University of London
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.6
+:END:
+
+- Teaching :: penetration testing
+- Research :: post-quantum cryptography with a focus on lattice-based cryptography cite:EC:Albrecht17,EC:ADHKPS19
+
+              breaking cryptographic protocols/implementations such as SSH cite:SP:AlbPatWat09,CCS:ADHP16 and TLS cite:EC:AlbPat16,CCS:AMPS18
+
+- Standards :: member of ETSI quantum-safe working group, submitter of two post-quantum candidates to the NIST process
+
+** Essential Cryptographic Primitives
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Symmetric Primitives_
+
+\small
+
+- Block and stream ciphers (AES, ChaCha20, \ldots)
+- Authentication codes (HMAC, Poly1305, \ldots)
+- Hash functions (SHA-2, SHA-3, \ldots)
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Asymmetric Primitives_
+
+\small
+
+- Key agreement and public-key encryption (RSA, Diffie-Hellman, ECDH)
+- Digital signatures (RSA, DSA, ECDSA)
+
+*** Applications
+
+TLS, secure chat, SSH, smart cards, hard disk encryption …
+
+** Essential Cryptographic Primitives: Theoretical Perspective
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Minicrypt_
+
+\small
+
+- Block and stream ciphers
+- Hash functions
+- Authentication codes
+- _Digital signatures_
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Cryptomania_
+
+\small
+
+- Key agreement and public-key encryption
+- \ldots
+
+***                                                                                                    :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+[[./minicrypt-cryptomania.jpg]]
+
+** Very Slow One-Time Digital Signatures from Hash Functions
+
+  - KeyGen :: \(H(\cdot)\) is a hash function with 256 bits of output. 
+    - Sample random numbers \((a_{0,0}, a_{0,1}), (a_{1,0}, a_{1,1}), \ldots, (a_{255,0}, a_{255,1})\). 
+    - Publish \(H(a_{i,j})\) for all \(a_{i,j}\).
+  - Sign ::  Let \(b_i\) be the bits of \(H(m)\). 
+    - For each bit \(b_i\), publish \(a_{i, b_i}\).
+  - Verify :: Check that \(a_{i, b_i}\) indeed hashes to \(H(a_{i,b_i})\) in the public key.
+
+** Symmetric v Asymmetric Primitives 
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Symmetric Primitives_
+
+\phantom{M}
+
+/Indeed, it seems that “you can’t throw a rock without hitting a one-way function” in the sense that, once you cobble together a large number of simple computational operations then, unless the operations satisfy some special property such as linearity, you will typically get a function that is hard to invert./ cite:EPRINT:Barak17
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Asymmetric Primitives_
+
+\phantom{M}
+
+All widely deployed asymmetric cryptography relies on the hardness of 
+
+_factoring:_ \[\textnormal{Given } N = p \cdot q \textnormal{ find } p, \textnormal{ or }\]
+_(elliptic-curve) discrete logarithms:_ \[\textnormal{Given }  g^a  \bmod q \textnormal{ and } g \textnormal{ find } a.\]
+
+** Quantum Computers
+
+- A quantum computer makes use of quantum effects (superpositions and entanglement) to perform computations.
+- Quantum computers are not _faster_ than classical computers, they are _different_.
+- Some computations are easy on a quantum computer that are – as far as we know – hard on a classical computer.
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.6
+:END:
+
+- Small universal quantum computers exist.
+- Key challenge is to scale them up by making them more stable.
+- There is a critical point where we can scale up further using error correction.
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+[[./google-72-qubit.png]]
+
+** Symmetric Primitives: Quantum Computing Perspective (Good News)
+
+Best known quantum algorithms for attacking symmetric cryptography are based on Grover’s algorithm. 
+
+- Search key space of size \(2^n\) in \(2^{n/2}\) operations: AES-256 \rightarrow 128 “quantum bits of security”.
+- This estimate is too optimistic, taking all costs into account: \(> 2^{152}\) classical operations for AES-256.footfullcite:EPRINT:JNRV19
+- Assuming a max depth of \(2^{96}\) for a quantum circuit: overall (parallel) AES-256 cost is \(\approx 2^{190}\).
+- Grover’s algorithm does not parallelise: have to wait for \(2^{X}\) steps, cannot buy \(2^{32}\) quantum computers and wait \(2^{X-32}\) steps.
+
+** Symmetric Primitives: Quantum Computing Perspective (Point to Consider)
+
+- Grover is optimal for unstructured search but block ciphers have structure.
+- Consider the Even-Mansour construction: \[y = k_0 \oplus F(x \oplus k_1)\] where \(F(\cdot)\) is some public function and \(k_i\) have \(n\) bits.
+- Optimal classical attack costs \(2^{n/2}\) operations, best quantum attack takes \(2^{n/3}\) quantum operations using Simon’s period-finding algorithm.footfullcite:EPRINT:BHNSS19
+
+** Asymmetric Primitives: Quantum Computing Perspective
+
+[[./shor.png]]
+
+* Post-Quantum Cryptography
+** Post-Quantum Cryptography
+
+#+begin_definition
+Asymmetric cryptographic algorithms run on classical computers that resist attacks using classical and quantum computers.
+#+end_definition
+
+#+BEAMER: \pause
+
+*** Note                                                                                                  :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Post-quantum cryptography is entirely distinct from quantum cryptography such as a quantum key exchange (QKD). The latter uses quantum effects to achieve security.
+
+** Post-Quantum Standardisation
+
+- NIST :: _Post Quantum +Competition+ Process_[fn:1]
+- ETSI :: Cyber Working Group for Quantum Safe Cryptography
+- ISO ::  WG2 Standing Document 8 (SD8): Survey
+- IETF :: Standardisation of _stateful_ hash-based signatures, nothing further
+- CSA :: Quantum-safe Security Working Group: position papers
+
+#+BEAMER: \pause
+
+*** Bottom Line
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Essentially, everyone is waiting for NIST.
+
+** NIST PQC +Competition+ Process
+
+_Timeline_
+
+- Submission deadline was November 2017.
+- Round 2 selection announced January 2019.
+- Final standard expected 2022-2024.
+
+\vspace{1em}
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+
+_“Key Exchange”/Key Encapsulation_
+
+- =(pk,sk) ← KeyGen()=
+- =(c,k) ← Encaps(pk)=
+- =k ← Decaps(c,sk)=
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Digital Signature_
+
+- =(vk,sk)  ← KeyGen()=
+- =s  ← Sig(m,sk)=
+- ={0,1}  ← Verify(s,m,vk)=
+
+***                                                                                                    :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+#+BEAMER: \vspace{1em}
+#+BEAMER: \pause
+
+*** Public-key Encryption                                                                                 :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+NIST also asked for public-key encryption but this is less important as it can be built generically from a KEM and a block cipher.
+
+** Security Notions
+
+- KEM :: _IND-CCA_: Given some challenge ciphertext =c= and some key =k=, the adversary gets an oracle to decapsulate (“decrypt”) any other ciphertext but still cannot decide if =c= encapsulates (“encrypts”) the key =k=.
+
+- SIG :: _EUF-CMA_: Given access to some oracle that signs arbitrary messages, the adversary still cannot produce a valid signature of a message not previously submitted to the signing oracle. 
+
+#+BEAMER: \pause
+
+*** Computational Security
+
+“cannot“ \rightarrow “it takes too long even given access to a quantum computer.”
+
+
+#+BEAMER: \pause
+
+*** Conditional Security
+
+“cannot” \rightarrow “\ldots assuming some mathematical problem is hard on a quantum computer”
+
+** Post-Quantum Candidate Families
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+- *@@beamer:<1>@@Code-based (key encapsulation)*
+- *@@beamer:<2>@@Multivariate-based (signatures)*
+- *@@beamer:<3>@@OWF-based (signatures)*
+- *@@beamer:<4>@@Isogeny-based (key encapsulation)*
+- *@@beamer:<5-7>@@Lattice-based* (*@@beamer:<5,7>@@key encapsulation*, *@@beamer:<6,7>@@signatures*)
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.6
+:END:
+
+_NIST PQC 2nd Round_
+
+- 17 KEMs :: *@@beamer:<1>@@BIKE*, *@@beamer:<1>@@Classic McEliece*, *@@beamer:<5,7>@@CRYSTALS-KYBER*, *@@beamer:<5,7>@@FrodoKEM*, *@@beamer:<1>@@HQC*, *@@beamer:<5,7>@@LAC*, *@@beamer:<1>@@LEDAcrypt*, *@@beamer:<5,7>@@NewHope*, *@@beamer:<5,7>@@NTRU*, *@@beamer:<5,7>@@NTRU Prime*, *@@beamer:<1>@@NTS-KEM*, *@@beamer:<1>@@ROLLO*, *@@beamer:<5,7>@@Round5*, *@@beamer:<1>@@RQC*, *@@beamer:<5,7>@@SABER*, *@@beamer:<4>@@SIKE*, *@@beamer:<5,7>@@Three Bears*.
+
+- 9 SIGs :: *@@beamer:<6,7>@@CRYSTALS-DILITHIUM*, *@@beamer:<6,7>@@FALCON*, *@@beamer:<2>@@GeMSS*, *@@beamer:<2>@@LUOV*, *@@beamer:<2>@@MQDSS*, *@@beamer:<3>@@Picnic*, *@@beamer:<6,7>@@qTESLA*, *@@beamer:<2>@@Rainbow*, *@@beamer:<3>@@SPHINCS+*.
+
+** Baseline: Pre Quantum Cryptography
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_RSA 2048_
+
+|                |                        <r> |
+| Key generation | \approx 130,000,000 cycles |
+| Encapsulation  |      \approx 20,000 cycles |
+| Decapsulation  |   \approx 2,700,000 cycles |
+| Ciphertext     |                  256 bytes |
+| Public key     |                  256 bytes |
+
+\small https://bench.cr.yp.to/results-kem.html
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Curve25519_
+
+|                |                    <r> |
+| Key generation |  \approx 60,000 cycles |
+| Key agreement  | \approx 160,000 cycles |
+|                |                        |
+| Public key     |               32 bytes |
+| Key Share      |               32 bytes |
+
+\small https://eprint.iacr.org/2015/943
+
+
+*** Interpretation
+
+- A CPU running at 2Ghz has 2,000,000,000 cycles per second.
+- An Ethernet frame can hold up to 1518 bytes.
+
+** KEM: Code-based
+
+_Idea_: Take error-correcting code for up to \(t\) errors. Keep decoding algorithm secret, hide structure of the code.
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- Encapsulated key: error vector with \(t\) error indices
+- Most prominent example: McEliece (1978), uses binary Goppa codes
+- Alternatives: QCMDPC codes (e.g. BIKE)
+  - Less studied, less conservative, problems with CCA security
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_NTS-KEM(13, 136) NIST submission:_
+
+|                |                        <r> |
+| Key generation | \approx 240,000,000 cycles |
+| Encapsulation  |     \approx 280,000 cycles |
+| Decapsulation  |   \approx 2,000,000 cycles |
+| Ciphertext     |                  253 bytes |
+| Public key     |            1,419,704 bytes |
+
+\small https://bench.cr.yp.to/results-kem.html
+
+** KEM: Lattice-based
+
+_Idea_: Noisy linear algebra mod \(q\) is hard and equivalent to finding short vectors in lattices.
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- Learning with Errors: given \[(\mathbf{A}, \mathbf{b}) \equiv (\mathbf{A} \cdot \mathbf{s} + \mathbf{e} \bmod q)\] where \(\mathbf{e}\) is a vector with small entries, find \(\mathbf{s}\)
+- Most submissions use structured \(\mathbf{A}\)
+  + Faster, but less conservative
+- Frodo uses plain, unstructured LWE
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Kyber-768 NIST submission:_
+
+|                |                    <r> |
+| Key generation | \approx  50,000 cycles |
+| Encapsulation  | \approx  70,000 cycles |
+| Decapsulation  | \approx  60,000 cycles |
+| Ciphertext     |            1,088 bytes |
+| Public key     |            1,184 bytes |
+
+\small https://bench.cr.yp.to/results-kem.html
+
+** KEM: SIKE
+
+_Idea_: Hard problem is finding a rational map that preserves structure _between_ elliptic curves.
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- “Supersingular-Isogeny Diffie-Hellman” (SIDH) proposed in 2011
+- Security related to claw/collision finding, but no reduction from it
+- Rather young construction, more study needed
+- But very promising
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_SIKE NIST submission:_
+
+|                |                       <r> |
+| Key generation | \approx 11,000,000 cycles |
+| Encapsulation  | \approx 18,000,000 cycles |
+| Decapsulation  | \approx 20,000,000 cycles |
+| Ciphertext     |                 402 bytes |
+| Public key     |                 378 bytes |
+
+\small https://bench.cr.yp.to/results-kem.html
+
+** SIG: OWF-based
+
+_Idea_: Start from one-time digital signature based on hash functions. Build Merkle trees on top to produce many-time signature schemes.
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+
+- Many tradeoffs possible
+- Secure if there exist collision/pre-image resistant hash functions
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_SPHINCS256 NIST submission:_
+
+|                  |                       <r> |
+| Key generation   | \approx  2,500,000 cycles |
+| Signing          | \approx 42,000,000 cycles |
+| Verifying        | \approx  1,300,050 cycles  |
+| Signature        |              41,000 bytes |
+| Verification key |               1,056 bytes |
+
+\small https://bench.cr.yp.to/results-sign.html
+
+** SIG: Lattice-based (Hash-and-Sign)
+
+_Idea:_ Verification key is matrix \(\mathbf{A}\). Hash message \(m\) to vector \(H(m)\). Signature is a _short_ vector \(\vec{s}\) such that \(H(m) = \mathbf{A}\cdot \vec{s}\).
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- Can be instantiated from structured and unstructured \(\mathbf{A}\)
+- Typically uses structured lattices
+- Falcon uses NTRU problem: Given \(\mathbf{A} = f/g\) where both \(f,g\) are small. Find \(f\)
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Falcon-1024 NIST submission:_
+
+|                  |                       <r> |
+| Key generation   | \approx 66,000,000 cycles |
+| Signing          | \approx  1,400,000 cycles |
+| Verifying        | \approx    200,000 cycles |
+| Signature        |                1263 bytes |
+| Verification key |                1793 bytes |
+
+\small https://bench.cr.yp.to/results-sign.html
+
+** SIG: MQ-based
+
+_Idea:_ Hard problem is to find solution to system of quadratic equations in many variables over a finite field.
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- All but one submissions use structured systems and assume attacker cannot exploit structure
+- No reduction from standard MQ problem
+- MQDSS reduces to unstructured MQ
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Rainbowbinary256181212 NIST submission:_
+
+|                  |                       <r> |
+| Key generation   | \approx 10,000,000 cycles |
+| Signing          |   \approx   14,000 cycles |
+| Verifying        |   \approx   10,000 cycles |
+| Signature        |                  42 bytes |
+| Verification key |              30,240 bytes |
+
+\small https://bench.cr.yp.to/results-sign.html
+
+** Summary
+
+Post-quantum cryptographic schemes are
+
+- fast :: many are faster than RSA and competitive with/faster than ECC
+- larger :: 1.5x (SIKE) to 4x (Kyber) compared to RSA; \(\approx 30x\) compared to ECC
+
+** Bonus: Post-Quantum can be easier than RSA
+
+*** Approximate Greatest Common Divisors
+
+Let \(p \approx \lambda \cdot 2^\lambda\) be some random number. Given \[x_i = q_i \cdot p + r_i,\] where \(q_i \approx 2^{\lambda \log \lambda}\) and \(r_i \approx 2^\lambda\) are random numbers, find \(p\).
+
+***                                                                                                    :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+This problem is assumed to be hard even on a quantum computer.
+
+* The Road Ahead
+** Parameters Matter
+
+#+BEGIN_QUOTE
+One cannot hope to simply “plug in” a key of 10^6 or 10^9 bits into a protocol designed to work for keys of 10^3 bits and expect it to work as is, and so such results could bring about significant changes to the way we do security over the Internet.  For example, it could lead to a centralization of power, where key exchange will be so expensive that users would share public-keys with only a few large corporations and governments, and smaller companies would have to route their communication through these larger corporations. footfullcite:EPRINT:Barak17
+#+END_QUOTE
+
+#+BEAMER: \pause
+
+_Example:_ SSH has a packet size \(< 32\textnormal{KB}\), McEliece public keys are \(\approx 1\textnormal{MB}\) (but ciphertexts are small).
+
+** We will miss DH …
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Non-Interactive Key Exchange (NIKE):_
+  - Bob knows Alice’s long-term pk \(g^a\)
+  - Alice knows Bob’s long-term pk \(g^b\)
+  - Agree on a shared key  \[(g^a)^b = (g^b)^a\] before exchanging any messages
+  - Expensive to instantiate post-quantum 
+
+**** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Oblivious PRF:_
+  - Alice sends \(h^{r}\) to Bob
+  - Bob computes \[(h^{r})^b\]
+  - Alice computes \[(h^{r \cdot b})^{(1/r)} = h^b\]
+  - First, inefficient proposal from lattices very recent
+
+** … but Lattices are very versatile
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- Fully-Homomorphic Encryption (FHE)
+  + Computing on encrypted data
+  + Only from lattices
+
+- Functional Encryption (FE)
+  + Decryption keys correspond to \(f(m)\)
+  + Not all function classes are currently realisable
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- Identity-Based Encryption (IBE)
+  + Names *are* the public keys
+- Attribute-Based Encryption (ABE)
+  + Encrypt to all doctors in an organisation etc.
+
+** Signature Scheme != Signature Scheme
+
+*** EUF-CMA                                                                                               :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Given access to some oracle that signs arbitrary messages, the adversary still cannot produce a valid signature of a message not previously submitted to the signing oracle. 
+
+***                                                                                                    :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+- This does not imply an adversary cannot produce a new signature for a message already signed: *non-malleability*.
+- This binds a message to known public key, but it does not bind a public-key to a message: *conservative exclusive ownership*.
+
+In contrast, e.g. RFC 8032 (EdDSA) satisfies both non-malleability and conservative exclusive ownership.footfullcite:EPRINT:JCCS19
+
+** Alternatives: QKD?
+
+#+BEGIN_QUOTE
+QKD: has fundamental practical limitations; does not address large parts of the security problem; is poorly understood in terms of potential attacks.
+
+By contrast, post-quantum public key cryptography appears to offer much more effective mitigations for real-world communications systems from the threat of future quantum computers.footfullcite:NCSC:QKD16
+#+END_QUOTE
+
+- attacks on implementations/instantiations
+- limited range, dedicated hardware
+- limited speed \rightarrow keys then used in AES
+- authentication required: MAC or digital signature
+
+** The Road Ahead
+
+- We need to understand the underlying hard problems better to tune parameters
+- Resistance to side-channel attacks
+- Efficient, safe implementations
+  + This is a real opportunity: we get to rip out the old piping and replace it by modern solutions footfullcite:EPRINT:ABBBDGLOSS19
+- How fast is fast enough? How small is small enough?
+  + Here your use cases can help!
+- How do existing protocols interact with post-quantum primitives? Should we change protocols?
+  + If you have bespoke protocols, this is something to check now.
+
+** Don’t Jump the Gun!
+
+- Temptation to pick one of the NIST candidates as drop-in replacement for deployment in existing protocols *now*
+
+- This is a terrible idea!
+  - mediocre performance
+  - non-optimal security properties
+
+- Bad cryptography is very hard to get rid of (think MD5)
+
+- Will also need to think carefully about changes to protocols
+
+- Let’s get this one right!
+
+#+BEAMER: \pause
+
+*** Proof of Concept Code
+
+\ldots even worse idea: pick _source code_ of one of the NIST candidates to deploy
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+#+END_CENTER
+
+** References
+:PROPERTIES:
+:BEAMER_OPT: allowframebreaks
+:END:
+
+#+BEGIN_EXPORT LaTeX
+\renewcommand*{\bibfont}{\scriptsize}
+\printbibliography[heading=none]
+#+END_EXPORT
+
+* Build Artefacts                                                                                             :noexport:
+
+** Autoexport to PDF
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+# End:
+
+* Footnotes
+
+[fn:1] “NIST believes that its post-quantum standards development process should not be treated as a competition; in some cases, it may not be possible to make a well-supported judgment that one candidate is ‘better’ than another.“

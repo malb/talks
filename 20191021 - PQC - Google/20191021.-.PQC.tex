@@ -1,0 +1,746 @@
+% Created 2019-10-18 Fri 13:18
+% Intended LaTeX compiler: pdflatex
+\documentclass[xcolor=table,10pt,aspectratio=169]{beamer}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{newunicodechar}
+\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda,landau,advantage]{cryptocode}
+\usepackage{xspace}
+\usepackage{units}
+\usepackage{nicefrac}
+\usepackage{gensymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[color=yellow!40]{todonotes}
+\input{talk-header.tex}
+\usetheme{default}
+\author{Martin R. Albrecht}
+\date{\url{https://malb.io}}
+\title{The Road to Post-Quantum Cryptography}
+\hypersetup{
+pdfauthor={Martin R. Albrecht},
+pdftitle={The Road to Post-Quantum Cryptography},
+pdfkeywords={},
+pdfsubject={},
+pdfcreator={Emacs 26.3 (Org mode 9.2.6)},
+pdflang={English},
+colorlinks,
+citecolor=gray,
+filecolor=gray,
+linkcolor=gray,
+urlcolor=gray
+}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:orgd3cfc43}
+\begin{frame}[label={sec:org0e78798}]{About Me}
+\begin{columns}[t]
+\begin{column}{0.4\columnwidth}
+\begin{center}
+\includegraphics[width=\linewidth]{./rhul.jpeg}
+\end{center}
+
+Reader in the Information Security Group, Royal Holloway, University of London
+\end{column}
+
+\begin{column}{0.6\columnwidth}
+\begin{description}
+\item[{Teaching}] penetration testing
+\item[{Research}] post-quantum cryptography with a focus on lattice-based cryptography \cite{EC:Albrecht17,EC:ADHKPS19}
+
+breaking cryptographic protocols/implementations such as SSH \cite{SP:AlbPatWat09,CCS:ADHP16} and TLS \cite{EC:AlbPat16,CCS:AMPS18}
+
+\item[{Standards}] member of ETSI quantum-safe working group, submitter of two post-quantum candidates to the NIST process
+\end{description}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org64eb2c2}]{Essential Cryptographic Primitives}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{Symmetric Primitives}
+
+\small
+
+\begin{itemize}
+\item Block and stream ciphers (AES, ChaCha20, \ldots)
+\item Authentication codes (HMAC, Poly1305, \ldots)
+\item Hash functions (SHA-2, SHA-3, \ldots)
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Asymmetric Primitives}
+
+\small
+
+\begin{itemize}
+\item Key agreement and public-key encryption (RSA, Diffie-Hellman, ECDH)
+\item Digital signatures (RSA, DSA, ECDSA)
+\end{itemize}
+\end{column}
+\end{columns}
+
+\begin{block}{Applications}
+TLS, secure chat, SSH, smart cards, hard disk encryption …
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org387369b}]{Essential Cryptographic Primitives: Theoretical Perspective}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{Minicrypt}
+
+\small
+
+\begin{itemize}
+\item Block and stream ciphers
+\item Hash functions
+\item Authentication codes
+\item \textbf{Digital signatures}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Cryptomania}
+
+\small
+
+\begin{itemize}
+\item Key agreement and public-key encryption
+\item \ldots
+\end{itemize}
+\end{column}
+\end{columns}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./minicrypt-cryptomania.jpg}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org55be1d9}]{Very Slow One-Time Digital Signatures from Hash Functions}
+\begin{description}
+\item[{KeyGen}] \(H(\cdot)\) is a hash function with 256 bits of output. 
+\begin{itemize}
+\item Sample random numbers \((a_{0,0}, a_{0,1}), (a_{1,0}, a_{1,1}), \ldots, (a_{255,0}, a_{255,1})\).
+\item Publish \(H(a_{i,j})\) for all \(a_{i,j}\).
+\end{itemize}
+\item[{Sign}] Let \(b_i\) be the bits of \(H(m)\). 
+\begin{itemize}
+\item For each bit \(b_i\), publish \(a_{i, b_i}\).
+\end{itemize}
+\item[{Verify}] Check that \(a_{i, b_i}\) indeed hashes to \(H(a_{i,b_i})\) in the public key.
+\end{description}
+\end{frame}
+
+\begin{frame}[label={sec:org45a1d65}]{Symmetric v Asymmetric Primitives}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{Symmetric Primitives}
+
+\phantom{M}
+
+\emph{Indeed, it seems that “you can’t throw a rock without hitting a one-way function” in the sense that, once you cobble together a large number of simple computational operations then, unless the operations satisfy some special property such as linearity, you will typically get a function that is hard to invert.} \cite{EPRINT:Barak17}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Asymmetric Primitives}
+
+\phantom{M}
+
+All widely deployed asymmetric cryptography relies on the hardness of 
+
+\textbf{factoring:} \[\textnormal{Given } N = p \cdot q \textnormal{ find } p, \textnormal{ or }\]
+\textbf{(elliptic-curve) discrete logarithms:} \[\textnormal{Given }  g^a  \bmod q \textnormal{ and } g \textnormal{ find } a.\]
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org8788375}]{Quantum Computers}
+\begin{itemize}
+\item A quantum computer makes use of quantum effects (superpositions and entanglement) to perform computations.
+\item Quantum computers are not \textbf{faster} than classical computers, they are \textbf{different}.
+\item Some computations are easy on a quantum computer that are – as far as we know – hard on a classical computer.
+\end{itemize}
+
+\begin{columns}[t]
+\begin{column}{0.6\columnwidth}
+\begin{itemize}
+\item Small universal quantum computers exist.
+\item Key challenge is to scale them up by making them more stable.
+\item There is a critical point where we can scale up further using error correction.
+\end{itemize}
+\end{column}
+
+\begin{column}{0.4\columnwidth}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./google-72-qubit.png}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:orgdb6376b}]{Symmetric Primitives: Quantum Computing Perspective (Good News)}
+Best known quantum algorithms for attacking symmetric cryptography are based on Grover’s algorithm. 
+
+\begin{itemize}
+\item Search key space of size \(2^n\) in \(2^{n/2}\) operations: AES-256 \(\rightarrow\) 128 “quantum bits of security”.
+\item This estimate is too optimistic, taking all costs into account: \(> 2^{152}\) classical operations for AES-256.\footfullcite{EPRINT:JNRV19}
+\item Assuming a max depth of \(2^{96}\) for a quantum circuit: overall (parallel) AES-256 cost is \(\approx 2^{190}\).
+\item Grover’s algorithm does not parallelise: have to wait for \(2^{X}\) steps, cannot buy \(2^{32}\) quantum computers and wait \(2^{X-32}\) steps.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orge4a790b}]{Symmetric Primitives: Quantum Computing Perspective (Point to Consider)}
+\begin{itemize}
+\item Grover is optimal for unstructured search but block ciphers have structure.
+\item Consider the Even-Mansour construction: \[y = k_0 \oplus F(x \oplus k_1)\] where \(F(\cdot)\) is some public function and \(k_i\) have \(n\) bits.
+\item Optimal classical attack costs \(2^{n/2}\) operations, best quantum attack takes \(2^{n/3}\) quantum operations using Simon’s period-finding algorithm.\footfullcite{EPRINT:BHNSS19}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org788b574}]{Asymmetric Primitives: Quantum Computing Perspective}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./shor.png}
+\end{center}
+\end{frame}
+
+\section{Post-Quantum Cryptography}
+\label{sec:org4abc2d0}
+\begin{frame}[label={sec:orgfceb4e2}]{Post-Quantum Cryptography}
+\begin{definition}
+Asymmetric cryptographic algorithms run on classical computers that resist attacks using classical and quantum computers.
+\end{definition}
+
+\pause
+
+\begin{alertblock}{Note}
+Post-quantum cryptography is entirely distinct from quantum cryptography such as a quantum key exchange (QKD). The latter uses quantum effects to achieve security.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[label={sec:org74db151}]{Post-Quantum Standardisation}
+\begin{description}
+\item[{NIST}] \textbf{Post Quantum {\color{lightgray}{Competition} }Process}\footnote{“NIST believes that its post-quantum standards development process should not be treated as a competition; in some cases, it may not be possible to make a well-supported judgment that one candidate is ‘better’ than another.“}
+\item[{ETSI}] Cyber Working Group for Quantum Safe Cryptography
+\item[{ISO}] WG2 Standing Document 8 (SD8): Survey
+\item[{IETF}] Standardisation of \textbf{stateful} hash-based signatures, nothing further
+\item[{CSA}] Quantum-safe Security Working Group: position papers
+\end{description}
+
+\pause
+
+\begin{alertblock}{Bottom Line}
+Essentially, everyone is waiting for NIST.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[label={sec:orgcfffd04},fragile]{NIST PQC {\color{lightgray}{Competition} }Process}
+ \textbf{Timeline}
+
+\begin{itemize}
+\item Submission deadline was November 2017.
+\item Round 2 selection announced January 2019.
+\item Final standard expected 2022-2024.
+\end{itemize}
+
+\vspace{1em}
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{“Key Exchange”/Key Encapsulation}
+
+\begin{itemize}
+\item \texttt{(pk,sk) ← KeyGen()}
+\item \texttt{(c,k) ← Encaps(pk)}
+\item \texttt{k ← Decaps(c,sk)}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Digital Signature}
+
+\begin{itemize}
+\item \texttt{(vk,sk)  ← KeyGen()}
+\item \texttt{s  ← Sig(m,sk)}
+\item \texttt{\{0,1\}  ← Verify(s,m,vk)}
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{1em}
+\pause
+
+\begin{alertblock}{Public-key Encryption}
+NIST also asked for public-key encryption but this is less important as it can be built generically from a KEM and a block cipher.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[label={sec:org7ee9033},fragile]{Security Notions}
+ \begin{description}
+\item[{KEM}] \textbf{IND-CCA}: Given some challenge ciphertext \texttt{c} and some key \texttt{k}, the adversary gets an oracle to decapsulate (“decrypt”) any other ciphertext but still cannot decide if \texttt{c} encapsulates (“encrypts”) the key \texttt{k}.
+
+\item[{SIG}] \textbf{EUF-CMA}: Given access to some oracle that signs arbitrary messages, the adversary still cannot produce a valid signature of a message not previously submitted to the signing oracle.
+\end{description}
+
+\pause
+
+\begin{block}{Computational Security}
+“cannot“ \(\rightarrow\) “it takes too long even given access to a quantum computer.”
+
+
+\pause
+\end{block}
+
+\begin{block}{Conditional Security}
+“cannot” \(\rightarrow\) “\ldots assuming some mathematical problem is hard on a quantum computer”
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org17e357e}]{Post-Quantum Candidate Families}
+\begin{columns}[t]
+\begin{column}{0.4\columnwidth}
+\begin{itemize}
+\item \alert<1>{Code-based (key encapsulation)}
+\item \alert<2>{Multivariate-based (signatures)}
+\item \alert<3>{OWF-based (signatures)}
+\item \alert<4>{Isogeny-based (key encapsulation)}
+\item \alert<5-7>{Lattice-based} (\alert<5,7>{key encapsulation}, \alert<6,7>{signatures})
+\end{itemize}
+\end{column}
+
+\begin{column}{0.6\columnwidth}
+\textbf{NIST PQC 2nd Round}
+
+\begin{description}
+\item[{17 KEMs}] \alert<1>{BIKE}, \alert<1>{Classic McEliece}, \alert<5,7>{CRYSTALS-KYBER}, \alert<5,7>{FrodoKEM}, \alert<1>{HQC}, \alert<5,7>{LAC}, \alert<1>{LEDAcrypt}, \alert<5,7>{NewHope}, \alert<5,7>{NTRU}, \alert<5,7>{NTRU Prime}, \alert<1>{NTS-KEM}, \alert<1>{ROLLO}, \alert<5,7>{Round5}, \alert<1>{RQC}, \alert<5,7>{SABER}, \alert<4>{SIKE}, \alert<5,7>{Three Bears}.
+
+\item[{9 SIGs}] \alert<6,7>{CRYSTALS-DILITHIUM}, \alert<6,7>{FALCON}, \alert<2>{GeMSS}, \alert<2>{LUOV}, \alert<2>{MQDSS}, \alert<3>{Picnic}, \alert<6,7>{qTESLA}, \alert<2>{Rainbow}, \alert<3>{SPHINCS+}.
+\end{description}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org89091eb}]{Baseline: Pre Quantum Cryptography}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{RSA 2048}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\) 130,000,000 cycles\\
+Encapsulation & \(\approx\) 20,000 cycles\\
+Decapsulation & \(\approx\) 2,700,000 cycles\\
+Ciphertext & 256 bytes\\
+Public key & 256 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-kem.html}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Curve25519}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\) 60,000 cycles\\
+Key agreement & \(\approx\) 160,000 cycles\\
+ & \\
+Public key & 32 bytes\\
+Key Share & 32 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://eprint.iacr.org/2015/943}
+\end{column}
+\end{columns}
+
+
+\begin{block}{Interpretation}
+\begin{itemize}
+\item A CPU running at 2Ghz has 2,000,000,000 cycles per second.
+\item An Ethernet frame can hold up to 1518 bytes.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org78fe8ab}]{KEM: Code-based}
+\textbf{Idea}: Take error-correcting code for up to \(t\) errors. Keep decoding algorithm secret, hide structure of the code.
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item Encapsulated key: error vector with \(t\) error indices
+\item Most prominent example: McEliece (1978), uses binary Goppa codes
+\item Alternatives: QCMDPC codes (e.g. BIKE)
+\begin{itemize}
+\item Less studied, less conservative, problems with CCA security
+\end{itemize}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{NTS-KEM(13, 136) NIST submission:}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\) 240,000,000 cycles\\
+Encapsulation & \(\approx\) 280,000 cycles\\
+Decapsulation & \(\approx\) 2,000,000 cycles\\
+Ciphertext & 253 bytes\\
+Public key & 1,419,704 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-kem.html}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org3bb8c06}]{KEM: Lattice-based}
+\textbf{Idea}: Noisy linear algebra mod \(q\) is hard and equivalent to finding short vectors in lattices.
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item Learning with Errors: given \[(\mathbf{A}, \mathbf{b}) \equiv (\mathbf{A} \cdot \mathbf{s} + \mathbf{e} \bmod q)\] where \(\mathbf{e}\) is a vector with small entries, find \(\mathbf{s}\)
+\item Most submissions use structured \(\mathbf{A}\)
+\begin{itemize}
+\item Faster, but less conservative
+\end{itemize}
+\item Frodo uses plain, unstructured LWE
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Kyber-768 NIST submission:}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\)  50,000 cycles\\
+Encapsulation & \(\approx\)  70,000 cycles\\
+Decapsulation & \(\approx\)  60,000 cycles\\
+Ciphertext & 1,088 bytes\\
+Public key & 1,184 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-kem.html}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org5dd59b7}]{KEM: SIKE}
+\textbf{Idea}: Hard problem is finding a rational map that preserves structure \textbf{between} elliptic curves.
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item “Supersingular-Isogeny Diffie-Hellman” (SIDH) proposed in 2011
+\item Security related to claw/collision finding, but no reduction from it
+\item Rather young construction, more study needed
+\item But very promising
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{SIKE NIST submission:}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\) 11,000,000 cycles\\
+Encapsulation & \(\approx\) 18,000,000 cycles\\
+Decapsulation & \(\approx\) 20,000,000 cycles\\
+Ciphertext & 402 bytes\\
+Public key & 378 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-kem.html}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org540305a}]{SIG: OWF-based}
+\textbf{Idea}: Start from one-time digital signature based on hash functions. Build Merkle trees on top to produce many-time signature schemes.
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item Many tradeoffs possible
+\item Secure if there exist collision/pre-image resistant hash functions
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{SPHINCS256 NIST submission:}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\)  2,500,000 cycles\\
+Signing & \(\approx\) 42,000,000 cycles\\
+Verifying & \(\approx\)  1,300,050 cycles\\
+Signature & 41,000 bytes\\
+Verification key & 1,056 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-sign.html}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:orge765b2a}]{SIG: Lattice-based (Hash-and-Sign)}
+\textbf{Idea:} Verification key is matrix \(\mathbf{A}\). Hash message \(m\) to vector \(H(m)\). Signature is a \textbf{short} vector \(\vec{s}\) such that \(H(m) = \mathbf{A}\cdot \vec{s}\).
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item Can be instantiated from structured and unstructured \(\mathbf{A}\)
+\item Typically uses structured lattices
+\item Falcon uses NTRU problem: Given \(\mathbf{A} = f/g\) where both \(f,g\) are small. Find \(f\)
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Falcon-1024 NIST submission:}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\) 66,000,000 cycles\\
+Signing & \(\approx\)  1,400,000 cycles\\
+Verifying & \(\approx\)    200,000 cycles\\
+Signature & 1263 bytes\\
+Verification key & 1793 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-sign.html}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org32912a2}]{SIG: MQ-based}
+\textbf{Idea:} Hard problem is to find solution to system of quadratic equations in many variables over a finite field.
+
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item All but one submissions use structured systems and assume attacker cannot exploit structure
+\item No reduction from standard MQ problem
+\item MQDSS reduces to unstructured MQ
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\textbf{Rainbowbinary256181212 NIST submission:}
+
+\begin{center}
+\begin{tabular}{lr}
+Key generation & \(\approx\) 10,000,000 cycles\\
+Signing & \(\approx\)   14,000 cycles\\
+Verifying & \(\approx\)   10,000 cycles\\
+Signature & 42 bytes\\
+Verification key & 30,240 bytes\\
+\end{tabular}
+
+\end{center}
+
+\small \url{https://bench.cr.yp.to/results-sign.html}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org95bc7b2}]{Summary}
+Post-quantum cryptographic schemes are
+
+\begin{description}
+\item[{fast}] many are faster than RSA and competitive with/faster than ECC
+\item[{larger}] 1.5x (SIKE) to 4x (Kyber) compared to RSA; \(\approx 30x\) compared to ECC
+\end{description}
+\end{frame}
+
+\begin{frame}[label={sec:org598c30c}]{Bonus: Post-Quantum can be easier than RSA}
+\begin{block}{Approximate Greatest Common Divisors}
+Let \(p \approx \lambda \cdot 2^\lambda\) be some random number. Given \[x_i = q_i \cdot p + r_i,\] where \(q_i \approx 2^{\lambda \log \lambda}\) and \(r_i \approx 2^\lambda\) are random numbers, find \(p\).
+\end{block}
+
+This problem is assumed to be hard even on a quantum computer.
+\end{frame}
+
+\section{The Road Ahead}
+\label{sec:org20f5c62}
+\begin{frame}[label={sec:org9f29dc8}]{Parameters Matter}
+\begin{quote}
+One cannot hope to simply “plug in” a key of 10\textsuperscript{6} or 10\textsuperscript{9} bits into a protocol designed to work for keys of 10\textsuperscript{3} bits and expect it to work as is, and so such results could bring about significant changes to the way we do security over the Internet.  For example, it could lead to a centralization of power, where key exchange will be so expensive that users would share public-keys with only a few large corporations and governments, and smaller companies would have to route their communication through these larger corporations. \footfullcite{EPRINT:Barak17}
+\end{quote}
+
+\pause
+
+\textbf{Example:} SSH has a packet size \(< 32\textnormal{KB}\), McEliece public keys are \(\approx 1\textnormal{MB}\) (but ciphertexts are small).
+\end{frame}
+
+\begin{frame}[label={sec:org23a0d9a}]{We will miss DH …}
+\begin{columns}[t]
+\begin{column}[t]{0.5\columnwidth}
+\textbf{Non-Interactive Key Exchange (NIKE):}
+\begin{itemize}
+\item Bob knows Alice’s long-term pk \(g^a\)
+\item Alice knows Bob’s long-term pk \(g^b\)
+\item Agree on a shared key  \[(g^a)^b = (g^b)^a\] before exchanging any messages
+\item Expensive to instantiate post-quantum
+\end{itemize}
+\end{column}
+
+\begin{column}[t]{0.5\columnwidth}
+\textbf{Oblivious PRF:}
+\begin{itemize}
+\item Alice sends \(h^{r}\) to Bob
+\item Bob computes \[(h^{r})^b\]
+\item Alice computes \[(h^{r \cdot b})^{(1/r)} = h^b\]
+\item First, inefficient proposal from lattices very recent
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org78134e8}]{… but Lattices are very versatile}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item Fully-Homomorphic Encryption (FHE)
+\begin{itemize}
+\item Computing on encrypted data
+\item Only from lattices
+\end{itemize}
+
+\item Functional Encryption (FE)
+\begin{itemize}
+\item Decryption keys correspond to \(f(m)\)
+\item Not all function classes are currently realisable
+\end{itemize}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item Identity-Based Encryption (IBE)
+\begin{itemize}
+\item Names \alert{are} the public keys
+\end{itemize}
+\item Attribute-Based Encryption (ABE)
+\begin{itemize}
+\item Encrypt to all doctors in an organisation etc.
+\end{itemize}
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org9e1f803}]{Signature Scheme != Signature Scheme}
+\begin{alertblock}{EUF-CMA}
+Given access to some oracle that signs arbitrary messages, the adversary still cannot produce a valid signature of a message not previously submitted to the signing oracle. 
+\end{alertblock}
+
+\begin{itemize}
+\item This does not imply an adversary cannot produce a new signature for a message already signed: \alert{non-malleability}.
+\item This binds a message to known public key, but it does not bind a public-key to a message: \alert{conservative exclusive ownership}.
+\end{itemize}
+
+In contrast, e.g. RFC 8032 (EdDSA) satisfies both non-malleability and conservative exclusive ownership.\footfullcite{EPRINT:JCCS19}
+\end{frame}
+
+\begin{frame}[label={sec:org33d1073}]{Alternatives: QKD?}
+\begin{quote}
+QKD: has fundamental practical limitations; does not address large parts of the security problem; is poorly understood in terms of potential attacks.
+
+By contrast, post-quantum public key cryptography appears to offer much more effective mitigations for real-world communications systems from the threat of future quantum computers.\footfullcite{NCSC:QKD16}
+\end{quote}
+
+\begin{itemize}
+\item attacks on implementations/instantiations
+\item limited range, dedicated hardware
+\item limited speed \(\rightarrow\) keys then used in AES
+\item authentication required: MAC or digital signature
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgd904145}]{The Road Ahead}
+\begin{itemize}
+\item We need to understand the underlying hard problems better to tune parameters
+\item Resistance to side-channel attacks
+\item Efficient, safe implementations
+\begin{itemize}
+\item This is a real opportunity: we get to rip out the old piping and replace it by modern solutions \footfullcite{EPRINT:ABBBDGLOSS19}
+\end{itemize}
+\item How fast is fast enough? How small is small enough?
+\begin{itemize}
+\item Here your use cases can help!
+\end{itemize}
+\item How do existing protocols interact with post-quantum primitives? Should we change protocols?
+\begin{itemize}
+\item If you have bespoke protocols, this is something to check now.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgf92456e}]{Don’t Jump the Gun!}
+\begin{itemize}
+\item Temptation to pick one of the NIST candidates as drop-in replacement for deployment in existing protocols \alert{now}
+
+\item This is a terrible idea!
+\begin{itemize}
+\item mediocre performance
+\item non-optimal security properties
+\end{itemize}
+
+\item Bad cryptography is very hard to get rid of (think MD5)
+
+\item Will also need to think carefully about changes to protocols
+
+\item Let’s get this one right!
+\end{itemize}
+
+\pause
+
+\begin{block}{Proof of Concept Code}
+\ldots even worse idea: pick \textbf{source code} of one of the NIST candidates to deploy
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:orga98c6dd},standout]{Fin}
+\begin{center}
+\Huge \alert{Thank You}
+\end{center}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+\renewcommand*{\bibfont}{\scriptsize}
+\printbibliography[heading=none]
+\end{frame}
+\end{document}
