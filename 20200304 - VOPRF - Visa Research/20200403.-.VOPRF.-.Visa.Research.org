@@ -1,0 +1,535 @@
+#+TITLE: Round-optimal Verifiable Oblivious Pseudorandom Functions from Ideal Lattices
+#+SUBTITLE: 
+#+OPTIONS: H:2 toc:t num:t
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LaTeX_CLASS: mbeamer
+#+LaTeX_CLASS_OPTIONS: [xcolor=table,10pt,aspectratio=169]
+#+PROPERTY: header-args:sage :tolatex lambda obj: r'(%s)' % latex(obj) :results raw
+
+#+AUTHOR: Martin R. Albrecht
+#+EMAIL: martin.albrecht@royalholloway.ac.uk
+#+DATE: joint work with Alex Davidson, Amit Deo and Nigel Smart.
+#+STARTUP: beamer indent
+#+BIBLIOGRAPHY: local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib
+
+* Motivation
+
+** VOPRF
+
+#+begin_export latex
+\procedure{}{%
+\textbf{Client} \< \<  \textbf{Functionality} \< \< \textbf{Server}\\
+\< \sendmessageright{top=\(m\)} \< \< \sendmessageleft{top=\(k\)} \<\\
+\< \< \text{\(c = F_k(m)\)} \< \<\\
+\< \sendmessageleft{top=\(c\)} \< \< \sendmessageright{top=\(\bot\)} \<\\
+}
+#+end_export
+
+** Applications: Privacy Pass I
+
+#+ATTR_LATEX: :width 0.8\linewidth
+[[./privacy-pass.png]]
+
+** Applications: Privacy Pass II
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.6
+:END:
+
+_Problem:_
+
+- Tor users are having a hard time on Cloudflare protected sites
+- They’re constantly asked to solve CAPTCHAs to prove that they’re not bots
+- Want a privacy-preserving way of running reverse Turing test once and re-use later
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+_Idea:_
+
+- Solve CAPTCHA
+- Evaluate a VOPRF on a bunch of random points to produce tokens \(F_k(x_i)\)
+- Redeem token by sending \((x_i, F_k(x_i))\)
+
+***                                                                                                  :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+#+begin_export latex
+\vspace{1em}
+
+\footnotesize
+\fullcite{PoPETS:DGSTV18}
+#+end_export
+
+** Applications: OPAQUE
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Problem:_
+
+- Passwords are everywhere,
+- but servers know passwords, e.g.
+  + phishing exploits that password are sent to server in clear
+  + server breach
+  + …
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Idea:_
+
+- Registration :: Client stores \(Env_C = Enc_{rwd}(sk_C, pk_S)\) on server with \(rwd = F_k(pwd)\)
+- Login :: run OPRF \(rwd = F_k(pwd)\), client decrypts \(Env_C\) and runs key-exchange with \(S\).
+
+***                                                                                                  :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+#+begin_export latex
+\vspace{1em}
+
+\footnotesize
+\fullcite{EC:JarKraXu18}
+#+end_export
+
+** Applications: Other
+
+- Secure keyword search footfullcite:TCC:FIPR05
+- Private set intersection footfullcite:TCC:JarLiu09
+- Secure data de-duplication footfullcite:USENIX:BelKeeRis13
+- Password-protected secret sharing footfullcite:ESP:JKKX16
+
+** DH-Based VOPRF
+
+#+begin_export latex
+\centering
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{\(a = H(x) \cdot g^{r}\)}} \<\\
+\< \sendmessageleft*{\text{\(b=a^k, v=g^k\)}} \<\\
+\text{\(H(x)^k = b/v^r\)} \< \<\\
+}
+#+end_export
+
+\[b/v^r = a^k/v^r = (H(x) \cdot g^{r})^k/(g^k)^r = H(x)^k\]
+
+** Standardisation
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.6
+:END:
+
+
+#+ATTR_LATEX: :width \linewidth
+[[./draft-sullivan-cfrg-vopr.png]]
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+- OPAQUE is currently being considered for standardisation
+- *@@beamer:<2>@@DH-based* VOPRFs are currently being considered for standardisation
+
+** VOPRFs in a Post-Quantum World
+
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}
+    \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=0.9\textwidth]{shor.png}};
+    \only<2>{\node[align=center,font={\Huge\bfseries},fill=white] at (image.center) {\alert{Bagga!}};}
+  \end{tikzpicture}
+\end{center}
+#+end_export
+
+# [[./shor.png]]
+
+* A VOPRF from Lattices
+
+** Ring-LWE/Polynomial-LWE
+
+#+begin_export latex
+\begin{definition}
+  Let \(q,n,\sigma> 0\) depend on \(\secpar\) (\(q,n\) are integers). The \textbf{decision-RLWE problem}\footfullcite{AC:SSTX09,EC:LyuPeiReg10} is to distinguish between:
+  \[
+  {(a_i,\ a_i \cdot s +e_i)} \in {(R_q)}^2\quad \text{ and }\quad  {(a_i,u_i)} \in {(R_q)}^2
+  \]
+  for \(a_i,u_i \sample R_q\); \(s,e_i \sample R(\chi_\sigma)\)
+\end{definition}
+#+end_export
+
+- Think \(R_q = \ZZ_q[x]/(x^n+1)\) where \(n\) is a power of two.
+- \(\sample R(\chi_\sigma)\) returns elements with small coefficients.
+
+** 1D-SIS
+
+#+begin_export latex
+\begin{definition} Let $ q,m,t $ depend on $ \secpar $. The
+  \textbf{one-dimensional SIS problem}~\footfullcite{TCC:BraVai15} is: Given a uniform \( \mathbf{v} \sample \ZZ_q^m\), find \(\mathbf{z} \in \ZZ^m\) such that \( \|\mathbf{z}\|_\infty \leq t \) and \( \langle \mathbf{v}, \mathbf{z} \rangle \in [-t,t] + q \ZZ\).
+\end{definition}
+#+end_export
+
+- Informally, the problem asks for a short element producing a short element when multiplied with a random vector.
+- The problem can be instantiated with vectors over the ring \(R_q\).
+
+** “Over Ideal Lattices”
+
+We have: If
+- Ring-LWE :: is easy then finding short vectors in ideal lattices is easy on a quantum computer and if
+- 1D-SIS :: is easy over rings then finding short vectors in ideal lattices is easy.
+
+#+BEAMER: \pause
+
+*** Ideal-SVP
+
+At this point, we might have more confidence in Ring-LWE/Ring-SIS being hard on a quantum computer than Ideal-SVP.footfullcite:EC:CraDucWes17
+
+** VOPRF Blueprint
+
+#+begin_export latex
+\centering
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{\(a = H(x) \cdot g^{r}\)}} \<\\
+\< \sendmessageleft*{\text{\(b=a^k, v=g^k\)}} \<\\
+\text{\(H(x)^k = b/v^r\)} \< \<\\
+}
+#+end_export
+
+** VOPRF Blueprint
+
+#+begin_export latex
+\centering
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{``\(F_r(x)\)''}} \<\\
+\< \sendmessageleft*{\text{``\(g^a\)''}} \<\\
+\text{\text{``\(g^{(a-b)}\)''}} \< \<\\
+}
+#+end_export
+
+** DH to Ring-LWE Dictionary
+
+| DH Land                        | Ring-LWE Land                                                 |
+|--------------------------------+---------------------------------------------------------------|
+| \(g\)                          | \(a\)                                                         |
+| \(g^x\)                        | \(a\cdot s + e\)                                              |
+|                                |                                                               |
+| \(g^x \cdot g^y = g^{x+y}\)    | \((a\cdot s + e_0) + (a \cdot t + e_1) = a \cdot (s+t) + e'\) |
+|                                |                                                               |
+| \((g^a)^b = (g^b)^a\)          | \((a\cdot s + e)\cdot t = (a\cdot s \cdot t + e \cdot t)\)    |
+|                                | \(\approx a\cdot s \cdot t \approx (a\cdot t + e)\cdot s\)    |
+|                                | assuming \(s\) and \(t\) are small                            |
+|                                |                                                               |
+| \((g, g^a, g^b, g^{ab})\)      | \((a,\ a\cdot s + e,\ a\cdot t + d,\ a \cdot s \cdot t + e')\) |
+| \(\approx_c (g, g^a, g^b, u)\) | \(\approx_c (a,\ a\cdot s + e,\ a\cdot t + d,\ u)\)           |
+
+** (Ring-)LWR: Derandomised (Ring-)LWE
+
+Ring-LWE effectively overwrites the lower order bits of \(a\cdot s\) with \(e\). Ring-LWR simply drops those bits.
+
+#+begin_export latex
+\begin{definition}
+  Let \(q,n,p\) depend on \(\secpar\) be integers and \(p \mid q\). The \textbf{decision-RLWR problem} is to distinguish between:
+  \[
+  {\left(a_i,\ \left\lfloor \frac{p}{q} \cdot a_i \cdot s \right\rceil\right)} \in {(R_q,R_p)} \quad \text{ and }\quad  {(a_i,u_i)} \in {(R_q,R_p)}
+  \]
+  for \(a_i \sample R_q\), \(s \sample R(\chi_\sigma)\), \(u_i \sample R_p\).
+\end{definition}
+#+end_export
+
+The security of LWR can be reduced to LWE.
+
+** LWR-Based PRF: BP14 I
+
+For a particular function \(\mathbf{a}^F: {\{0,1\}}^L \rightarrow R_q^{1\times \ell}\) we set out to design a VOPRF for the PRF 
+\[
+F_k(x) = \left\lfloor \frac{p}{q} \cdot \mathbf{a}^F(x) \cdot k \right\rceil
+\] 
+where the key $k \in R_q$ is small.
+
+*** 
+
+fullcite:C:BanPei14
+
+** LWR-Based PRF: BP14 II
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+As an example, consider the PRF for 2-bit inputs.
+
+We define $\mathbf{a}^F(x) = \mathbf{a}_{x_0} \cdot G^{-1}\left( \mathbf{a}_{x_1}\right)$  where 
+
+- $\mathbf{a}_0, \mathbf{a}_1 \in R_q^{1\times \ell}$ are uniform, 
+- $G^{-1}\left( \mathbf{a}_2 \right) \in R_2^{\ell \times \ell}$ is binary decomposition,
+- $G = (1,2,\dots, 2^{\ell-1})$.
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Example_:
+
+- \(x = 5 \bmod 8\)
+- \(G^{-1}(5) = (1, 0, 1)\)
+- \(G \cdot (1, 0, 1) = (1, 2, 4) \cdot (1, 0, 1) = 1 + 4 = 5\)
+
+** LWR-Based PRF: BP14 III
+
+We can write 
+\begin{align*}
+\left\lfloor \frac{p}{q} \cdot \mathbf{a}^F(x) \cdot k \right\rceil &= \left\lfloor \frac{p}{q} \cdot k\cdot \mathbf{a}_{x_0} \cdot G^{-1}(\mathbf{a}_{x_1}) \right\rceil 
+= \left\lfloor \frac{p}{q} \cdot (k\cdot \mathbf{a}_{x_0} + \mathbf{e})\cdot G^{-1}(\mathbf{a}_{x_1}) \right\rceil \\
+&\approx_c \left\lfloor \frac{p}{q}\cdot\mathbf{u}\cdot G^{-1}(\mathbf{a}_{x_1}) \right\rceil \text{ (RLWE)}\\
+&= \left\lfloor \frac{p}{q} (u'G+\mathbf{e}') \cdot G^{-1}(\mathbf{a}_{x_1}) \right\rceil = \left\lfloor \frac{p}{q} \left(u' \mathbf{a}_{x_1} + \mathbf{e}''\right) + \frac{p}{q} \mathbf{e}' \cdot G^{-1}(\mathbf{a}_{x_1}) \right\rceil \\ 
+&\approx_c \left\lfloor \frac{p}{q} \cdot \mathbf{u}'' + \frac{p}{q} \cdot \mathbf{e}' \cdot G^{-1}(\mathbf{a}_{x_1}) \right\rceil \text{ (RLWE)} \\
+& = \left\lfloor \frac{p}{q} \cdot \tilde{\mathbf{u}} \right\rceil
+\end{align*}
+where $\mathbf{u}, \mathbf{u}'',  \tilde{\mathbf{u}}$ are uniform in $R_q^{1 \times \ell}$, $u'$ is uniform in $R_q$ and  uniform $\mathbf{e}' \in R_q^{1 \times \ell} / (R_q \cdot G)$.
+
+** A First Attempt
+
+#+begin_export latex
+\begin{center}
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{\(\mathbf{c}_x = \mathbf{a}^F(x) \cdot r + \mathbf{e}\)}} \<\\
+\< \sendmessageleft*{\text{\(\mathbf{d}_x = \mathbf{c}_x \cdot k + \mathbf{e}'\)}} \<\\
+\text{\(\left\lfloor \frac{p}{q} \cdot \mathbf{d}_x \cdot r^{-1} \right\rceil \)} \< \<\\
+}
+\end{center}
+#+end_export
+
+We _would like to say_ that \[\left\lfloor \frac{p}{q} \cdot \mathbf{d}_x \cdot r^{-1} \right\rceil = \left\lfloor  \frac{p}{q}\cdot \mathbf{a}^F(x) \cdot k + \frac{p}{q}\left(\mathbf{e}\cdot k\cdot r^{-1} + \mathbf{e}'\cdot  r^{-1}\right) \right\rceil = \left\lfloor \frac{p}{q} \cdot \mathbf{a}^F(x)\cdot k \right\rceil. \]
+
+** Problem 1
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+
+- This simplified protocol cannot be realised using standard RLWE secret distributions.
+- The problem is that there is no standard RLWE secret distribution where samples from the distribution are guaranteed to have *small inverses* in $R_q$.
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Secret distribution_:
+
+- uniform :: fine
+- error distribution :: fine
+- small :: fine, small loss
+- \(s^{-1}\) small :: maybe fine, but not proven
+
+
+** “Every problem in computer science can be solved by adding another layer of indirection”
+
+
+1. Sample small ring elements $s$ and $t$. 
+2. Run the extended GCD algorithm to compute *some* \(u'\cdot s + v'\cdot t = 1\).
+3. Observe that \[(u' - r \cdot t)\cdot s + (v'+ r \cdot s)\cdot t = u'\cdot s - r \cdot t \cdot s + v'\cdot t + r \cdot s\cdot t = 1\]
+4. Use Babai’s rounding algorithm to find \(r\) s.t. \(u = u' - r \cdot s\) and \(v = v' + r\) are small.
+
+*** Result
+
+#+BEGIN_CENTER 
+We end up with \(u \cdot s + v \cdot t = 1 \bmod R_q\) where \(u,s,v,t\) are all small.footfullcite:RSA:HHPSW03,EPRINT:PorPre19
+#+END_CENTER
+
+** A Second Attempt
+
+#+begin_export latex
+\begin{center}
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{\(\mathbf{c}_x^1 = \mathbf{a}^F(x) \cdot s + \mathbf{e}_1, \quad \mathbf{c}_x^2 = \mathbf{a}^F(x) \cdot t + \mathbf{e}_2\)}} \<\\
+\< \sendmessageleft*{\text{\(\mathbf{d}_x^1 = \mathbf{c}_x^1 \cdot k + \mathbf{e}'_1, \quad \mathbf{d}_x^2 = \mathbf{c}_x^2 \cdot k + \mathbf{e}'_2\)}} \<\\
+\text{\(\left\lfloor \frac{p}{q} \cdot  \left(u \cdot \mathbf{d}_x^1 + v \cdot \mathbf{d}_x^2 \right) \right\rceil \)} \< \<\\
+}
+\end{center}
+#+end_export
+
+We _can_ that \[\left\lfloor \frac{p}{q} \cdot  \left(u \cdot \mathbf{d}_x^1 + v \cdot \mathbf{d}_x^2 \right) \right\rceil = 
+\left\lfloor \frac{p}{q} \cdot  \left(u \cdot \mathbf{a}^F(x) \cdot s \cdot k + v \cdot \mathbf{a}^F(x) \cdot t \cdot k \right) + \frac{p}{q} \mathbf{e}' \right\rceil = \left\lfloor \frac{p}{q} \cdot \mathbf{a}^F(x) \cdot k \right\rceil\]
+
+** Problem 2
+
+#+begin_export latex
+\begin{definition}
+  Let \(q,n,\sigma > 0\) depend on \(\secpar\) (\(q,n\) are integers). The \textbf{NTRU problem} is to distinguish between:
+  \[f/g \in R_q \quad \text{ and }\quad u \in R_q\]
+  for \(f,g \sample R(\chi_\sigma)\), \(g\) invertible in \(R_q\) and \(u \sample R_q\).
+\end{definition}
+#+end_export
+
+_Attack:_
+
+- Client sends \(c_x^1 = \gamma\cdot f/g\) for some scalar \(\gamma\).
+- Server sends \(d_x^1  = c_x^1 \cdot k + e'_1\)
+- Client computes \(d_x^1\cdot g = (\gamma\cdot f/g \cdot k + e'_1) \cdot g = \gamma\cdot f\cdot k +  e'_1 \cdot g\)
+
+** Our Construction
+
+#+begin_export latex
+\begin{center}
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{\(\mathbf{c}_x^1 = \mathbf{a}^F(x) \cdot s + \mathbf{e}_1, \quad \mathbf{c}_x^2 = \mathbf{a}^F(x) \cdot t + \mathbf{e}_2\)}} \<\\
+\< \sendmessageright*{\text{``proof'' \(\pi_{1}\) that \(\mathbf{c}_x^1, \mathbf{c}_x^2\) are well-formed.}} \<\\
+\< \< \text{Check \(\pi_{1}\)}\\
+\< \sendmessageleft*{\text{\(\mathbf{d}_x^1 = \mathbf{c}_x^1 \cdot k + \mathbf{e}'_1, \quad \mathbf{d}_x^2 = \mathbf{c}_x^1 \cdot k + \mathbf{e}'_2\)}} \<\\
+\< \sendmessageleft*{\text{``proof'' \(\pi_{2}\) that \(\mathbf{d}_x^1, \mathbf{d}_x^2\) are well-formed.}} \<\\
+\text{Check \(\pi_{2}\)} \< \<\\
+\text{\(\left\lfloor \frac{p}{q} \cdot  \left(u \cdot \mathbf{d}_x^1 + v \cdot \mathbf{d}_x^2 \right) \right\rceil \)} \< \<\\
+}
+\end{center}
+#+end_export
+
+* Security
+
+** Notion
+
+A protocol \Pi is a verifiable oblivious pseudorandom function if all of the following hold:
+
+- Correctness :: the protocol outputs the correct evaluation with overwhelming probability
+- Malicious server :: a malicious server cannot tell if it s talking to the ideal functionality or \Pi
+- Average case malicious client :: _for a random \(k\)_ a malicious client cannot tell if it is talking to the ideal functionality or \Pi
+
+** Client Security: RLWE & 1D-SIS
+
+- The messages $\mathbf{c}_x^1 = \mathbf{a}^F(x) \cdot s + \mathbf{e}_1$ and  $\mathbf{c}_x^2 = \mathbf{a}^F(x) \cdot t + \mathbf{e}_2$ are indistinguishable from uniform by RLWE assumption.
+- Correctness holds by the 1D-SIS assumption.
+
+** Server Security: RLWE & Drowning
+
+- Note that \[\mathbf{d}_x^1 = \mathbf{a}^F(x) \cdot s \cdot  k + \mathbf{e}_1 \cdot k + \mathbf{e}_1'\] 
+- If we pick $\mathbf{e}'_1$ from a distribution that hides addition of terms $\mathbf{e} \cdot k$ and $\mathbf{e}_s \cdot s$ (where $\mathbf{e}_s$ is identically distributed to $\mathbf{e}$) then
+- from the perspective of the client, the server might as well have sent \[\mathbf{d}_x^1 = (\mathbf{a}^F(x) \cdot k + \mathbf{e}_s) \cdot s + \mathbf{e}_1'.\]
+- The term in brackets $\mathbf{a}^F(x) \cdot k + \mathbf{e}_s$ computationally indistinguishable from uniform random under a RLWE assumption
+- Thus, the message $\mathbf{d}_x^1$ leaks nothing about the server's key $k$.
+
+* Parameters
+
+** They’re Disgusting!
+
+- We need super-polynomial \(q\) for BP14 and we need super-polynomial \(q\) for drowning
+  + \(\secpar = 128 \Rightarrow q = 2^{256}\)
+- Need  footfullcite:JMC:AlbPlaSco15 LWE dimension \(n = 2^{14}\)
+  + \(2^{22}\) bits per RLWE sample: 0.5MB, need two samples per direction
+
+*** ZK Cost
+
+This is ignoring the cost of sending the zero-knowledge arguments
+
+***                                                                                                  :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+But can tune parameters, round more aggressively, perhaps remove drowning …
+
+* Alternative Constructions
+
+** Alternative VOPRF Candidate: Prove a Hash Function
+
+- Let \(H(\cdot)\) be a zk-friendly hash function footfullcite:EC:ARSTZ15,AC:AGRRT16,EPRINT:AABDS19
+- Prove \(\mathsf{seed} = H(x)\) instead of proving \(\mathbf{a}^F(x) \cdot s + e\).
+- Let \(\mathbf{a}_{\mathsf{seed}}\) is the output of some sampler footfullcite:USENIX:ADPS16 of elements in \(R_q\) when given  \(\mathsf{seed}\) as input
+- Send \((\mathsf{seed}, \mathbf{a}_{\mathsf{seed}} \cdot s + e)\)
+- Still need to prove \(\mathbf{a}_{\mathsf{seed}} \cdot s + e\) but this is easier/cheaper.
+
+** Alternative VOPRF Candidate: FHE
+
+1. Client encrypts \(x\) under an FHE scheme 
+2. Sever computes \(Eval(F_k, x)\) homomorphically using an FHE friendly PRF footfullcite:EC:ARSTZ15,AC:AGRRT16,EPRINT:AABDS19
+3. Client decrypts \(F_k(x)\).
+
+** Alternative Applications aka “We will miss DH”
+
+- NIST PQ +Competition+ Process only covers ephemeral key exchange and digital signature schemes
+- VOPRFs are just one example of DH-based constructions that need translation in a post-quantum world
+- We cannot even do an efficient post-quantum NIKE
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+BEGIN_CENTER
+\Huge \alert{Thank You}
+#+END_CENTER
+
+PS: We are hiring a lecturer/assistant professor in the ISG. https://jobs.royalholloway.ac.uk/0120-023 Application deadline: 15 April
+
+PPS: We are looking for PhD students. https://royalholloway.ac.uk/CDT
+
+** Build Artefacts                                                           :noexport:
+
+* Footnotes
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (when (eq major-mode 'org-mode) (org-beamer-export-to-latex))) nil t)
+# End:
