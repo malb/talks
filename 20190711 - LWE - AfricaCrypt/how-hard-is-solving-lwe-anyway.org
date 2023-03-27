@@ -187,7 +187,7 @@ A lattice is a discrete subgroup of $\mathbb{R}^d$ and can be written as $\Lambd
 #+ATTR_LATEX: :width 0.8\linewidth
 [[./joop-latt1.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 ** A Tale of Bad Bases …
 
@@ -196,7 +196,7 @@ With “bad basis” finding short vectors assumed hard.
 #+ATTR_LATEX: :width 0.8\linewidth
 [[./joop-latt2a.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 ** … and Good Bases
 
@@ -205,7 +205,7 @@ With a “good basis” many lattice problems are easy.
 #+ATTR_LATEX: :width 0.8\linewidth
 [[./joop-latt1.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 ** Lattice Volume
 
@@ -214,7 +214,7 @@ The volume of a lattice is the volume of its fundamental parallelepiped.
 #+ATTR_LATEX: :width 0.8\linewidth
 [[./joop-vol3.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 ** Gaussian Heuristic
 

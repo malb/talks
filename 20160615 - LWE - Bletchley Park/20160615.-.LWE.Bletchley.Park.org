@@ -233,7 +233,7 @@ or $\vec{c} \sample \U{\ZZq^{m}}$.
 
 [[./joop-latt1.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 
 ** Bounded Distance Decoding
@@ -242,7 +242,7 @@ Let $\vec{B} = [\vec{A} | q\vec{I}]^T$. LWE = BDD for $\vec{c}$ and $L(\vec{B})$
 
 [[./joop-cvp.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 
 ** Shortest Vector Problem
@@ -254,7 +254,7 @@ Let $\vec{B} = [\vec{A} | q\vec{I}]^T$. LWE = BDD for $\vec{c}$ and $L(\vec{B})$
 [[./joop-l1.pdf]]
 #+END_CENTER
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 ** Good and Bad Bases
 
@@ -264,7 +264,7 @@ With a “good basis” many lattice problems are easy.
 [[./joop-latt1.pdf]]
 #+END_CENTER
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 
 ** Good and Bad Bases
@@ -275,7 +275,7 @@ With “bad basis” GapSVP$_γ$ for polynomial $γ$ assumed exponential.
 [[./joop-latt2a.pdf]]
 #+END_CENTER
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 
 ** Regev’s Reduction

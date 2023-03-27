@@ -449,7 +449,7 @@ The volume of a lattice is the volume of its fundamental parallelepiped.
 #+attr_latex: :width 0.8\linewidth
 [[./assets/lattice-volume.pdf]]
 
-\tiny Picture Credit: Joop van der Pol
+\tiny Picture Credit: Joop van de Pol
 
 ** Gaussian Heuristic
 
