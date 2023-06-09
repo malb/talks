@@ -1,0 +1,57 @@
+\begin{tikzpicture}
+  [
+    Actor/.style={shape=rectangle},
+    Timeline/.style={-, thick, draw={rgb,255: red,200; green,200; blue,200}},
+    ActionLeft/.style={align=right, anchor=south east},
+    ActionRight/.style={align=left, anchor=south west},
+    MessageArrow/.style={->, thick},
+    MessageContents/.style={midway, above, shape=rectangle},
+  ]
+
+  \tikzmath{\SeqDiaColumnWidth = 6;};
+  \tikzmath{\SeqDiaTextHeight = 0.6;};  % guess
+  \tikzmath{\SeqDiaRowHeight = 1.2;};
+  \tikzmath{\AliceY = \SeqDiaColumnWidth;};
+  \tikzmath{\HomeserverY = 2 * \SeqDiaColumnWidth;};
+  \tikzmath{\BobY = 3 * \SeqDiaColumnWidth;};
+
+  % Actor headings
+  \node [Actor] at (\AliceY cm, 0 cm) {\uline{Alice $A$}};
+  \node [Actor] at (\HomeserverY cm, 0 cm) {\uline{Homeserver $H$}};
+  \node [Actor] at (\BobY cm, 0 cm) {\uline{Bob $B$}};
+
+  % Stores the y coordinate of the current row
+  \tikzmath{\CurrentY = 0;};
+
+  % Messages
+  \tikzmath{\TimelineTop = \CurrentY - 0.5 * \SeqDiaTextHeight;};
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaRowHeight;};
+  \draw [MessageArrow] (\AliceY cm, \CurrentY cm) -- (\HomeserverY cm, \CurrentY cm) node [MessageContents] {$\mathtt{m.room.member}(\mathtt{invite}, A, B, G)$};
+
+  % \pause
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaTextHeight;};
+  \draw [MessageArrow] (\HomeserverY cm, \CurrentY cm) -- (\AliceY cm, \CurrentY cm) node [MessageContents] {$\mathtt{m.room.member}(\mathtt{invite}, A, B, G)$};
+  \draw [MessageArrow] (\HomeserverY cm, \CurrentY cm) -- (\BobY cm, \CurrentY cm) node [MessageContents] {$\mathtt{m.room.member}(\mathtt{invite}, A, B, G)$};
+
+  % \pause
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaRowHeight;};
+  \draw [MessageArrow] (\BobY cm, \CurrentY cm) -- (\HomeserverY cm, \CurrentY cm) node [MessageContents] {$\mathtt{m.room.member}(\mathtt{join}, B, A, G)$};
+
+  % \pause
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaTextHeight;};
+  \draw [MessageArrow] (\HomeserverY cm, \CurrentY cm) -- (\AliceY cm, \CurrentY cm) node [MessageContents] {$\mathtt{m.room.member}(\mathtt{join}, B, A, G)$};
+  \draw [MessageArrow] (\HomeserverY cm, \CurrentY cm) -- (\BobY cm, \CurrentY cm) node [MessageContents] {$\mathtt{m.room.member}(\mathtt{join}, B, A, G)$};
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaTextHeight;};
+  \tikzmath{\TimelineBottom = \CurrentY;};
+
+  \begin{pgfonlayer}{background}
+      \draw [Timeline] (\AliceY cm,  \TimelineTop cm) -- (\AliceY cm, \TimelineBottom cm);
+      \draw [Timeline] (\HomeserverY cm, \TimelineTop cm) -- (\HomeserverY cm, \TimelineBottom cm);
+      \draw [Timeline] (\BobY cm, \TimelineTop cm) -- (\BobY cm, \TimelineBottom cm);
+  \end{pgfonlayer}
+\end{tikzpicture}

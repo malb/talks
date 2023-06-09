@@ -1,0 +1,645 @@
+% always check cryptocode First
+
+\tikzstyle{player} = [rectangle, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=mLightBrown!50]
+\tikzstyle{adversary} = [rectangle, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=red!50]
+% TEXT COMMANDS
+\newcommand{\etal}{et~al.\xspace{}}
+\newcommand{\ie}{i.e.~}
+\newcommand{\eg}{e.g.~}
+\newcommand{\ppttxt}{probabilistic polynomial-time}
+\mathchardef\mhyphen="2D
+
+%% FIGURE COMMANDS
+\definecolor{mBlue}{HTML}{22a1dc}
+\definecolor{sBlue}{HTML}{009FE3}
+\definecolor{sYellow}{HTML}{FFED00}
+\definecolor{sRed}{HTML}{E30613}
+\definecolor{sGreen}{HTML}{009640}
+\definecolor{sPurple}{HTML}{251B5B}
+\definecolor{mGreen}{HTML}{86cd30}
+\definecolor{darkgreen}{HTML}{006400}
+\definecolor{mLightBrown}{HTML}{e68a00}
+\definecolor{lightred}{HTML}{FF9999}
+
+% COLOUR COMMANDS
+\newcommand{\sBlue}[1]{\textcolor{sBlue}{#1}}
+\newcommand{\sB}[1]{\sBlue{#1}}
+\newcommand{\sRed}[1]{\textcolor{sRed}{#1}}
+\newcommand{\sR}[1]{\sRed{#1}}
+\newcommand{\sGreen}[1]{\textcolor{sGreen}{#1}}
+\newcommand{\sG}[1]{\sGreen{#1}}
+\newcommand{\sPurple}[1]{\textcolor{Purple}{#1}}
+\newcommand{\sP}[1]{\sPurple{#1}}
+\newcommand{\sYellow}[1]{\textcolor{sYellow}{#1}}
+\newcommand{\sY}[1]{\sYellow{#1}}
+
+
+% STYLES
+\newcommand{\styleAdversary}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\styleAlgorithm}[1]{\textsf{\upshape #1}}
+\newcommand{\styleScheme}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\styleSecurityNotion}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\styleQueries}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\styleVariables}[1]{\ensuremath{\mathit{#1}}}
+\newcommand{\styleConstants}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand{\styleProtocols}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand{\styleOracles}[1]{\ensuremath{\mathrm{#1}}}
+\renewcommand{\O}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\V}[1]{\ensuremath{\mathit{#1}}}
+
+%% FUNCTIONS, SAMPLERS, ETC
+\newcommand{\getsr}{\ensuremath{\overset{\$}{\leftarrow}}}
+\newcommand{\tor}{\ensuremath{\overset{\$}{\rightarrow}}}
+\newcommand{\randcoin}[1]{\ensuremath{\mathcal{R}_{#1}}}
+\newcommand{\maxover}[2]{\ensuremath{\underset{#1}{\mathsf{max}}\{#2\}}}
+\newcommand{\bits}{\ensuremath{\{0,1\}}}
+\newcommand{\rreplace}[1]{\ensuremath{\widetilde{#1}}}
+
+%% GROUPS AND SPACES
+\newcommand{\group}{\ensuremath{\mathbb{G}}}
+\newcommand{\KeySpace}{\ensuremath{\mathcal{K}}}
+\newcommand{\OutputSpace}{\ensuremath{\mathcal{O}}}
+\newcommand{\InputSpace}{\ensuremath{\mathcal{I}}}
+\newcommand{\NonceSpace}{\ensuremath{\mathcal{N}}}
+\newcommand{\MessageSpace}{\ensuremath{\mathcal{M}}}
+\newcommand{\HeaderSpace}{\ensuremath{\mathcal{H}}}
+\newcommand{\RandomSpace}{\ensuremath{\mathcal{r}}}
+\newcommand{\SaltSpace}{\ensuremath{\mathcal{S}}}
+
+%% MATRIX STUFF
+\newcommand{\matrixA}{\ensuremath{\mathbf{A}}}
+\newcommand{\vectorU}{\ensuremath{\vec{u}}}
+
+ %%DIFFIE-HELLMAN NOTATION
+\renewcommand{\secpar}{\ensuremath{\lambda}}
+\newcommand{\secparshort}{\ensuremath{k}}
+\newcommand{\groupgen}{\ensuremath{\mathcal{G}}}
+\newcommand{\generator}{\ensuremath{\V{g}}}
+
+%% ALGORITHMS
+\renewcommand{\adversary}{\ensuremath{\mathcal{A}}}
+\newcommand{\state}{\ensuremath{st}}
+\newcommand{\bdversary}{\ensuremath{\mathcal{B}}}
+%\newcommand{\bdv}{\ensuremath{\mathcal{B}}}
+\newcommand{\challenger}{\ensuremath{\mathcal{C}}}
+
+%% PROTOCOLS AND ALGORITHMS
+\newcommand{\KE}{\ensuremath{\mathsf{KE}}}
+\newcommand{\ACCE}{\ensuremath{\mathsf{ACCE}}}
+\newcommand{\AKeyGen}{\ensuremath{\mathsf{AKeyGen}}}
+\newcommand{\ASKeyGen}{\ensuremath{\mathsf{ASKeyGen}}}
+\newcommand{\SKeyGen}{\ensuremath{\mathsf{SKeyGen}}}
+\newcommand{\PSKeyGen}{\ensuremath{\mathsf{PSKeyGen}}}
+\newcommand{\EKeyGen}{\ensuremath{\mathsf{EKeyGen}}}
+\newcommand{\EPKeyGen}{\ensuremath{\mathsf{EPKeyGen}}}
+\newcommand{\KeyGen}{\ensuremath{\mathsf{KeyGen}}}
+\newcommand{\Muck}{\ensuremath{\mathsf{Muckle}}}
+
+% CRYPTO PRIMITIVES
+\newcommand{\DHGen}{\ensuremath{\mathsf{DHGen}}}
+\renewcommand{\DH}{\ensuremath{\mathsf{DH}}}
+\newcommand{\Hash}{\ensuremath{\mathsf{H}}}
+\newcommand{\AEAD}{\ensuremath{\mathsf{AEAD}}}
+\newcommand{\Enc}{\ensuremath{\mathsf{Enc}}}
+\newcommand{\Dec}{\ensuremath{\mathsf{Dec}}}
+\newcommand{\dec}{\ensuremath{\mathsf{Dec}}}
+\newcommand{\KDF}{\ensuremath{\mathsf{KDF}}}
+\newcommand{\MAC}{\ensuremath{\mathsf{MAC}}}
+\newcommand{\Timestamp}{\ensuremath{\mathsf{Timestamp}}}
+\newcommand{\PRF}{\ensuremath{\mathsf{PRF}}}
+\newcommand{\HKDF}{\ensuremath{\mathsf{HKDF}}}
+\newcommand{\KEM}{\ensuremath{\mathsf{KEM}}}
+\newcommand{\SIG}{\ensuremath{\mathsf{SIG}}}
+\newcommand{\Expand}{\ensuremath{\mathsf{Exp}}}
+\newcommand{\Extract}{\ensuremath{\mathsf{Ext}}}
+% EXPERIMENT REGISTERS
+\newcommand{\Adv}[2]{\ensuremath{\mathsf{Adv}^{#1}_{#2}}}
+\newcommand{\Exp}[2]{\ensuremath{\mathsf{Exp}^{#1}_{#2}}}
+\newcommand{\protocol}{\ensuremath{\Pi}}
+\newcommand{\Dist}{\ensuremath{\mathcal{D}}}
+\newcommand{\Prob}{\ensuremath{\mathsf{Pr}}}
+\newcommand{\ctr}{\ensuremath{ctr}}
+\newcommand{\vecPSK}[1]{\ensuremath{\vec{\mathsf{PSK}_{#1}}}}
+
+% EXPERIMENT PREDICATES
+\newcommand{\cleanpredicate}{\ensuremath{\mathsf{clean}}}
+
+% EXPERIMENT CONSTANTS
+\newcommand{\numParties}{\ensuremath{n_P}}
+\newcommand{\numSessions}{\ensuremath{n_S}}
+\newcommand{\numStages}{\ensuremath{n_T}}
+\newcommand{\init}{\ensuremath{\styleConstants{init}}}
+\newcommand{\resp}{\ensuremath{\styleConstants{resp}}}
+\newcommand{\revealflag}{\ensuremath{\styleConstants{revealed}}}
+\newcommand{\corruptflag}{\ensuremath{\styleConstants{corrupt}}}
+\newcommand{\cleanflag}{\ensuremath{\styleConstants{clean}}}
+\newcommand{\inprogress}{\ensuremath{\styleConstants{active}}}
+\newcommand{\rejected}{\ensuremath{\styleConstants{reject}}}
+\newcommand{\accepted}{\ensuremath{\styleConstants{accept}}}
+\newcommand{\trueflag}{\ensuremath{\styleConstants{true}}}
+\newcommand{\falseflag}{\ensuremath{\styleConstants{false}}}
+%\newcommand{\numX}{\ensuremath{n_X}}
+
+% EXPERIMENT FLAGS
+\newcommand{\PSKflag}[1]{\ensuremath{\vec{\mathsf{PSKflag}_{#1}}}}
+\newcommand{\SKflag}[1]{\ensuremath{\mathsf{SKflag}_{#1}}}
+\newcommand{\ASKflag}[1]{\ensuremath{\mathsf{ASKflag}_{#1}}}
+\newcommand{\AKflag}[1]{\ensuremath{\vec{\mathsf{AKflag}_{#1}}}}
+\newcommand{\EPKflag}[1]{\ensuremath{\vec{\mathsf{EPKflag}_{#1}}}}
+\newcommand{\EKflag}[1]{\ensuremath{\vec{\mathsf{EKflag}_{#1}}}}
+\newcommand{\RSKflag}[1]{\ensuremath{\vec{\mathsf{RSKflag}_{#1}}}}
+\newcommand{\RKflag}[1]{\ensuremath{\vec{\mathsf{RKflag}_{#1}}}}
+\newcommand{\testflag}{\ensuremath{\mathsf{tested}}}
+
+% SESSIONS AND PER-SESSION VARIABLES
+\newcommand{\session}{\ensuremath{\pi}}
+\newcommand{\sessionid}{\ensuremath{sid}}
+\newcommand{\testsess}{\ensuremath{\pi^s_i}}
+\newcommand{\partnersess}{\ensuremath{\pi^t_j}}
+\newcommand{\partsess}{\ensuremath{\pi^r_j}}
+\newcommand{\pk}{\ensuremath{pk}}
+\newcommand{\sk}{\ensuremath{sk}}
+\newcommand{\psk}{\ensuremath{psk}}
+\newcommand{\pskid}{\ensuremath{pskid}}
+\newcommand{\status}{\ensuremath{\alpha}}
+\newcommand{\pid}{\ensuremath{pid}}
+\newcommand{\kid}{\ensuremath{kid}}
+\newcommand{\id}{\ensuremath{id}}
+\newcommand{\ephkey}{\ensuremath{ek}}
+\newcommand{\epubkey}{\ensuremath{epk}}
+\renewcommand{\state}{\ensuremath{st}}
+\newcommand{\msgsent}{\ensuremath{m_s}}
+\newcommand{\msgrecd}{\ensuremath{m_r}}
+\newcommand{\role}{\ensuremath{\rho}}
+
+% SECURITY GAME QUERIES
+\newcommand{\Test}{\ensuremath{\mathsf{Test}}}
+\newcommand{\Corrupt}{\ensuremath{\mathsf{Corrupt}}}
+\newcommand{\CorruptASK}{\ensuremath{\mathsf{CorruptASK}}}
+\newcommand{\CorruptPK}{\ensuremath{\mathsf{CorruptPK}}}
+\newcommand{\CorruptPSK}{\ensuremath{\mathsf{CorruptPSK}}}
+\newcommand{\CorruptSK}{\ensuremath{\mathsf{CorruptSK}}}
+\newcommand{\CorruptEPK}{\ensuremath{\mathsf{CorruptEPK}}}
+\newcommand{\CorruptEK}{\ensuremath{\mathsf{CorruptEK}}}
+\newcommand{\RevealRandom}{\ensuremath{\mathsf{RevealRandom}}}
+\newcommand{\Reveal}{\ensuremath{\mathsf{Reveal}}}
+\newcommand{\Create}{\ensuremath{\mathsf{Create}}}
+\newcommand{\CreatePSK}{\ensuremath{\mathsf{CreatePSK}}}
+\newcommand{\Send}{\ensuremath{\mathsf{Send}}}
+\newcommand{\CompromiseQK}{\ensuremath{\mathsf{CompromiseQK}}}
+\newcommand{\CompromiseSK}{\ensuremath{\mathsf{CompromiseSK}}}
+\newcommand{\CompromiseSS}{\ensuremath{\mathsf{CompromiseSS}}}
+
+
+
+%% SECURITY GAME NOTIONS
+\newcommand{\COLL}{\styleSecurityNotion{coll}}
+\newcommand{\coll}{\styleSecurityNotion{coll}}
+\newcommand{\ddh}{\styleSecurityNotion{ddh}}
+\newcommand{\dualkdf}{\styleSecurityNotion{dual}\mhyphen \styleSecurityNotion{kdf}}
+\newcommand{\dualprf}{\styleSecurityNotion{dual}\mhyphen \styleSecurityNotion{prf}}
+\newcommand{\prf}{\styleSecurityNotion{prf}}
+\newcommand{\aead}{\styleSecurityNotion{aead}}
+\newcommand{\auth}{\styleSecurityNotion{auth}}
+\newcommand{\kdf}{\styleSecurityNotion{kdf}}
+\newcommand{\PRFODH}{\ensuremath{\mathsf{PRFODH}}}
+\newcommand{\eCKPFS}{\ensuremath{\mathsf{eCK}\mhyphen \mathsf{PFS}}}
+\newcommand{\eCKPFSPSK}{\ensuremath{\mathsf{eCK}\mhyphen \mathsf{PFS} \mhyphen \mathsf{PSK}}}
+\newcommand{\symlrPRFODH}{\ensuremath{\mathsf{sym}\mhyphen\mathsf{lr}\mhyphen \PRFODH}}
+\newcommand{\lrPRFODH}{\ensuremath{\mathsf{lr}\mhyphen \PRFODH}}
+\newcommand{\snPRFODH}{\ensuremath{\mathsf{sn}\mhyphen \PRFODH}}
+\newcommand{\dualsnPRFODH}{\ensuremath{\mathsf{d}\mhyphen\mathsf{sn}\mhyphen \PRFODH}}
+\newcommand{\ssPRFODH}{\ensuremath{\mathsf{ss}\mhyphen \PRFODH}}
+\newcommand{\mnPRFODH}{\ensuremath{\mathsf{mn}\mhyphen \PRFODH}}
+\newcommand{\msPRFODH}{\ensuremath{\mathsf{ms}\mhyphen \PRFODH}}
+\newcommand{\mmPRFODH}{\ensuremath{\mathsf{mm}\mhyphen \PRFODH}}
+\newcommand{\symsnPRFODH}{\ensuremath{\mathsf{sym}\mhyphen\mathsf{sn}\mhyphen \PRFODH}}
+\newcommand{\symssPRFODH}{\ensuremath{\mathsf{sym}\mhyphen\mathsf{ss}\mhyphen \PRFODH}}
+\newcommand{\symmsPRFODH}{\ensuremath{\mathsf{sym}\mhyphen\mathsf{ms}\mhyphen \PRFODH}}
+\newcommand{\symmmPRFODH}{\ensuremath{\mathsf{sym}\mhyphen\mathsf{mm}\mhyphen \PRFODH}}
+\newcommand{\symmnPRFODH}{\ensuremath{\mathsf{sym}\mhyphen\mathsf{mn}\mhyphen \PRFODH}}
+%\newcommand{\ODH}{\ensuremath{\mathsf{ODH}}}
+\newcommand{\eufqcma}{\ensuremath{\mathsf{q}\mhyphen\mathsf{euf}\mhyphen\mathsf{cma}}}
+\newcommand{\EUFCMA}{\ensuremath{\mathsf{EUF}\mhyphen\mathsf{CMA}}}
+\newcommand{\OTKEX}{\ensuremath{\mathsf{HAKE}}}
+\newcommand{\indcpa}{\ensuremath{\mathsf{ind}\mhyphen\mathsf{cpa}}}
+
+% COMMENTS
+\newcommand{\ben}[1]{\textcolor{purple}{bd: #1}}
+\newcommand{\kenny}[1]{\textcolor{red}{kgp: #1}}
+\newcommand{\examplecomment}[1]{\textcolor{blue}{ex: #1}}
+
+% WIREGUARD VARIABLES
+\newcommand{\seed}{\ensuremath{C}}
+\newcommand{\hash}{\ensuremath{H}}
+\newcommand{\ID}[1]{\ensuremath{ID_{#1}}}
+\newcommand{\wg}{\ensuremath{\mathsf{WG}}}
+\newcommand{\mwg}{\ensuremath{\mathsf{mWG}}}
+\newcommand{\wkey}{\ensuremath{\kappa}}
+\newcommand{\PSK}{\ensuremath{psk}}
+\newcommand{\now}{\ensuremath{now}}
+\newcommand{\cookie}{\ensuremath{cookie}}
+\newcommand{\tk}[1]{\ensuremath{tk_{#1}}}
+
+% WIREGUARD MESSAGES AND FIELDS
+\newcommand{\SendHello}{\ensuremath{\mathtt{InitiatorHello}}}  %% changed from send to initiator for consistency with WG paper
+\newcommand{\sSendHello}{\ensuremath{\mathtt{InitHello}}}
+\newcommand{\ssSendHello}{\ensuremath{\mathtt{SH}}}
+\newcommand{\RespHello}{\ensuremath{\mathtt{ResponderHello}}}
+\newcommand{\sRespHello}{\ensuremath{\mathtt{RespHello}}}
+\newcommand{\ssRespHello}{\ensuremath{\mathtt{RH}}}
+\newcommand{\lbl}[1]{\ensuremath{\mathtt{label}_{#1}}}
+\newcommand{\type}{\ensuremath{\mathtt{type}}}
+\newcommand{\etk}{\ensuremath{\mathtt{etk}}}
+\newcommand{\epk}{\ensuremath{\mathtt{epk}}}
+\newcommand{\ltk}{\ensuremath{\mathtt{ltk}}}
+\newcommand{\sid}[1]{\ensuremath{\mathtt{sid}_{#1}}}
+\newcommand{\tstamp}{\ensuremath{\mathtt{time}}}
+\newcommand{\firstmac}{\ensuremath{\mathtt{mac1}}}
+\newcommand{\secondmac}{\ensuremath{\mathtt{mac2}}}
+\newcommand{\zero}{\ensuremath{\mathtt{zero}}}
+
+% Notation
+
+
+% Math
+\newcommand{\probnot}[1]{\overline{#1}}
+\newcommand{\bitsnum}[2]{{\ll \hspace{-0.25em} \mathbf{#1} \hspace{-0.25em} \gg}_{#2}}
+\newcommand{\bitspace}[1]{\ensuremath{\{0,1\}^{#1}}}
+\renewcommand{\concat}{\ensuremath{\mathbin{\|}}}
+\mathchardef\mhyphen="2D
+
+\newcommand{\assign}{\leftarrow}
+\newcommand{\evaluatesto}{\Rightarrow}
+
+\newcommand{\pairwisedistinct}{\pcalgostyle{PairwiseDistinct}}
+\newcommand{\collision}{\pcalgostyle{Coll}}
+\newcommand{\nocollision}{\pcalgostyle{NoColl}}
+
+
+
+% Secure Pairwise Channels: Signal & Olm
+\newcommand{\SecureChannel}{\pcalgostyle{SC}}
+\newcommand{\SecureChannelKGen}{\SecureChannel.\pcalgostyle{KGen}}
+\newcommand{\SecureChannelIKE}{\SecureChannel.\pcalgostyle{IKE}}
+\newcommand{\SecureChannelEnc}{\SecureChannel.\pcalgostyle{Enc}}
+\newcommand{\SecureChannelDec}{\SecureChannel.\pcalgostyle{Dec}}
+
+\newcommand{\Signal}{\pcalgostyle{Signal}}
+\newcommand{\SignalKGen}{\Signal.\pcalgostyle{KGen}}
+\newcommand{\SignalIKE}{\Signal.\pcalgostyle{IKE}}
+\newcommand{\SignalEnc}{\Signal.\pcalgostyle{Enc}}
+\newcommand{\SignalDec}{\Signal.\pcalgostyle{Dec}}
+
+\newcommand{\Olm}{\pcalgostyle{Olm}}
+\newcommand{\OlmKGen}{\Olm.\pcalgostyle{KGen}}
+\newcommand{\OlmIKE}{\Olm.\pcalgostyle{IKE}}
+\newcommand{\OlmEnc}{\Olm.\pcalgostyle{Enc}}
+\newcommand{\OlmDec}{\Olm.\pcalgostyle{Dec}}
+\newcommand{\OlmCmp}{\Olm.\pcalgostyle{Cmp}}
+\newcommand{\OlmAlgorithmString}{\ensuremath{\mathtt{m.olm.v1.curve25519-aes-sha2}}}
+\newcommand{\OlmState}[1][]{\ifthenelse{\equal{#1}{}}{\pi_{\pcvar{olm}}}{\pi_{\pcvar{olm},#1}}}
+\newcommand{\OlmStates}[1][]{\ifthenelse{\equal{#1}{}}{\Pi_{\pcvar{olm}}}{\Pi_{\pcvar{olm},#1}}}
+
+\newcommand{\OlmIdentitySK}[1][]{\ifthenelse{\equal{#1}{}}{isk}{isk_{#1}}}
+\newcommand{\OlmIdentityPK}[1][]{\ifthenelse{\equal{#1}{}}{ipk}{ipk_{#1}}}
+\newcommand{\OlmEphemSK}[1][]{\ifthenelse{\equal{#1}{}}{esk}{esk_{#1}}}
+\newcommand{\OlmEphemPK}[1][]{\ifthenelse{\equal{#1}{}}{epk}{epk_{#1}}}
+
+
+% Megolm
+
+\newcommand{\Megolm}{\pcalgostyle{Megolm}}
+\newcommand{\MegolmReg}{\Megolm.\pcalgostyle{Register}}
+\newcommand{\MegolmInit}{\Megolm.\pcalgostyle{Init}}
+\newcommand{\MegolmAddDevice}{\Megolm.\pcalgostyle{Add}}
+\newcommand{\MegolmRemoveDevice}{\Megolm.\pcalgostyle{Remove}}
+\newcommand{\MegolmEnc}{\Megolm.\pcalgostyle{Encrypt}}
+\newcommand{\MegolmDec}{\Megolm.\pcalgostyle{Decrypt}}
+\newcommand{\MegolmAdv}{\Megolm.\pcalgostyle{Advance}}
+\newcommand{\MegolmAlgorithmString}{\ensuremath{\mathtt{m.megolm.v1.aes-sha2}}}
+\newcommand{\MegolmSignature}{\ensuremath{\sigma_{\pcvar{mg}}}}
+\newcommand{\MegolmVersion}{\ensuremath{\pcvar{ver}}}
+\newcommand{\MegolmState}[1][]{\ifthenelse{\equal{#1}{}}{\pi_{\pcvar{mg}}}{\pi_{\pcvar{mg},#1}}}
+\newcommand{\MegolmStates}[1][]{\ifthenelse{\equal{#1}{}}{\Pi_{\pcvar{mg}}}{\Pi_{\pcvar{mg},#1}}}
+
+\newcommand{\MegolmRatchet}{\pcalgostyle{MegolmRatchet}}
+\newcommand{\MegolmRatchetInit}{\MegolmRatchet.\pcalgostyle{Init}}
+\newcommand{\MegolmRatchetNext}{\MegolmRatchet.\pcalgostyle{Next}}
+\newcommand{\MegolmRatchetAdv}{\MegolmRatchet.\pcalgostyle{Advance}}
+
+\newcommand{\ratchetkdf}{\pcalgostyle{RatchetKDF}}
+\newcommand{\ratchetkdfinit}{\ratchetkdf.\pcalgostyle{Init}}
+\newcommand{\ratchetkdfnext}{\ratchetkdf.\pcalgostyle{Next}}
+
+\newcommand{\ratchetgamenext}{\pcalgostyle{Next}}
+\newcommand{\ratchetgamecomp}{\pcalgostyle{Compromise}}
+\newcommand{\ratchetgamecompromise}{\ratchetgamecomp}
+
+\newcommand{\MegolmKeysConst}{\mathtt{``MEGOLM\_KEYS"}}
+
+\newcommand{\hhc}[2]{(#1, #2)\mathsf{-hierarchical\ hash\ chain}}
+
+\newcommand{\jsonencode}{\pcalgostyle{JSON.Encode}}
+\newcommand{\jsondecode}{\pcalgostyle{JSON.Decode}}
+
+\newcommand{\MegolmPK}[1][]{\ifthenelse{\equal{#1}{}}{gpk}{gpk_{#1}}}
+\newcommand{\MegolmSK}[1][]{\ifthenelse{\equal{#1}{}}{gsk}{gsk_{#1}}}
+\newcommand{\MegolmIS}{\ensuremath{\mathfrak{S}_{\MegolmPK[]}}}
+\newcommand{\MegolmOS}{\ensuremath{\mathfrak{S}_{\MegolmSK[]}}}
+
+% Cross Signing / Verification Framework
+
+\newcommand{\CrossSign}{\pcalgostyle{CrossSign}}
+\newcommand{\CrossSignInit}{\CrossSign.\pcalgostyle{Init}}
+\newcommand{\CrossSignSignUser}{\CrossSign.\pcalgostyle{SignUser}}
+\newcommand{\CrossSignSignDevice}{\CrossSign.\pcalgostyle{SignDevice}}
+\newcommand{\CrossSignVerifyDevice}{\CrossSign.\pcalgostyle{VerifyDevice}}
+\newcommand{\CrossSignKeyUsage}{\mathsf{usage}}
+\newcommand{\CrossSignConstantMaster}{\mathtt{master}}
+\newcommand{\CrossSignConstantSelfSign}{\mathtt{self\_signing}}
+\newcommand{\CrossSignConstantUserSign}{\mathtt{user\_signing}}
+\newcommand{\CrossSignState}[1][]{\ifthenelse{\equal{#1}{}}{\pi_{\pcvar{cs}}}{\pi_{\pcvar{cs},#1}}}
+\newcommand{\CrossSignUserKeyPackage}[1]{u_{#1}}
+\newcommand{\CrossSignDeviceRegistration}{\rho_{\pcvar{reg}}}
+\newcommand{\CrossSignUserTrust}{\rho_{\pcvar{trust}}}
+\newcommand{\MasterSK}[1][]{\ifthenelse{\equal{#1}{}}{msk}{msk_{#1}}}
+\newcommand{\MasterPK}[1][]{\ifthenelse{\equal{#1}{}}{mpk}{mpk_{#1}}}
+\newcommand{\UserSK}[1][]{\ifthenelse{\equal{#1}{}}{usk}{usk_{#1}}}
+\newcommand{\UserPK}[1][]{\ifthenelse{\equal{#1}{}}{upk}{upk_{#1}}}
+\newcommand{\SelfSK}[1][]{\ifthenelse{\equal{#1}{}}{ssk}{ssk_{#1}}}
+\newcommand{\SelfPK}[1][]{\ifthenelse{\equal{#1}{}}{spk}{spk_{#1}}}
+
+\newcommand{\CrossSignStateUnpack}
+{(d, u, t, \MasterSK, \UserSK, \SelfSK) \assign \CrossSignState}
+\newcommand{\CrossSignStatePack}
+{\CrossSignState \assign (d, u, t, \MasterSK, \UserSK, \SelfSK)}
+
+
+% SAS
+
+\newcommand{\SAS}{\ensuremath{\pcalgostyle{SAS}}\xspace}
+\newcommand{\SASCalculateMAC}{\ensuremath{\SAS.\pcalgostyle{CalcMAC}}\xspace}
+\newcommand{\SASSendMAC}{\ensuremath{\SAS.\pcalgostyle{SendMAC}}\xspace}
+\newcommand{\SASVerifyMAC}{\ensuremath{\SAS.\pcalgostyle{VerifyMAC}}\xspace}
+\newcommand{\SASSignMAC}{\ensuremath{\SAS.\pcalgostyle{SignDevice}}\xspace}
+
+\newcommand{\MsgTypeVerificationMAC}{%
+	\ifmmode \mathtt{m.key.verification.mac}\xspace%
+	\else \texttt{m.key.verification.mac}\xspace%
+	\fi%
+}
+
+
+% Key Sharing
+
+\newcommand{\KeyShare}{\pcalgostyle{KeyShare}}
+\newcommand{\KeyShareRequest}{\KeyShare.\pcalgostyle{Request}}
+\newcommand{\KeyShareShare}{\KeyShare.\pcalgostyle{Share}}
+\newcommand{\KeyShareRecover}{\KeyShare.\pcalgostyle{Recover}}
+
+
+% Secrets Module
+
+\newcommand{\MsgTypeSecretsRequest}{%
+	\ifmmode \mathtt{m.secret.requests}\xspace%
+	\else \texttt{m.secret.requests}\xspace%
+	\fi%
+}
+
+\newcommand{\MsgTypeSecretsSend}{%
+	\ifmmode \mathtt{m.secret.send}\xspace%
+	\else \texttt{m.secret.send}\xspace%
+	\fi%
+}
+
+
+% Matrix Messaging
+
+\newcommand{\Matrix}{\ensuremath{\pcalgostyle{Matrix}}}
+\newcommand{\MatrixGen}{\ensuremath{\Matrix.\pcalgostyle{Gen}}}
+\newcommand{\MatrixReg}{\ensuremath{\Matrix.\pcalgostyle{Reg}}}
+\newcommand{\MatrixInit}{\ensuremath{\Matrix.\pcalgostyle{Init}}}
+\newcommand{\MatrixRecv}{\ensuremath{\Matrix.\pcalgostyle{Recv}}}
+\newcommand{\MatrixExec}{\ensuremath{\Matrix.\pcalgostyle{Exec}}}
+\newcommand{\MatrixAdd}{\ensuremath{\Matrix.\pcalgostyle{Add}}}
+\newcommand{\MatrixRemove}{\ensuremath{\Matrix.\pcalgostyle{Remove}}}
+\newcommand{\MatrixEncrypt}{\ensuremath{\Matrix.\pcalgostyle{Encrypt}}}
+\newcommand{\MatrixDecrypt}{\ensuremath{\Matrix.\pcalgostyle{Decrypt}}}
+\newcommand{\MatrixKeyRequest}{\ensuremath{\Matrix.\pcalgostyle{KeyRequest}}}
+\newcommand{\MatrixKeyShare}{\ensuremath{\Matrix.\pcalgostyle{KeyShare}}}
+\newcommand{\MatrixKeyRecover}{\ensuremath{\Matrix.\pcalgostyle{KeyRecover}}}
+\newcommand{\MatrixState}{\ensuremath{\pi_{\pcvar{mt}}}}
+
+\newcommand{\DeviceKeyPackage}{m_{\pcvar{dev}}}  % A self-signed package for the device identity
+\newcommand{\Algorithm}{\pcvar{alg}}
+\newcommand{\DeviceMapping}[1][]{\ifthenelse{\equal{#1}{}}{\pcvar{DM}}{\pcvar{DM}_{#1}}}
+
+\newcommand{\MsgTypeEncrypted}{%
+	\ifmmode \mathtt{m.room.encrypted}\xspace%
+	\else \texttt{m.room.encrypted}\xspace%
+	\fi%
+}
+\newcommand{\MsgTypeMessage}{%
+	\ifmmode \mathtt{m.room.message}\xspace%
+	\else \texttt{m.room.message}\xspace%
+	\fi%
+}
+\newcommand{\MsgTypeRoomKey}{%
+	\ifmmode \mathtt{m.room\_key}\xspace%
+	\else \texttt{m.room\_key}\xspace%
+	\fi%
+}
+\newcommand{\MsgTypeRoomKeyRequest}{%
+	\ifmmode \mathtt{m.room\_key\_request}\xspace%
+	\else \texttt{m.room\_key\_request}\xspace%
+	\fi%
+}
+\newcommand{\MsgTypeFwdRoomKey}{%
+	\ifmmode \mathtt{m.forwarded\_room\_key}\xspace%
+	\else \texttt{m.forwarded\_room\_key}\xspace%
+	\fi%
+}
+
+\newcommand{\DeviceSK}[1][]{\ifthenelse{\equal{#1}{}}{dsk}{dsk_{#1}}}
+\newcommand{\DevicePK}[1][]{\ifthenelse{\equal{#1}{}}{dpk}{dpk_{#1}}}
+
+\newcommand{\MatrixStateUnpack}
+{(U, D, G, \role, \DeviceMapping, \CrossSignState, \MegolmStates, \OlmStates, T) \assign \MatrixState}
+\newcommand{\MatrixStatePack}
+{\MatrixState \assign (U, D, G, \role, \DeviceMapping, \CrossSignState, \MegolmStates, \OlmStates, T)}
+
+% Homeserver
+
+\newcommand{\HS}{\pcalgostyle{HS}}
+\newcommand{\HSGetDevicePK}{\HS.\pcalgostyle{GetDevicePK}}
+\newcommand{\HSGetDeviceKeys}{\HS.\pcalgostyle{GetDeviceKeys}}
+\newcommand{\HSGetCrossSigningMasterPK}{\HS.\pcalgostyle{GetCrossSigningMasterPK}}
+
+
+
+% Ciphertext types
+%
+% Encrypted messages in Matrix can be wrapped in a few layers. Usually:
+%   1. Actual message
+%   2. (1) wrapped with event metadata like the event type (e.g. m.room_key), room_id etc.
+%   3. Encryption of (2) by Olm or Megolm
+%   4. Unauthenticated, plaintext wrapper of (3). This is the m.room.encrypted message.
+%
+% I had been using inconsistent notation to refer to these and it was all a bit confusing.
+% Let's standardise it with the commands below:
+
+\newcommand{\MsgPlaintext}{m}
+\newcommand{\MsgCiphertext}{c}
+
+
+% Crypto Primitives
+
+\DeclareMathOperator{\hkdf}{\mathsf{HKDF}}
+\DeclareMathOperator{\hmac}{\mathsf{HMAC}}
+\DeclareMathOperator{\sha256}{\mathsf{SHA-256}}
+\DeclareMathOperator{\hkdfsha256}{\mathsf{HKDF\mhyphen SHA\mhyphen 256}}
+\DeclareMathOperator{\hmacsha256}{\mathsf{HMAC\mhyphen SHA\mhyphen 256}}
+\DeclareMathOperator{\aescbc}{\mathsf{AES}\mhyphen\mathsf{CBC}}
+
+\newcommand{\XDH}{\pcalgostyle{X25519}}
+\newcommand{\XDHKGen}{\XDH.\kgen}
+\newcommand{\XDHSklen}{{\XDH.\pcalgostyle{skl}}}
+\newcommand{\XDHPklen}{{\XDH.\pcalgostyle{pkl}}}
+
+\newcommand{\ed}{\pcalgostyle{Ed25519}}
+\newcommand{\edkgen}{\ed.\kgen}
+\newcommand{\edsign}{\ed.\pcalgostyle{Sign}}
+\newcommand{\edverify}{\ed.\pcalgostyle{Verify}}
+\newcommand{\edsklen}{{\ed.\pcalgostyle{skl}}}
+\newcommand{\edpklen}{{\ed.\pcalgostyle{pkl}}}
+
+\newcommand{\ds}{\pcalgostyle{DS}}
+\newcommand{\dskgen}{{\ds.\kgen}}
+\newcommand{\dssign}{{\ds.\pcalgostyle{Sign}}}
+\newcommand{\dsverify}{\ds.\pcalgostyle{Verify}}
+\newcommand{\dssklen}{{\ds.\pcalgostyle{skl}}}
+\newcommand{\dspklen}{{\ds.\pcalgostyle{pkl}}}
+
+\newcommand{\se}{\pcalgostyle{SE}}
+\newcommand{\seenc}{{\se.\enc}}
+\newcommand{\sedec}{{\se.\dec}}
+
+\newcommand{\ff}{\pcalgostyle{F}}
+\newcommand{\iv}{\pckeystyle{iv}}
+\newcommand{\pcvar}[1]{\mathsf{#1}}
+
+\newcommand{\UGKE}{\pcalgostyle{UGKE}}
+\newcommand{\PUGKE}{\pcalgostyle{PUGKE}}
+\newcommand{\DOGM}{\ensuremath{\mathbf{DOGM}}}
+\newcommand{\Reg}{\mathbf{Reg}}
+\newcommand{\Add}{\mathbf{Add}}
+\newcommand{\Remove}{\mathbf{Remove}}
+\newcommand{\Encrypt}{\mathbf{Encrypt}}
+\newcommand{\Decrypt}{\mathbf{Decrypt}}
+\newcommand{\Gen}{\mathbf{Gen}}
+\newcommand{\Exec}{\pcalgostyle{Exec}}
+\newcommand{\Init}{\mathbf{Init}}
+\newcommand{\Proc}{\pcalgostyle{Proc}}
+\newcommand{\ProcAdd}{\pcalgostyle{ProcessAdd}}
+\newcommand{\ProcRemove}{\pcalgostyle{ProcessRemove}}
+\newcommand{\StateRecv}{\pcalgostyle{StateRecv}}
+\newcommand{\StateShare}{\pcalgostyle{StateShare}}
+\newcommand{\StateReq}{\pcalgostyle{StateReq}}
+
+%% PROTOCOL INTERFACES
+\newcommand{\mem}{\pcalgostyle{mem}}
+\newcommand{\rec}{\pcalgostyle{rec}}
+\newcommand{\pau}{\pcalgostyle{pau}}
+
+
+% ALGORITHMS
+\renewcommand{\adversary}{\ensuremath{\mathcal{A}}}
+
+%% SPACES
+\newcommand{\pauspace}{\ensuremath{\mathcal{P}_{k}}}
+\newcommand{\sauspace}{\ensuremath{\mathcal{S}_{k}}}
+\newcommand{\psspace}{\ensuremath{\mathcal{PSS}}}
+\newcommand{\sstate}{\ensuremath{\mathcal{ST}}}
+\newcommand{\iid}{\ensuremath{\mathcal{IID}}}
+
+\newcommand{\kidpace}{\ensuremath{\mathcal{K}_{id}}}
+\newcommand{\gidspace}{\ensuremath{\mathcal{G}_{id}}}
+\newcommand{\didspace}{\ensuremath{\mathcal{D}_{id}}}
+\newcommand{\uidspace}{\ensuremath{\mathcal{U}_{id}}}
+
+\newcommand{\uid}{\ensuremath{A}}
+\newcommand{\did}{\ensuremath{i}}
+\newcommand{\gid}{\ensuremath{G}}
+
+\newcommand{\cmd}{\ensuremath{\mathcal{CMD}}}
+\newcommand{\ctxt}{\ensuremath{\mathcal{C}}}
+\newcommand{\keyspace}{\ensuremath{\mathcal{K}}}
+\newcommand{\sidspace}{\ensuremath{\mathcal{SID}}}
+\newcommand{\msgspace}{\ensuremath{\mathcal{M}}}
+
+% EXPERIMENT CONSTANTS
+\newcommand{\numComm}{\ensuremath{n_C}}
+\newcommand{\numDevice}{\ensuremath{n_D}}
+\newcommand{\numGroups}{\ensuremath{n_G}}
+\newcommand{\numMsg}{\ensuremath{n_M}}
+\newcommand{\send}{\ensuremath{\styleConstants{send}}}
+\newcommand{\recv}{\ensuremath{\styleConstants{recv}}}
+%\newcommand{\numX}{\ensuremath{n_X}}
+
+% EXPERIMENT FLAGS
+\newcommand{\DKflag}[2]{\ensuremath{\mathsf{DKflag}_{#1}^{#2}}}
+\newcommand{\GSflag}[2]{\ensuremath{\mathsf{GSflag}_{#1}^{#2}}}
+\newcommand{\USflag}[1]{\ensuremath{\mathtt{UsS}_{#1}}}
+\newcommand{\DSflag}[1]{\ensuremath{\mathtt{DeS}_{#1}}}
+\newcommand{\SSflag}[1]{\ensuremath{\mathtt{SeS}_{#1}}}
+
+% SESSIONS AND PER-SESSION VARIABLES
+\renewcommand{\state}{\ensuremath{st}}
+\newcommand{\clean}{\ensuremath{clean}}
+
+% SECURITY GAME QUERIES
+\newcommand{\CorruptUser}{\ensuremath{\mathsf{CorruptUser}}}
+\newcommand{\CorruptDevice}{\ensuremath{\mathsf{CorruptDevice}}}
+\newcommand{\Compromise}{\ensuremath{\mathsf{Compromise}}}
+\newcommand{\AddMember}{\ensuremath{\mathsf{AddMember}}}
+\newcommand{\RemoveMember}{\ensuremath{\mathsf{RemoveMember}}}
+\newcommand{\Chall}{\mathsf{Challenge}}
+
+
+
+% SECURITY GAME NOTIONS
+\newcommand{\PFSUGKE}{\ensuremath{\mathsf{PFS}\mhyphen \mathsf{UGKE}}}
+\newcommand{\KIND}{\ensuremath{\mathsf{KIND}}}
+
+
+% Crypto Games
+
+\newcommand{\game}[2]{\pcalgostyle{Game}^{\mathcal{#1}}_{\pcalgostyle{#2}}}
+
+
+% Security Definitions
+
+\newcommand{\rkdfsecure}[3]{(#1, #2, #3)\textsf{-secure ratcheted key derivation function}}
+
+
+% Actors/variable scoping
+
+\definecolor{scopeprivate}{RGB}{255,99,71}
+\definecolor{scopeinsider}{RGB}{0,205,00}
+\definecolor{scopeoutsider}{RGB}{58,95,255}
+
+\newcommand{\scopeprivate}[1]{\textcolor{scopeprivate}{#1}}
+\newcommand{\scopeinsider}[1]{\textcolor{scopeinsider}{#1}}
+\newcommand{\scopeoutsider}[1]{\textcolor{scopeoutsider}{#1}}
+
+\newcommand{\sessionout}{S^{\mathsf{OUT}}}
+\newcommand{\sessionin}{S^{\mathsf{IN}}}
+
+% Keys
+\newcommand{\fingerprintkey}{\pckeystyle{fk}}
+\newcommand{\olmkeys}{\pckeystyle{ok}}
+
+
+% Pseudocode
+\newcommand{\pcbreak}{\highlightkeyword{break}}

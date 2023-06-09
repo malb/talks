@@ -1,0 +1,61 @@
+\begin{tikzpicture}
+  [
+    Actor/.style={shape=rectangle},
+    Timeline/.style={-, thick, draw={rgb,255: red,200; green,200; blue,200}},
+    ActionLeft/.style={align=right, anchor=south east},
+    ActionRight/.style={align=left, anchor=south west},
+    MessageArrow/.style={->, thick},
+    MessageContents/.style={midway, above, shape=rectangle},
+    StageLimits/.style={decorate, decoration={brace}, thick},
+    StageContents/.style={rotate=90, above, midway, align=center}
+  ]
+
+  \tikzmath{\SeqDiaColumnWidth = 4;};
+  \tikzmath{\SeqDiaTextHeight = 0.6;};  % guess
+  \tikzmath{\SeqDiaRowHeight = 1.2;};
+  \tikzmath{\AliceOneY = \SeqDiaColumnWidth;};
+  \tikzmath{\HomeserverY = 2 * \SeqDiaColumnWidth;};
+  \tikzmath{\AliceTwoY = 3 * \SeqDiaColumnWidth;};
+
+  % Actor headings
+  \node [Actor] at (\AliceOneY cm, 0 cm) {\uline{$D_{A,1}$}};
+  \node [Actor] at (\HomeserverY cm, 0 cm) {\uline{\alert{Homeserver $H$}}};
+  \node [Actor] at (\AliceTwoY cm, 0 cm) {\uline{\alert{$D_{H}$}}};
+
+  % Stores the y coordinate of the current row
+  \tikzmath{\CurrentY = 0;};
+
+  % Messages
+  \tikzmath{\TimelineTop = \CurrentY - 0.5 * \SeqDiaTextHeight;};
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaTextHeight;};
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaRowHeight;};
+
+  \node [ActionRight, anchor=south west] at (\AliceTwoY cm, \CurrentY cm) {$(\MegolmOS', \MegolmIS', \MegolmSignature')$ \\ $\quad \assign \MegolmInit(\secparam)$};
+
+  \draw [MessageArrow] (\AliceTwoY cm, \CurrentY cm) -- (\AliceOneY cm, \CurrentY cm)
+    node [MessageContents, fill=white] {$\OlmEnc(\MsgTypeFwdRoomKey(D_{B,1}, gpk', \MegolmIS'))$};
+  \node [ActionLeft, anchor=north east] at (\AliceOneY cm, \CurrentY cm) {Accept $\MegolmIS'$ \\ as $D_{B,1}$'s session};
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaRowHeight;};
+  \draw [StageLimits](0.3*\SeqDiaColumnWidth cm, \CurrentY cm) -- (0.3*\SeqDiaColumnWidth cm, \TimelineTop cm) node [StageContents] {Semi-Trusted \\ Impersonation};
+
+  % \pause
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaTextHeight;};
+
+  \node [ActionRight, anchor=south west] at (\AliceTwoY cm, \CurrentY cm) {$(\MegolmOS^*, \MegolmIS^*, \MegolmSignature^*)$ \\ $\assign \MegolmInit(\secparam)$};
+
+  \draw [MessageArrow] (\AliceTwoY cm, \CurrentY cm) -- (\AliceOneY cm, \CurrentY cm)
+    node [MessageContents, fill=white] {$\MegolmEnc(\MegolmOS', \MsgTypeRoomKey(\MegolmIS^*, \MegolmSignature^*))$};
+  \node [ActionLeft, anchor=north east] at (\AliceOneY cm, \CurrentY cm) {Accept $\MegolmIS^*$ \\ as $D_{B,1}$'s session \\ \alert{(not forwarded)}};
+
+  \tikzmath{\CurrentY = \CurrentY-\SeqDiaRowHeight;};
+  \tikzmath{\TimelineBottom = \CurrentY;};
+
+  \begin{pgfonlayer}{background}
+      \draw [Timeline] (\AliceOneY cm,  \TimelineTop cm) -- (\AliceOneY cm, \TimelineBottom cm);
+      \draw [Timeline] (\HomeserverY cm, \TimelineTop cm) -- (\HomeserverY cm, \TimelineBottom cm);
+      \draw [Timeline] (\AliceTwoY cm, \TimelineTop cm) -- (\AliceTwoY cm, \TimelineBottom cm);
+  \end{pgfonlayer}
+\end{tikzpicture}

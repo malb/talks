@@ -1,0 +1,101 @@
+% FIGURE COMMANDS
+\definecolor{mBlue}{HTML}{22a1dc}
+\definecolor{mGreen}{HTML}{86cd30}
+\definecolor{darkgreen}{HTML}{006400}
+\definecolor{mLightBrown}{HTML}{e68a00}
+
+%% MATH MODE COLOR BOXES
+\newcommand{\highlight}[2][yellow]{\mathchoice%
+	{\colorbox{#1}{$\displaystyle#2$}}%
+	{\colorbox{#1}{$\textstyle#2$}}%
+	{\colorbox{#1}{$\scriptstyle#2$}}%
+	{\colorbox{#1}{$\scriptscriptstyle#2$}}}%
+
+% ClientAction and ServerAction
+% Print a command executed by the client/server
+% 1st argument: the text
+\newcommand{\ClientAction}[1]{
+	\node[right] at (\InitX, \Y) {#1};
+}
+\newcommand{\ServerAction}[1]{
+	\node[left] at (\RespX, \Y) {#1};
+}
+\newcommand{\SharedAction}[1]{
+	\node at ($1/2*(\InitX, \Y)+1/2*(\RespX, \Y)$) {#1};
+}
+\newcommand{\AdversaryAction}[1]{
+	\node at ($1/2*(\InitX, \Y)+1/2*(\RespX, \Y)$) {\textcolor{red}{#1}};
+}
+% ClientToServer and ServerToClient
+% Draws a message flow from client-to-server or server-to-client, with text above and below
+% 1st argument (optional): line type, default ->
+% 2nd argument: text above
+% 3rd argument: text below
+% Example: \ClientToServer{$Y$}{}
+% Example: \ClientToServer[<->,double]{$Y$}{over an encrypted channel}
+\newcommand{\ClientToServer}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowLeft,\Y) -- node[above] {#2} node[below] {#3} (\ArrowRight,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\ServerToClient}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowRight,\Y) -- node[above] {#2} node[below] {#3} (\ArrowLeft,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\ClientToAdversary}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowLeft,\Y) -- node[above] {#2} node[below] {#3} (\ArrowCenter,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\ServerToAdversary}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowRight,\Y) -- node[above] {#2} node[below] {#3} (\ArrowCenter,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\AdversaryQToClient}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowCenter,\Y) -- node[above] {\textcolor{red}{#2}} node[below] {#3} (\ArrowLeft,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\AdversaryQToServer}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowCenter,\Y) -- node[above] {\textcolor{red}{#2}} node[below] {#3} (\ArrowRight,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\AdversaryToClient}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowCenter,\Y) -- node[above] {#2} node[below] {#3} (\ArrowLeft,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\AdversaryToServer}[3][->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowCenter,\Y) -- node[above] {#2} node[below] {#3} (\ArrowRight,\Y) ;
+	\NextLine[0.5]
+}
+\newcommand{\Encryption}[3][<->]{
+	\NextLine[0.5]
+	\draw[#1] (\ArrowRight,\Y) -- node[above] {#2} node[below] {#3} (\ArrowLeft,\Y) ;
+	\NextLine[0.5]
+}
+% NextLine
+% 1st argument (optional): amount of spacing to increment by, default 1.0
+% Example: \NextLine
+% Example: \NextLine[1.5]
+\newcommand{\NextLine}[1][1.0]{
+	\pgfmathparse{\Y+#1}
+	\edef\Y{\pgfmathresult}
+}
+%
+% stage separator line
+%
+\newcommand{\StageSeparator}[2][1.0]{
+	\draw[very thick,dotted,blue] (\InitX,\Y+0.5) node[above=-0.1cm,anchor=north west] {\bf #2} -- (\RespX,\Y+0.5);
+}
+\newcommand{\Separator}[2][1.0]{
+	\draw[very thick,dotted,blue] (\InitX,\Y+0.5) node[above=-0.1cm,anchor=north west] {\bf #2} -- (\RespX,\Y+0.5);
+}
+\newcommand{\StageRight}[1]{
+	\node[above=-0.1cm,anchor=north east,StageSeparatorColor] at
+	(\RespX,\Y+0.5) {\bf #1};
+}

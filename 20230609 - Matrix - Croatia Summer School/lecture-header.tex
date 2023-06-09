@@ -1,0 +1,157 @@
+%
+% Config
+%
+\usepackage{chronology}
+\usepackage{ulem}
+\usepackage{fontawesome}
+\usepackage[misc]{ifsym}
+\def\courseyear{2022}
+\def\thisguy{
+Martin Albrecht\\
+joint work with Sofía Celi, Benjamin Dowling and Dan Jones}
+
+\def\theemail{}
+
+\title{\Large{\thetitle}}
+\subtitle{\thesubtitle}
+\author{\thisguy{}}% \href{mailto:\theemail}{\nolinkurl{<\theemail>}}}
+\date{\thedate}
+
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{comment}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{colortbl}
+
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+%
+% Pseudocode
+%
+
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+%
+% Source Code Listings
+%
+
+\usepackage{listings}
+\lstdefinelanguage{Sage}[]{Python}{morekeywords={True,False,sage,cdef,cpdef,ctypedef,self},sensitive=true}
+\lstset{frame=none,
+          showtabs=False,
+          showspaces=False,
+          showstringspaces=False,
+          commentstyle={\color{mLightBrown}},
+          keywordstyle={\color{mLightBrown}\textbf},
+          stringstyle ={\color{mDarkBrown}},
+          frame=single,
+          basicstyle=\tt\smaller\relax,
+          backgroundcolor=\color{gray!190!black},
+          language = Sage,
+          }
+
+%
+% Tikz
+%
+
+\usepackage{tikz,pgfplots}
+\usepackage{tikzpeople}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
+\pgfplotsset{compat=newest}
+
+%% Cache TiKZ pictures
+
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=build/]
+%\tikzset{external/up to date check=diff} % MD5 fails from within emacs
+
+
+%
+% Crypto Notation
+%
+
+\usepackage[lambda,landau,operators,probability,sets,logic,complexity,asymptotics,adversary]{cryptocode} % after algorithm2e
+\input{crypto-macros.tex}
+
+
+%
+% Metropolis Theme
+% https://github.com/matze/mtheme.git
+%
+
+\usetheme{metropolis}
+
+%
+% UTF-8 all the things
+% 
+%\usepackage{unicodesymbols} % put this after m which loads fontspec
+
+
+%
+% BibLaTeX
+%
+
+\usepackage[
+    backend=bibtex,
+]{biblatex}
+
+\addbibresource{local.bib}
+\addbibresource{cryptobib/abbrev3.bib}
+\addbibresource{cryptobib/crypto_crossref.bib}
+
+\DeclareFieldFormat{title}{\alert{#1}}
+\DeclareFieldFormat[book]{title}{\alert{#1}}
+\DeclareFieldFormat[inproceedings]{title}{\alert{#1}}
+\DeclareFieldFormat[article]{title}{\alert{#1}}
+\DeclareFieldFormat[misc]{title}{\alert{#1}}
+
+%
+% Microtype
+%
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+
+\AtBeginSection[] % Do nothing for \section*
+{
+\begin{frame}<beamer>
+\frametitle{Outline}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+%
+% Metadata, give the NSA something to collect which totally doesn't invade our privacy
+%
+
+\hypersetup{pdfauthor={\thisguy},
+            pdfsubject={\thesubtitle}}
+
+%
+% Handouts
+%
+
+\ifdefined\ishandout
+\usepackage{pgfpages}
+\pgfpagesuselayout{4 on 1}[a4paper,border shrink=5mm,landscape]
+\fi
+
+
+
+\usepackage[export]{adjustbox}
