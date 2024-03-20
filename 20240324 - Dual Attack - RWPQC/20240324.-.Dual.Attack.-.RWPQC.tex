@@ -1,4 +1,4 @@
-% Created 2024-03-04 Mon 11:24
+% Created 2024-03-20 Wed 10:26
 % Intended LaTeX compiler: lualatex
 \documentclass[xcolor=table,10pt,aspectratio=169]{beamer}
 
@@ -161,6 +161,13 @@
 } 
 
 %%%
+%%% Attachments
+%%%
+
+\RequirePackage{embedfile}
+
+
+%%%
 %%% Metropolis Theme
 %%%
 
@@ -305,7 +312,7 @@ urlcolor=gray
 
 
 
-\begin{frame}[label={sec:org89f83ec}]{Kyber}
+\begin{frame}[label={sec:orgef6af93}]{Kyber}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -323,7 +330,7 @@ urlcolor=gray
 The reason you cannot find information about lightsaber crystals any longer …
 \end{frame}
 
-\begin{frame}[label={sec:orgf2ee475}]{Learning with Errors}
+\begin{frame}[label={sec:org9e56893}]{Learning with Errors}
 \begin{columns}
 \begin{column}[t]{0.6\columnwidth}
 Given \((\mat{A},\vec{c}) \in \ZZ_{q}^{m \times n} \times \ZZ_{q}^{m}\), find \(\vec{s}  \in \ZZ^{n}\) when
@@ -387,7 +394,7 @@ No loss in security if secret \(\vec{s}\) and error \(\vec{e}\) have same distri
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgc7f7a8b}]{Primal Attack}
+\begin{frame}[label={sec:orgddf3dd0}]{Primal Attack}
 \begin{columns}
 \begin{column}[t]{0.7\columnwidth}
 We can reformulate \(\vec{c} - \mat{A} \cdot \vec{s} \equiv \vec{e} \bmod q\)  over the Integers as:
@@ -430,7 +437,7 @@ where \(\mat{B} \in \ZZ^{d \times d}\).
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org33a7565}]{Dual Attack}
+\begin{frame}[label={sec:org5b344e8}]{Dual Attack}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 \begin{itemize}
@@ -476,7 +483,7 @@ Can extend this to recover \(\vec{s}\): guess a component and run the distinguis
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgd2c5d9d},fragile]{Why we're here I}
+\begin{frame}[label={sec:org1949319},fragile]{Why we're here I}
  \textbf{NIST's ask:}
 
 \begin{center}
@@ -486,7 +493,7 @@ AES 128 & \(2^{170}\)/MAXDEPTH quantum gates or \(\mathbf{2^{143}}\) classical g
 \bottomrule
 \end{tabular}
 
-\end{center}\footnotetext[1]{\label{org1d5ade7}``\emph{In particular, NIST will define a separate category for each of the following security requirements (listed in order of increasing strength): 1) Any attack that breaks the relevant security definition must require computational resources comparable to or greater than those required for key search on a block cipher with a 128-bit key (e.g. AES128)}'' \fullcite{NISTPQC17}}
+\end{center}\footnotetext[1]{\label{org0b558d0}``\emph{In particular, NIST will define a separate category for each of the following security requirements (listed in order of increasing strength): 1) Any attack that breaks the relevant security definition must require computational resources comparable to or greater than those required for key search on a block cipher with a 128-bit key (e.g. AES128)}'' \fullcite{NISTPQC17}}
 
 \textbf{Current estimates:}
 
@@ -508,7 +515,7 @@ dual_hybrid          :: rop: ≈2^139.2, red: ≈2^139.0, guess: ≈2^136.2, β:
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org362fcc4}]{Why we're here II}
+\begin{frame}[label={sec:org6645cd2}]{Why we're here II}
 \begin{quote}
 \textbf{Ethical considerations.} Although Picante demonstrates significant progress towards attacking real-world LWE problems with sparse binary secrets, \alert{it cannot yet break} problems with real-world-size parameters. In particular, the LWE schemes standardized by NIST use smaller modulus q and non-sparse secret distributions. Hence, we do not believe our paper raises any ethical concerns. Nonetheless, we shared a copy of the current paper with the NIST Cryptography group, to inform them of our approach.
 \end{quote}
@@ -518,7 +525,7 @@ dual_hybrid          :: rop: ≈2^139.2, red: ≈2^139.0, guess: ≈2^136.2, β:
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgcfad446}]{Programme}
+\begin{frame}[label={sec:org592ac25}]{Programme}
 \begin{columns}[t]
 \begin{column}{0.45\columnwidth}
 \textbf{This Talk:}
@@ -539,7 +546,7 @@ dual_hybrid          :: rop: ≈2^139.2, red: ≈2^139.0, guess: ≈2^136.2, β:
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org2730fcc}]{Dual-Sieve Attacks}
+\begin{frame}[label={sec:org564a4cc}]{Dual-Sieve Attacks}
 \begin{columns}
 \begin{column}[t]{0.47\columnwidth}
 \textbf{An Abridged History of …}
@@ -569,7 +576,7 @@ dual_hybrid          :: rop: ≈2^139.2, red: ≈2^139.0, guess: ≈2^136.2, β:
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org65f3a5c}]{Dual-Sieve Attacks}
+\begin{frame}[label={sec:orgeba1d45}]{Dual-Sieve Attacks}
 \begin{itemize}
 \item Consider \(\vec{c} \equiv \mat{A} \cdot \vec{s} + \vec{e} \bmod q\) with both \(\vec{s}\) and \(\vec{e}\) short or \(\vec{c}\) uniform.
 \item Write \(\vec{s} = (\vec{s}_{\ell}, \vec{s}_{g})\) and \(\mat{A} = [\mat{A}_{\ell} \mid \mat{A}_{g}]\)
@@ -593,7 +600,7 @@ dual_hybrid          :: rop: ≈2^139.2, red: ≈2^139.0, guess: ≈2^136.2, β:
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org210e080}]{``Small-ish'' and ``Uniform-ish'' Unpacked}
+\begin{frame}[label={sec:org072f57d}]{``Small-ish'' and ``Uniform-ish'' Unpacked}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 Success depends on the geometry of
@@ -623,7 +630,7 @@ lattice spanned by outputs of the sieve.
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org7eb2500}]{Alternative Approach}
+\begin{frame}[label={sec:orgaf2ab97}]{Alternative Approach}
 \begin{columns}
 \begin{column}{0.55\columnwidth}
 \begin{itemize}
@@ -643,7 +650,7 @@ lattice spanned by outputs of the sieve.
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org5467017}]{Summary}
+\begin{frame}[label={sec:org33ddb80}]{Summary}
 \begin{columns}[t]
 \begin{column}{0.6\columnwidth}
 \begin{itemize}
@@ -663,7 +670,7 @@ lattice spanned by outputs of the sieve.
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgfc3e0a2}]{ML Attacks}
+\begin{frame}[label={sec:orgd85b71f}]{ML Attacks}
 \begin{columns}
 \begin{column}[t]{0.5\columnwidth}
 {\footnotesize
@@ -716,7 +723,7 @@ shared a copy of our paper with the NIST PQC group to make them aware of this at
 \end{quote}
 \end{frame}
 
-\begin{frame}[label={sec:org00172d6}]{Attack Description}
+\begin{frame}[label={sec:orgf4135eb}]{Attack Description}
 \begin{columns}
 \begin{column}{0.35\columnwidth}
 \begin{center}
@@ -739,7 +746,7 @@ Modelling \(\vec{v}^{T} \cdot \vec{s} + \vec{u}^{T}\cdot \vec{e}\) as a discrete
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org3536c4d}]{Comparison with State of the Art: SALSA VERDE I}
+\begin{frame}[label={sec:org77cb52b}]{Comparison with State of the Art: SALSA VERDE I}
 \begin{center}
 \includegraphics[keepaspectratio,page=3,frame,height=.7\textheight]{./crypto2023rump-paper13.pdf}
 \end{center}
@@ -747,7 +754,7 @@ Modelling \(\vec{v}^{T} \cdot \vec{s} + \vec{u}^{T}\cdot \vec{e}\) as a discrete
 {\footnotesize \url{https://crypto.iacr.org/2023/rump/crypto2023rump-paper13.pdf} \par}
 \end{frame}
 
-\begin{frame}[label={sec:org1bc1ad7}]{Comparison with State of the Art: SALSA VERDE II}
+\begin{frame}[label={sec:org63d9992}]{Comparison with State of the Art: SALSA VERDE II}
 \begin{center}
 \includegraphics[keepaspectratio,page=6,frame,height=.7\textheight]{./crypto2023rump-paper13.pdf}
 \end{center}
@@ -755,7 +762,7 @@ Modelling \(\vec{v}^{T} \cdot \vec{s} + \vec{u}^{T}\cdot \vec{e}\) as a discrete
 {\footnotesize \url{https://crypto.iacr.org/2023/rump/crypto2023rump-paper13.pdf} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orge790b4f},fragile]{Comparison with Something: SALSA FESCA I}
+\begin{frame}[label={sec:org1395adf},fragile]{Comparison with Something: SALSA FESCA I}
  \begin{center}
 \includegraphics[width=.9\linewidth]{./salsa-fresca-results.png}
 \end{center}
@@ -776,7 +783,7 @@ rop: ≈2^48.4, red: ≈2^48.1, svp: ≈2^46.2, β: 41, η: 2, ζ: 478, |S|: ≈
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org1d7a166},fragile]{Comparison with \alert{Something}: SALSA FESCA II}
+\begin{frame}[label={sec:orged77d3a},fragile]{Comparison with \alert{Something}: SALSA FESCA II}
  The ``lattice estimator''\footnote{\url{https://github.com/malb/lattice-estimator}} picks \(\beta\) = 40 as a lower bound, it is not designed to handle such easy instances.
 
 \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
@@ -797,7 +804,7 @@ with local_minimum(40, max(2 * params.n, 41), precision=5) as it:
 {\footnotesize \url{https://github.com/malb/lattice-estimator/blob/main/estimator/lwe\_primal.py\#L209-L220} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orgd4d4e8f}]{High-Level}
+\begin{frame}[label={sec:org36b881b}]{High-Level}
 There is no particular reason to believe that ML can threaten LWE.
 
 \begin{columns}
@@ -821,14 +828,14 @@ Not easy to establish the state of the art for LWE instances within range of exp
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org8c6f713},standout]{Fin \& Obligatory ``We're hiring'' Slide}
+\begin{frame}[label={sec:org321b4fa},standout]{Fin \& Obligatory ``We're hiring'' Slide}
 \begin{center}
 \Huge \alert{Thank You}
 \end{center}
 
 \begin{description}
-\item[{KCL}] recruiting academic staff, postdocs and PhD students (across areas of cryptography)
-\item[{SandboxAQ}] recruiting (maybe staff), postdocs and interns (post-quantum focused)
+\item[{KCL}] Academic staff, postdocs and PhD students (all areas of cryptography)
+\item[{SandboxAQ}] Postdoc/PhD/FTEs/Consultants: PQC PhD residencies, PQC Postdocs, Cryptography SWE
 \end{description}
 \end{frame}
 

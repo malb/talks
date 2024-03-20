@@ -1,4 +1,4 @@
-% Created 2024-03-11 Mon 20:50
+% Created 2024-03-20 Wed 10:27
 % Intended LaTeX compiler: lualatex
 \documentclass[table,10pt,aspectratio=169]{beamer}
 
@@ -312,17 +312,13 @@ urlcolor=gray
 
 \maketitle
 
-\begin{frame}[label={sec:org704fc8d}]{The Plan}
+\begin{frame}[label={sec:org382fc8f}]{The Plan}
 \begin{itemize}
 \item Introduce estimating the cost of solving LWE-based schemes
 \begin{itemize}
 \item strategies (primal and dual lattice attacks)
 \item lattice reduction
 \item finding short vectors
-\end{itemize}
-
-\begin{itemize}
-\item binary secrets
 \item ML-based attacks
 \end{itemize}
 \item Introduce usage of "lattice estimator" along the way
@@ -335,11 +331,11 @@ urlcolor=gray
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:orgb832c65}]{Ack}
+\begin{frame}[label={sec:org3351bee}]{Ack}
 \textbf{First:} A big shout out to Ben Curtis, who is the reason why the estimator remains relevant to this community. He's the one fixing performance and correctness issues encountered for FHE parameters!
 \end{frame}
 
-\begin{frame}[label={sec:org241a946},fragile]{Example}
+\begin{frame}[label={sec:org3004887},fragile]{Example}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 from estimator import *
 from estimator.schemes import Kyber768
@@ -366,8 +362,8 @@ dual_hybrid          :: rop: ≈2^196.1, red: ≈2^195.5, guess: ≈2^194.4, β:
 \end{frame}
 
 \section{Computational Problems}
-\label{sec:org3ff29e9}
-\begin{frame}[label={sec:orgf514b9d}]{Learning with Errors}
+\label{sec:orgad93292}
+\begin{frame}[label={sec:org1946572}]{Learning with Errors}
 Given \((\mathbf{A},\vec{c})\), find \(\vec{s}\) when
 
 \[
@@ -410,7 +406,7 @@ Given \((\mathbf{A},\vec{c})\), find \(\vec{s}\) when
 for \(\vec{c} \in \ZZ_q^{m}\), \(\mat{A} \in \ZZ_q^{m \times n}\), and \(\vec{s} \in \ZZ^{n}\) and \(\vec{e} \in \ZZ^{m}\) having small entries.
 \end{frame}
 
-\begin{frame}[label={sec:orgd126bf1}]{Learning with Errors}
+\begin{frame}[label={sec:org8ee20f3}]{Learning with Errors}
 Given \((\mathbf{A},\vec{c})\), find \(\vec{s}\) when
 
 \[
@@ -453,7 +449,7 @@ Given \((\mathbf{A},\vec{c})\), find \(\vec{s}\) when
 for \(\vec{c} \in \ZZ_q^{m}\), \(\mat{A} \in \ZZ_q^{m \times n}\), and \(\vec{s} \in \ZZ^{n}\) and \(\vec{e} \in \ZZ^{m}\) \alert{having small entries}.
 \end{frame}
 
-\begin{frame}[label={sec:org185cecc},fragile]{"Having Small Entries"}
+\begin{frame}[label={sec:org922b28b},fragile]{"Having Small Entries"}
  \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{description}
@@ -514,7 +510,7 @@ ND.DiscreteGaussian(stddev=2), ND.CenteredBinomial(eta=8), ND.Uniform(-3, 3)
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org7aea199},fragile]{Estimator}
+\begin{frame}[label={sec:org66b1ffd},fragile]{Estimator}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 Kyber768 = LWEParameters(
     n=3 * 256,
@@ -527,7 +523,7 @@ Kyber768 = LWEParameters(
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[label={sec:org6ef388e},fragile]{\alert{Ad Break: We now do NTRU, too!}}
+\begin{frame}[label={sec:org93af8c9},fragile]{\alert{Ad Break: We now do NTRU, too!}}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 Falcon512_SKR = NTRU.Parameters(
     n=512,
@@ -535,7 +531,7 @@ Falcon512_SKR = NTRU.Parameters(
     Xs=ND.DiscreteGaussian(4.0532),
     Xe=ND.DiscreteGaussian(4.0532),
     m=512,
-    ntru_type='circulant',
+    ntru_type="circulant",
     tag="Falcon512_SKR"
 )
 
@@ -554,8 +550,8 @@ bdd_mitm_hybrid      :: rop: ≈2^349.3, red: ≈2^349.3, svp: ≈2^204.8, β: 4
 \end{frame}
 
 \section{Approaches}
-\label{sec:org1807b36}
-\begin{frame}[label={sec:org2495ac7}]{Unique SVP/BDD: Translation}
+\label{sec:org00f84c7}
+\begin{frame}[label={sec:org6b0dc27}]{Unique SVP/BDD: Translation}
 We can reformulate \(\vec{c} - \mathbf{A} \cdot \vec{s} \equiv \vec{e} \bmod q\)  over the Integers as:
 \[
   \begin{pmatrix}
@@ -598,7 +594,7 @@ Alternatively:
 In other words, there exists an integer-linear combination of the columns of \(\mathbf{B}\) that produces a vector with “unusually” small entries \(\rightarrow\) a unique shortest vector.
 \end{frame}
 
-\begin{frame}[label={sec:orge688ab6}]{Unique SVP: Computational Problem}
+\begin{frame}[label={sec:org4a4df0e}]{Unique SVP: Computational Problem}
 \begin{block}{Unique Shortest Vector Problem for \(q\)-ary Lattices}
 Find a unique shortest vector amongst the integer combinations of the columns of:
 \[
@@ -616,7 +612,7 @@ Decide if \(\mat{B}\) has an unusually short vector.
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org4744b20}]{Approx SVP/SIS: Translation}
+\begin{frame}[label={sec:org57ac7a7}]{Approx SVP/SIS: Translation}
 \begin{itemize}
 \item Consider \(\vec{c} \equiv \mat{A} \cdot \vec{s} + \vec{e} \bmod q\) with both \(\vec{s}\) and \(\vec{e}\) short or \(\vec{c}\) uniform.
 \item Let \(\vec{u}_{i}\) be short vectors such that \(\vec{v}_i^{T} \coloneqq \vec{u}_i^{T} \cdot \mat{A} \bmod q\)  is also short.
@@ -644,7 +640,7 @@ Decide if \(\mat{B}\) has an unusually short vector.
 \]
 \end{frame}
 
-\begin{frame}[label={sec:org3bb1ce6}]{Approx SVP: Computational Problem}
+\begin{frame}[label={sec:org973ab10}]{Approx SVP: Computational Problem}
 \begin{block}{Short Vectors Problem for \(q\)-ary Lattices}
 Find vectors \((\vec{u}_i, \vec{v}_i)\) of norm \(\|(\vec{u}_i, \vec{v}_i)\| \leq \beta\) amongst the integer combinations of the columns of:
 \[
@@ -661,7 +657,7 @@ Can extend this distinguishing attack to recover \(\vec{s}\): guess a component 
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org4621020}]{Lattice Reduction <3 Combinatorics: Hybrid Attacks}
+\begin{frame}[label={sec:org8cd6c55}]{Lattice Reduction <3 Combinatorics: Hybrid Attacks}
 Both approaches can be augmented with a combinatorial step
 \begin{itemize}
 \item guess parts of the secret and run the lattice attack on a smaller dimensional lattice
@@ -669,7 +665,7 @@ Both approaches can be augmented with a combinatorial step
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org6dae98f},fragile]{Estimator (Primal)}
+\begin{frame}[label={sec:org3cd47e9},fragile]{Estimator (Primal)}
  \textbf{plain uSVP}
 
 \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
@@ -703,7 +699,7 @@ rop: ≈2^360.1, red: ≈2^359.4, svp: ≈2^358.8, β: 623, η: 2, ζ: 177, |S|:
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[label={sec:org0f62fdd},fragile]{Estimator (Dual)}
+\begin{frame}[label={sec:orgc754852},fragile]{Estimator (Dual)}
  \textbf{plain SIS}
 
 \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
@@ -727,8 +723,8 @@ rop: ≈2^196.1, red: ≈2^195.5, guess: ≈2^194.4, β: 586, p: 4, ζ: 15, t: 7
 \end{frame}
 
 \section{Lattice Reduction}
-\label{sec:orgf0d9dab}
-\begin{frame}[label={sec:org2ad2892}]{Lattice Volume}
+\label{sec:org8751273}
+\begin{frame}[label={sec:orgd7cc1f0}]{Lattice Volume}
 The volume of a lattice is the volume of its fundamental parallelepiped.
 
 \begin{center}
@@ -738,7 +734,7 @@ The volume of a lattice is the volume of its fundamental parallelepiped.
 \tiny Picture Credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:orgac37ffe}]{Gaussian Heuristic}
+\begin{frame}[label={sec:org49962e3}]{Gaussian Heuristic}
 \begin{itemize}
 \item The Gaussian heuristic predicts that the number \(|\Lambda \cap \mathcal{B}|\) of lattice points inside a measurable body \(\mathcal{B} \subset \RR^d\) is approximately equal to \(\Vol(\mathcal{B}) / \Vol(\Lambda)\).
 \item Applied to Euclidean \(d\)-balls, this means that a shortest vector in a lattice has expected norm \[\lambda_1(\Lambda) \approx \textnormal{GH}(d) \cdot \mathsf{Vol}(\Lambda)^{1/d} \approx \sqrt{\frac{d}{2\pi e}} \cdot \mathsf{Vol}(\Lambda)^{1/d} .\]
@@ -749,7 +745,7 @@ When \(\lambda_1(\Lambda) \ll \sqrt{\frac{d}{2 \pi e}} \cdot \mathsf{Vol}(\Lambd
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org86f71fd}]{Length of Gram--Schmidt Vectors}
+\begin{frame}[label={sec:org277e674}]{Length of Gram--Schmidt Vectors}
 It will be useful to consider the lengths of the Gram--Schmidt vectors.
 
 The vector \(\vec{b}^*_i\) is the orthogonal projection of \(\vec{b}_i\) to the space spanned by the vectors \(\vec{b}_0, \ldots, \vec{b}_{i-1}\).
@@ -782,7 +778,7 @@ We have \(\Vol(\Lambda) = \prod_{i=0}^{d-1} \|\vec{b}_{i}^{*}\|\).
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org6835859},fragile]{Example}
+\begin{frame}[label={sec:orgbb2f521},fragile]{Example}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 A = IntegerMatrix.random(120, "qary", k=60, bits=20)[::-1]
 M = GSO.Mat(A, update=True)
@@ -794,7 +790,7 @@ line([(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())], **plot_kwds)
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org44c71ae},fragile]{Example - LLL}
+\begin{frame}[label={sec:org666aa05},fragile]{Example - LLL}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 A = LLL.reduction(A)
 M = GSO.Mat(A, update=True)
@@ -806,7 +802,7 @@ line([(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())], **plot_kwds)
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org66e1af9}]{GSA}
+\begin{frame}[label={sec:org7149aef}]{GSA}
 \begin{center}
 \includegraphics[width=.9\linewidth]{cache/log-gso-bkz-40.png}
 \end{center}
@@ -814,7 +810,7 @@ line([(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())], **plot_kwds)
 \textbf{Geometric Series Assumption:} The shape after lattice reduction is a line with a flatter slope as lattice reduction gets stronger.\footfullcite{STACS:Schnorr03}
 \end{frame}
 
-\begin{frame}[label={sec:org7d7e0b6}]{Strong Lattice Reduction: BKZ Algorithm (Block 0)}
+\begin{frame}[label={sec:orga0194b3}]{Strong Lattice Reduction: BKZ Algorithm (Block 0)}
 \centering
 \(\left(\begin{array}{ccccccccc}
 \phantom{\pi_0(\vec{b}_0)} &
@@ -863,7 +859,7 @@ line([(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())], **plot_kwds)
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}[label={sec:org5a8944e}]{Strong Lattice Reduction: BKZ Algorithm (Block 1)}
+\begin{frame}[label={sec:orgb728eb5}]{Strong Lattice Reduction: BKZ Algorithm (Block 1)}
 \centering
 \(\left(\begin{array}{ccccccccc}
 \phantom{\pi_0(\vec{b}_0)} &
@@ -912,7 +908,7 @@ line([(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())], **plot_kwds)
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}[label={sec:orge39deea}]{BKZ Algorithm}
+\begin{frame}[label={sec:org69bc3e7}]{BKZ Algorithm}
 \begin{algorithm}[H]
   \KwData{LLL-reduced lattice basis \(\mat{B}\)}
   \KwData{block size \(\beta\)}
@@ -927,7 +923,7 @@ line([(i,log(r_, 2)/2) for i, r_ in enumerate(M.r())], **plot_kwds)
 \end{algorithm}
 \end{frame}
 
-\begin{frame}[label={sec:org6166a30},fragile]{Quality}
+\begin{frame}[label={sec:orgdc7476b},fragile]{Quality}
  \centering
 \begin{tabular}{l@{\hskip 4em}l}
 For SIS & For BDD \\
@@ -1087,7 +1083,7 @@ RC.delta(500)
 \tikzset{external/export=false}
 \end{frame}
 
-\begin{frame}[label={sec:org3e09268},fragile]{Try it at Home}
+\begin{frame}[label={sec:org8915556},fragile]{Try it at Home}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 from fpylll import *
 from fpylll.algorithms.bkz2 import BKZReduction as BKZ2
@@ -1106,7 +1102,7 @@ bkz(BKZ.EasyParam(block_size=60))
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:org515ed73}]{Success Condition for uSVP (Expectation)}
+\begin{frame}[label={sec:org611c1e2}]{Success Condition for uSVP (Expectation)}
 %\vspace{-2.6em}
 
 \tikzset{external/export=true}
@@ -1137,7 +1133,7 @@ bkz(BKZ.EasyParam(block_size=60))
 }
 \end{frame}
 
-\begin{frame}[label={sec:org240dd8b}]{Success Condition for uSVP (Observed)}
+\begin{frame}[label={sec:org007a8a6}]{Success Condition for uSVP (Observed)}
 \tikzset{external/export=true}
 \tikzsetnextfilename{usv-success-observation}
 \begin{tikzpicture}
@@ -1166,7 +1162,7 @@ bkz(BKZ.EasyParam(block_size=60))
 }
 \end{frame}
 
-\begin{frame}[label={sec:org5728f7a}]{The GSA is a Lie: Tail Shape}
+\begin{frame}[label={sec:org5a73db0}]{The GSA is a Lie: Tail Shape}
 \tikzset{external/export=true}
 \tikzsetnextfilename{gsa-comparison}
 \begin{tikzpicture}
@@ -1472,7 +1468,7 @@ bkz(BKZ.EasyParam(block_size=60))
 }
 \end{frame}
 
-\begin{frame}[label={sec:org4cc894f},fragile]{The GSA is a Lie: Tail Shape}
+\begin{frame}[label={sec:org405b06e},fragile]{The GSA is a Lie: Tail Shape}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 from estimator import *
 print(repr(LWE.primal_usvp(Kyber768, red_shape_model="GSA")))  # used in LWE.estimate.rough
@@ -1485,7 +1481,7 @@ rop: ≈2^209.9, red: ≈2^209.9, δ: 1.002842, β: 642, d: 1421, tag: usvp
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[label={sec:org8a6ee5c},fragile]{Cost}
+\begin{frame}[label={sec:orgf1712a0},fragile]{Cost}
  \begin{itemize}
 \item If \(\tau\)  is the number of tours we do, we run our oracle \(\approx \tau \cdot d\) times
 \item So the cost is roughly \(\tau \cdot d \cdot T_{SVP}\).
@@ -1510,7 +1506,7 @@ rop: ≈2^204.9, red: ≈2^204.9, δ: 1.002902, β: 624, d: 1427, tag: usvp
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org2f5ce60},fragile]{Reading Estimator Output}
+\begin{frame}[label={sec:org2b87c75},fragile]{Reading Estimator Output}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 LWE.primal_bdd(Kyber768, red_shape_model="CN11")
 \end{lstlisting}
@@ -1529,7 +1525,7 @@ rop: ≈2^204.0, red: ≈2^203.1, svp: ≈2^202.8, β: 617, η: 651, d: 1457, ta
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgac70eab},fragile]{\alert{Ad Break: We now do SIS, too!}}
+\begin{frame}[label={sec:orgede36d3},fragile]{\alert{Ad Break: We now do SIS, too!}}
  \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
 Dilithium2_MSIS_WkUnf = SIS.Parameters(
     n=256*4,
@@ -1551,8 +1547,8 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \end{frame}
 
 \section{Solving SVP}
-\label{sec:org94b4f97}
-\begin{frame}[label={sec:org50ee367}]{Solving SVP}
+\label{sec:orgf4b1f93}
+\begin{frame}[label={sec:org9afbe03}]{Solving SVP}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 {\color{DarkBlue} \textbf{Enumeration} }
@@ -1579,7 +1575,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org5207dc1}]{Enumeration I -- Pick a radius}
+\begin{frame}[label={sec:orgff8696d}]{Enumeration I -- Pick a radius}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-0-radius.pdf}
 \end{center}
@@ -1587,7 +1583,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:orgeddfed6}]{Enumeration II -- Project basis}
+\begin{frame}[label={sec:orgcc48501}]{Enumeration II -- Project basis}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-1-project.pdf}
 \end{center}
@@ -1595,7 +1591,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:org269926b}]{Enumeration III -- Project lattice}
+\begin{frame}[label={sec:orgd5fb079}]{Enumeration III -- Project lattice}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-2-project.pdf}
 \end{center}
@@ -1603,7 +1599,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:org27dc2f3}]{Enumeration IV -- Enumerate projections}
+\begin{frame}[label={sec:org54483ad}]{Enumeration IV -- Enumerate projections}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-3-enumerate.pdf}
 \end{center}
@@ -1611,7 +1607,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:orgefb35c9}]{Enumeration V -- For each lift and enumerate}
+\begin{frame}[label={sec:org4c327a3}]{Enumeration V -- For each lift and enumerate}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-4-lift.pdf}
 \end{center}
@@ -1619,7 +1615,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:org31da4f0}]{Enumeration V -- For each lift and enumerate}
+\begin{frame}[label={sec:org5a2b503}]{Enumeration V -- For each lift and enumerate}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-5-lift.pdf}
 \end{center}
@@ -1627,7 +1623,7 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:orgd153a8d}]{Enumeration VI -- Keep shortest}
+\begin{frame}[label={sec:org5a2b857}]{Enumeration VI -- Keep shortest}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./assets/lattice-enumeration-6-keep.pdf}
 \end{center}
@@ -1635,14 +1631,14 @@ lattice  :: rop: ≈2^152.2, red: ≈2^151.3, sieve: ≈2^151.1, β: 427, η: 43
 \tiny Picture credit: Joop van de Pol
 \end{frame}
 
-\begin{frame}[label={sec:org82e0199}]{Fast Enumeration}
+\begin{frame}[label={sec:org6e4ff44}]{Fast Enumeration}
 \begin{itemize}
 \item Do not exhaust the search space, but focus on a fraction with exponentially small probability of success, repeat exponentially often: speed-up \(2^{\Theta(\beta)}\)
 \item Preprocess the basis with BKZ-\(\beta'\) for some \(\beta' \leq \beta\) before enumerating.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org594cdd7},fragile]{Practical Performance (Simulation)}
+\begin{frame}[label={sec:org74bf6fe},fragile]{Practical Performance (Simulation)}
  \tikzset{external/export=true}
 \tikzsetnextfilename{enumeration-cost-ahsvp}
 \begin{tikzpicture}
@@ -1684,7 +1680,7 @@ RC.CheNgu12(beta, d).log(2), RC.ABFKSW20(beta, d).log(2), RC.ABLR21(beta, d).log
 \end{frame}
 
 
-\begin{frame}[label={sec:org2c6a9c7}]{Sieving: Key Idea I}
+\begin{frame}[label={sec:org8f4c731}]{Sieving: Key Idea I}
 \tikzset{external/export=true}
 \tikzsetnextfilename{sieving-idea-1}
 \centering
@@ -1716,7 +1712,7 @@ RC.CheNgu12(beta, d).log(2), RC.ABFKSW20(beta, d).log(2), RC.ABLR21(beta, d).log
 \tikzset{external/export=false}
 \end{frame}
 
-\begin{frame}[label={sec:org7bf0d09}]{Sieving: Key Idea II}
+\begin{frame}[label={sec:org023e0ad}]{Sieving: Key Idea II}
 \tikzset{external/export=true}
 \tikzsetnextfilename{sieving-idea-2}
 \centering
@@ -1747,7 +1743,7 @@ RC.CheNgu12(beta, d).log(2), RC.ABFKSW20(beta, d).log(2), RC.ABLR21(beta, d).log
 \tikzset{external/export=false}
 \end{frame}
 
-\begin{frame}[label={sec:org4d82d5b}]{Sieving: Key Idea III}
+\begin{frame}[label={sec:org2e5bd9f}]{Sieving: Key Idea III}
 \tikzset{external/export=true}
 \tikzsetnextfilename{sieving-idea-3}
 \centering
@@ -1782,7 +1778,7 @@ RC.CheNgu12(beta, d).log(2), RC.ABFKSW20(beta, d).log(2), RC.ABLR21(beta, d).log
 \tikzset{external/export=false}
 \end{frame}
 
-\begin{frame}[label={sec:org4f7b562}]{Sieving: Basic (Gauss) Sieve Complexity}
+\begin{frame}[label={sec:orgde0c510}]{Sieving: Basic (Gauss) Sieve Complexity}
 \begin{itemize}
 \item Assume all vectors have (roughly) the same length
 \item Normalise to unit sphere \(\mathcal{S}^{d-1} \coloneqq \{\vec{x} \in \RR^{d} | \|\vec{x}\| = 1\}\)
@@ -1796,7 +1792,7 @@ RC.CheNgu12(beta, d).log(2), RC.ABFKSW20(beta, d).log(2), RC.ABLR21(beta, d).log
 \footnotesize \fullcite{SODA:MicVou10}
 \end{frame}
 
-\begin{frame}[label={sec:org69b53af}]{Sieving: Buckets I}
+\begin{frame}[label={sec:org28ccab6}]{Sieving: Buckets I}
 \tikzset{external/export=true}
 \tikzsetnextfilename{sieving-buckets}
 \centering
@@ -1829,7 +1825,7 @@ RC.CheNgu12(beta, d).log(2), RC.ABFKSW20(beta, d).log(2), RC.ABLR21(beta, d).log
 \tikzset{external/export=false}
 \end{frame}
 
-\begin{frame}[label={sec:org940c2e4}]{Sieving: Buckets II}
+\begin{frame}[label={sec:org4daa519}]{Sieving: Buckets II}
 If \(\vec{v}\), \(\vec{c}\) are somewhat close and \(\vec{w}\), \(\vec{c}\) are somewhat close then perhaps \(\vec{w}\), \(\vec{v}\) are close?
 
 \begin{block}{Strategy}
@@ -1845,7 +1841,7 @@ If \(\vec{v}\), \(\vec{c}\) are somewhat close and \(\vec{w}\), \(\vec{c}\) are 
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orge01db17}]{Sieving: G6K}
+\begin{frame}[label={sec:orgfad9eb4}]{Sieving: G6K}
 G6K \footfullcite{EC:ADHKPS19} is a Python/C++ framework for experimenting with sieving algorithms (inside and outside BKZ)
 \begin{itemize}
 \item Does not take the “oracle” view but considers sieves as stateful machines.
@@ -1860,7 +1856,7 @@ G6K \footfullcite{EC:ADHKPS19} is a Python/C++ framework for experimenting with 
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org2ea0fbc}]{Sieving: SVP}
+\begin{frame}[label={sec:org6e6c18b}]{Sieving: SVP}
 \begin{center}
 \begin{tikzpicture}
     \begin{semilogyaxis}[ylabel=seconds, xlabel=\(\beta\), legend style={fill=}, legend pos=north west, height=0.5\textwidth]
@@ -1874,7 +1870,7 @@ Average time in seconds for solving exact SVP
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org551cdd5}]{Darmstadt HSVP\textsubscript{1.05} Challenges}
+\begin{frame}[label={sec:org31883f2}]{Darmstadt HSVP\textsubscript{1.05} Challenges}
 \begin{center}
 \begin{tikzpicture}
   \begin{axis}[xlabel=\(d\),ylabel=\(\log_2(\textnormal{cycles})\),height=0.5\textwidth]
@@ -1904,7 +1900,7 @@ Average time in seconds for solving exact SVP
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org670f4dc}]{GPU Sieving}
+\begin{frame}[label={sec:org16c7a02}]{GPU Sieving}
 \begin{itemize}
 \item Stream database of vectors to GPU
 \item Run low precision inner products there
@@ -1930,7 +1926,7 @@ dim & TD4F & D4F & MSD & Norm & Norm/GH & FLOP & Walltime & Mem GiB\\[0pt]
 \fullcite{EC:DucSteWoe21}
 \end{frame}
 
-\begin{frame}[label={sec:org051467d},fragile]{Try it at Home}
+\begin{frame}[label={sec:orga626750},fragile]{Try it at Home}
  \begin{lstlisting}[language=sage,label= ,caption= ,captionpos=b,numbers=none]
 from fpylll import IntegerMatrix, GSO, LLL
 from fpylll.tools.bkz_stats import dummy_tracer
@@ -1950,7 +1946,7 @@ for b in range(20, 60+1, 10):
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orga361f6d},fragile]{Costing Sieves}
+\begin{frame}[label={sec:org77eda80},fragile]{Costing Sieves}
  \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 "\emph{The main difference is the cost of the random product code decoding algorithm.}"
@@ -1983,8 +1979,8 @@ RC.ADPS16(500, 1000).log(2), RC.Kyber(500, 1000).log(2), RC.MATZOV(500, 1000).lo
 \end{frame}
 
 \section{ML Attacks}
-\label{sec:org5bbc806}
-\begin{frame}[label={sec:orgd2ad1dd}]{A Series of Recent Works}
+\label{sec:org111008d}
+\begin{frame}[label={sec:orgd300754}]{A Series of Recent Works}
 \begin{columns}
 \begin{column}[t]{0.5\columnwidth}
 {\footnotesize
@@ -2037,7 +2033,7 @@ shared a copy of our paper with the NIST PQC group to make them aware of this at
 \end{quote}
 \end{frame}
 
-\begin{frame}[label={sec:org2046198}]{Attack Description}
+\begin{frame}[label={sec:orgc3f00c9}]{Attack Description}
 \begin{columns}
 \begin{column}{0.35\columnwidth}
 \begin{center}
@@ -2060,7 +2056,7 @@ Modelling \(\vec{v}^{T} \cdot \vec{s} + \vec{u}^{T}\cdot \vec{e}\) as a discrete
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgddcb223}]{Comparison with State of the Art: SALSA VERDE I}
+\begin{frame}[label={sec:org77562cc}]{Comparison with State of the Art: SALSA VERDE I}
 \begin{center}
 \includegraphics[keepaspectratio,page=3,frame,height=.7\textheight]{./crypto2023rump-paper13.pdf}
 \end{center}
@@ -2068,7 +2064,7 @@ Modelling \(\vec{v}^{T} \cdot \vec{s} + \vec{u}^{T}\cdot \vec{e}\) as a discrete
 {\footnotesize \url{https://crypto.iacr.org/2023/rump/crypto2023rump-paper13.pdf} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orgb8fc379}]{Comparison with State of the Art: SALSA VERDE II}
+\begin{frame}[label={sec:orgd684027}]{Comparison with State of the Art: SALSA VERDE II}
 \begin{center}
 \includegraphics[keepaspectratio,page=6,frame,height=.7\textheight]{./crypto2023rump-paper13.pdf}
 \end{center}
@@ -2076,7 +2072,7 @@ Modelling \(\vec{v}^{T} \cdot \vec{s} + \vec{u}^{T}\cdot \vec{e}\) as a discrete
 {\footnotesize \url{https://crypto.iacr.org/2023/rump/crypto2023rump-paper13.pdf} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orgf34dfce},fragile]{Comparison with Something: SALSA FESCA I}
+\begin{frame}[label={sec:orgcc1b4cb},fragile]{Comparison with Something: SALSA FESCA I}
  \begin{center}
 \includegraphics[width=.9\linewidth]{./salsa-fresca-results.png}
 \end{center}
@@ -2097,7 +2093,7 @@ rop: ≈2^48.4, red: ≈2^48.1, svp: ≈2^46.2, β: 41, η: 2, ζ: 478, |S|: ≈
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgda93bdc},fragile]{Comparison with \alert{Something}: SALSA FESCA II}
+\begin{frame}[label={sec:org98002ca},fragile]{Comparison with \alert{Something}: SALSA FESCA II}
  The Lattice Estimator picks \(\beta = 40\) as a lower bound, it is not designed to handle such easy instances.
 
 \begin{lstlisting}[language=Python,label= ,caption= ,captionpos=b,numbers=none]
@@ -2118,7 +2114,7 @@ with local_minimum(40, max(2 * params.n, 41), precision=5) as it:
 {\footnotesize \url{https://github.com/malb/lattice-estimator/blob/main/estimator/lwe\_primal.py\#L209-L220} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orga529b0b}]{High-Level}
+\begin{frame}[label={sec:org733f445}]{High-Level}
 There is no particular reason to believe that ML can threaten LWE.
 
 \begin{columns}
@@ -2142,14 +2138,14 @@ Not easy to establish the state of the art for LWE instances within range of exp
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgc8d167e},standout]{Fin \& Obligatory "We're hiring" Slide}
+\begin{frame}[label={sec:orga1c0879},standout]{Fin \& Obligatory "We're hiring" Slide}
 \begin{center}
 \Huge \alert{Thank You}
 \end{center}
 
 \begin{description}
-\item[{KCL}] recruiting academic staff, postdocs and PhD students (across areas of cryptography)
-\item[{SandboxAQ}] recruiting (maybe staff), postdocs and interns (post-quantum focused)
+\item[{KCL}] Academic staff, postdocs and PhD students (all areas of cryptography)
+\item[{SandboxAQ}] Postdoc/PhD/FTEs/Consultants: PQC PhD residencies, PQC Postdocs, Cryptography SWE
 \end{description}
 \end{frame}
 

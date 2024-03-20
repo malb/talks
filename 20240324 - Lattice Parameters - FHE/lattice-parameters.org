@@ -43,11 +43,8 @@
   - strategies (primal and dual lattice attacks)
   - lattice reduction
   - finding short vectors
-  #  - quantum considerations
-  - binary secrets
   - ML-based attacks
 - Introduce usage of "lattice estimator" along the way
-  # - highlight limitations[fn:: Most of what I know about running open-source projects, I learned from William Stein who responded with "Easy, implement it and send us a patch!" when asked "How do I do … in SageMath?"]
   
 ***                                                                 :B_alertblock:
 :PROPERTIES:
@@ -274,7 +271,7 @@ Falcon512_SKR = NTRU.Parameters(
     Xs=ND.DiscreteGaussian(4.0532),
     Xe=ND.DiscreteGaussian(4.0532),
     m=512,
-    ntru_type='circulant',
+    ntru_type="circulant",
     tag="Falcon512_SKR"
 )
 
@@ -2829,8 +2826,8 @@ Not easy to establish the state of the art for LWE instances within range of exp
 \Huge \alert{Thank You}
 #+END_CENTER
 
-- KCL :: recruiting academic staff, postdocs and PhD students (across areas of cryptography)
-- SandboxAQ :: recruiting (maybe staff), postdocs and interns (post-quantum focused)
+- KCL :: Academic staff, postdocs and PhD students (all areas of cryptography)
+- SandboxAQ :: Postdoc/PhD/FTEs/Consultants: PQC PhD residencies, PQC Postdocs, Cryptography SWE
 
 ** References
 :PROPERTIES:

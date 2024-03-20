@@ -663,8 +663,8 @@ Not easy to establish the state of the art for LWE instances within range of exp
 \Huge \alert{Thank You}
 #+END_CENTER
 
-- KCL :: recruiting academic staff, postdocs and PhD students (across areas of cryptography)
-- SandboxAQ :: recruiting (maybe staff), postdocs and interns (post-quantum focused)
+- KCL :: Academic staff, postdocs and PhD students (all areas of cryptography)
+- SandboxAQ :: Postdoc/PhD/FTEs/Consultants: PQC PhD residencies, PQC Postdocs, Cryptography SWE
 
 * References
 :PROPERTIES:
