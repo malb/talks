@@ -2578,7 +2578,7 @@ Average time in seconds for solving exact SVP
 \scriptsize
 #+end_export
 
-fullcite:EC:DucSteWoe21
+fullcite:EC:DucStevan21
 
 ** Try it at Home
 
