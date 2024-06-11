@@ -1,0 +1,688 @@
+#+title: Adventures in SIS with Hints
+#+subtitle: Embracing the brave new world where we make it up as we go
+#+options: H:2 toc:nil num:t ':t
+#+language: en-gb
+#+select_tags: export
+#+exclude_tags: noexport
+
+#+latex_class: beamer
+#+latex_class_options: [xcolor=table,10pt,aspectratio=169]
+
+#+latex_header: % \tikzset{external/export=true}
+
+#+author: Martin R. Albrecht
+#+email: martin.albrecht@{kcl.ac.uk,sandboxquantum.com}
+#+date: 10 June 2024
+#+startup: beamer
+
+#+macro: credit @@latex:{\tiny@@ Credit: $1 @@latex:}\par@@
+#+macro: picture-credit @@latex:{\tiny@@ Picture credit: $1 @@latex:}\par@@
+#+macro: fnsize @@latex:{\footnotesize@@ $1 @@latex:\par}@@
+#+macro: tiny @@latex:{\tiny@@ $1 @@latex:\par}@@
+
+#+latex_header: \newcommand{\randkHSIS}{\ensuremath{\$\pcmathhyphen{}\mathsf{kHSIS}}\xspace}
+#+latex_header: \newcommand{\kHISIS}{\ensuremath{\mathsf{kHISIS}}\xspace}
+#+latex_header: \newcommand{\MSIS}{\ensuremath{\mathsf{M}\pcmathhyphen{}\mathsf{SIS}}\xspace}
+#+latex_header: \newcommand{\MISIS}{\ensuremath{\mathsf{M}\pcmathhyphen{}\mathsf{ISIS}}\xspace}
+#+latex_header: \newcommand{\SIVP}{\ensuremath{\mathsf{SIVP}}\xspace}
+
+#+latex_header: \newfontfamily{\fallbackfont}{Linux Libertine O}[Scale=MatchLowercase]
+#+latex_header: \DeclareTextFontCommand{\textfallback}{\fallbackfont}
+#+latex_header: \newunicodechar{∩}{\textfallback{∩}}
+
+** Programme
+
+- The [[https://malb.io/sis-with-hints.html][SIS with Hints Zoo]] is an attempt to keep track of all those new SIS-like assumptions that hand out additional hints.
+
+- I will discuss several of these assumptions here, with a focus on computational hardness rather than design.
+
+  - Designers :: Please consider whether you can re-use one of those many newfangled assumptions before introducing yet another one.
+
+  - Cryptanalysts :: Analyse them!
+
+- I will also dive a bit deeper into some recent adventures in SIS with hints.
+
+** Teaser
+
+#+attr_latex: :height .9\textheight  :options keepaspectratio
+[[./sis-with-hints-teaser.jpg]]
+
+** Notation
+:PROPERTIES:
+:BEAMER_opt: allowframebreaks
+:END:
+
+#+name: def:sis
+#+attr_latex: :options [M-(I)SIS]
+#+begin_definition
+- An instance of \(\MSIS\) is given by \(\mat{A} \sample \ring_q^{n\times m}\) and has solutions \(\vec{u}^{\star} \in \ring^{m}\) such that \(\Vert \vec{u}^{\star} \Vert \leq \beta^{\star}\) and \(\mat{A} \cdot \vec{u}^{\star} \equiv \vec{0} \bmod q\).
+- An instance of \(\MISIS\) is given by \((\mat{A}, \vec{t}) \sample \ring_q^{n\times m} \times \ring_q^n\) and has solutions \(\vec{u}^{\star}\) such that \(\Vert \vec{u}^{\star} \Vert \leq \beta^{\star}\) and \(\mat{A} \cdot \vec{u}^{\star} \equiv \vec{t} \bmod q\).
+#+end_definition
+
+- Throughout, feel free to set \(\ring \coloneqq \ZZ\).
+- I am not going to discuss issues arising over cyclotomic rings in any detail.
+
+#+beamer: \framebreak
+
+- The kernel lattice \(\Lambda_q^\bot(\mat{A})\) of \(\mat{A}\) consists of all integral vectors \(\ring_q\)-orthogonal to the rows of \(\mat{A}\):
+  \[\Lambda_q^\bot(\mat{A}) \coloneqq \set{ \vec{x} \in \ring^m : \mat{A} \cdot \vec{x} \equiv \vec{0} \bmod q }.\]
+- I write \(\mat{G}\) for "the Gadget matrix"
+  #+begin_export latex
+\begin{align*}
+\mat{G} &\coloneqq
+\left(\begin{array}{*{20}c}
+1 & 2 & 4 & \ldots & \lfloor q/2 \rfloor & \ldots & 0 & 0 & 0 & \ldots & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots       & \ddots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0  & \ldots& 0       & \ldots & 1 & 2 & 4 & \ldots & \lfloor q/2 \rfloor \\
+\end{array}\right)
+\end{align*}
+  #+end_export
+  
+* K-SIS
+
+** The Original: K-SIS
+
+#+begin_definition
+For any integer \(k \geq 0\), an instance of the k-M-SIS problem[fn::This is the module variant defined in cite:C:ACLMT22.] is a matrix \(\mat{A} \sample \ring_{q}^{n \times m}\) and a set of \(k\) vectors \(\vec{u}_{1}, \ldots \vec{u}_{k}\) s.t. \(\mat{A}\cdot \vec{u}_{i} \equiv \vec{0} \bmod q\) with \(\|{\vec{u}_i}\| \leq \beta\). A solution to the problem is a nonzero vector \(\vec{u}^{\star} \in \ring^{m}\) such that
+\[\|{\vec{u}^{\star}}\| \leq \beta^*, \quad \mat{A}\cdot \vec{u}^{\star} \equiv \vec{0} \bmod q,\quad \text{and} \quad \vec{u}^{\star} \notin \mathcal{K}\text{-}\operatorname{span}(\set{\vec{u}_i}_{1 \leq i \le k}).\]
+#+end_definition
+
+{{{fnsize(fullcite:PKC:BonFre11)}}}
+
+** K-SIS Hardness
+
+- cite:PKC:BonFre11 showed that k-SIS (over \(\ZZ\)) is hard if SIS is hard for discrete Gaussian \(\vec{u}_{i}\) and for \(k = O(1)\).
+- This reduction was improved to cover \(k = \mathcal{O}(m)\).footfullcite:C:LPSS14
+- No proof was provided for the module variant in cite:C:ACLMT22 but Sasha Laphia later proved it (unpublished).
+
+** Proof Idea
+
+Let \(\ring_{q} \coloneqq \ZZ_{q}\) be a field. Given the challenge \(\mat{B} \in \ring_{q}^{n \times (m-k)}\)
+1. Sample a small Gaussian full rank matrix \(\mat{E} \in \ZZ^{m \times k}\) and write \[\mat{E} = \begin{pmatrix} \mat{F} \\ \mat{H}\end{pmatrix}\text{ with } \mat{H} \in \ring^{k \times k}\text{ and invertible over \(\QQ\)}.\]    
+2. Set \(\mat{U} \coloneqq -\mat{B} \cdot \mat{F} \cdot \mat{H}^{-1}\) and \(\mat{A} \coloneqq  [\mat{B} | \mat{U}]\).
+   - We have \(\mat{A} \cdot \mat{E} \equiv \mat{0} \bmod q\) since \(\mat{B} \cdot \mat{F} - \mat{B} \cdot \mat{F} \cdot \mat{H}^{-1} \cdot \mat{H} \equiv \mat{0} \bmod q\).
+   - We also have that \(\mat{A}\) is close to uniform since \(\mat{B} \cdot \mat{F}\) is close to uniform and \(\mat{H}\) is invertible.
+3. When the adversary outputs \(\vec{u}^{\star} \coloneqq (\vec{f}, \vec{g})\), we have
+   - \(\vec{0} \equiv \mat{B} \cdot \vec{f} - \mat{B} \cdot \mat{F} \cdot \mat{H}^{-1} \cdot \vec{g} \bmod q\)
+   - \(\vec{0} = \det(\mat{H}) \cdot \mat{B} \cdot \vec{f} -  \det(\mat{H}) \cdot \mat{B} \cdot \mat{F} \cdot \mat{H}^{-1} \cdot \vec{g}\) over \(\ZZ\).
+   - \(\vec{0} = \mat{B} \cdot \left(\det(\mat{H}) \cdot \vec{f} -  \det(\mat{H}) \cdot \mat{F} \cdot \mat{H}^{-1} \cdot \vec{g}\right)\)
+
+** TODO From \(O(1)\) to \(O(m)\)
+
+- \(\det(\mat{H})\) grows quickly with \(k\)
+- cite:C:LPSS14 essentially samples small \(\mat{H}\) with small inverse, but non-trivial to make the result look Gaussian.
+
+** What can it do?
+
+- linearly homomorphic signatures
+- removing the random oracle from GPV signatures at the price of restricting to \(k\) signatures
+- traitor-tracing (by extension to k-LWE[fn::It is exactly what you think it is])
+- …  
+
+** Perspective 
+
+*** Leakage Resilience                                            :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Alice has \(\mat{A}, \mat{T}\) s.t. \(\mat{T} \in \ring^{m \times m}\) is short and \(\mat{A} \cdot \mat{T} \equiv \mat{0} \bmod q\), i.e. \(\mat{T}\) is trapdoor. Even given, say, \(1/2\) of the columns \(\mat{T}\) it is hard to recover a full trapdoor.
+
+* The Crisis of Knowledge Assumptions 
+** K-R-ISIS
+
+#+attr_latex: :options [K-M-ISIS Admissible]
+#+begin_definition
+Let \(g(\vec{X}) \coloneqq  \vec{X}^{\vec{e}} := \prod_{i \in \ZZ_w} X_i^{e_i}\) for some exponent vector \(\vec{e} \in \ZZ^w\). Let \(\mathcal{G} \subset \mathcal{R}(\vec{X})\) be a set of such monomials with \(k \coloneqq |\mathcal{G}|\). We call a family \(\mathcal{G}\) _k-M-ISIS-admissible_ if (1) all \(g \in \mathcal{G}\) have constant degree, (2) all \(g \in \mathcal{G}\) are distinct and \(0 \not\in\mathcal{G}\).
+#+end_definition
+
+#+attr_latex: :options [K-M-ISIS Assumption]
+#+begin_definition
+Let \(\vec{t} = (1,0,\ldots,0)\).
+Let \(\mathcal{G}\) be k-M-ISIS-admissible.
+Let  \(\mat{A} \sample \ring_q^{n \times m}\), \(\vec{v} \sample (\ring_q^\star)^w\). Given \((\mat{A}, \vec{v}, \vec{t}, \{\vec{u}_{g}\})\) with \(\vec{u}_{g}\) short and \(g(\vec{v}) \cdot \vec{t} \equiv \mat{A}\cdot \vec{u}_{g} \bmod q\) it is hard to find a short \(\vec{u}^{\star}\) and small \(s^{\star}\) s.t. \(s^\star \cdot \vec{t} \equiv \mat{A} \cdot \vec{u}^{\star} \bmod q.\)
+
+When \(n = 1\), we call the problem _K-R-ISIS_.
+#+end_definition
+
+{{{fnsize(fullcite:C:ACLMT22)}}}
+
+** K-R-ISIS Hardness
+
+*** 
+:PROPERTIES:
+:BEAMER_col: 0.65
+:BEAMER_opt: t
+:END:
+
+_Some reductions (none cover the interesting cases):_
+- K-R-ISIS is as hard as R-SIS when \(m > k\) or when the system generated by \(\mathcal{G}\) is efficiently invertible.
+- k-M-ISIS is at least as hard as K-R-ISIS: K-M-ISIS is a true generalisation of K-R-SIS.
+- Scaling \((\mathcal{G},g^*)\) multiplicatively by any non-zero \(g\) does not change the hardness: may normalise to \(g^{*} \equiv 1\).
+- \((\mathcal{G},1)\) is as hard as \((\mathcal{G},0)\) for any \(\mathcal{G}\): non-homogeneous variant is no easier than the homogeneous variant.
+
+*** 
+:PROPERTIES:
+:BEAMER_col: 0.35
+:BEAMER_opt: t
+:END:
+
+_Direct cryptanalysis:_
+- a direct SIS attack on \(\mat{A}\).
+- finding short \(\ring\)-linear combinations of \(\vec{u}_{i}\)
+- finding \(\mathcal{K}\)-linear combinations of \(\vec{u}_{i}\) that produce short images.
+
+… all seem hard.
+
+** Knowledge K-R-ISIS
+
+The assumption states that for any element \(c \cdot \vec{t}\) that the adversary can produce together with a short preimage, it produced that as some small linear combination of the preimages \(\{\vec{u}_{g}\}\) we have given it. Thus, roughly:
+
+#+attr_latex: :options [Knowledge K-R-ISIS]
+#+begin_definition
+If an adversary outputs any \(c, \vec{u}_{c}\) s.t.
+\[
+c \cdot \vec{t} \equiv \mat{A} \cdot \vec{u}_{c} \bmod q
+\]
+
+There is an extractor that -- given the adversary's randomness -- outputs short
+\(\{c_{g}\}\) s.t.
+\[
+c \equiv \sum_{g \in \mathcal{G}} c_{g} \cdot g(\vec{v}) \bmod q.
+\]
+#+end_definition
+
+Think \(\vec{t} = (1,0)\) and the second component serves as a "check equation": The assumption only makes sense for \(n>1\).
+
+** Knowledge K-R-ISIS: The Audacity
+
+[[./pun.png]]
+
+** Knowledge K-R-ISIS: Almost Instant Karma
+
+The Knowledge K-M-ISIS assumptions is "morally"[fn::The assumption is technically unfalsifiable but for all intents and purposes it is wrong by inspection of the attack.] false.
+
+*** 
+:PROPERTIES:
+:BEAMER_col: 0.3
+:END:
+
+
+#+begin_export latex
+\begin{align*}
+\begin{pmatrix} \mat{C}\\ \mat{0}\end{pmatrix} \equiv \begin{pmatrix} \mat{A}_{1} \\ \mat{A}_{2} \end{pmatrix} \cdot \mat{U} \bmod q.
+\end{align*}
+#+end_export
+
+*** 
+:PROPERTIES:
+:BEAMER_col: 0.7
+:END:
+
+- \(\mat{U}\) is a trapdoor for \(\mat{A}_{2}\)
+- Use it to find a short preimage of some \((\vec{c}^{\star}, \vec{0})\) using, say, Babai rounding.
+- It will change \(\vec{c}^{\star}\) but we're allowed to output anything in the first component.
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+{{{fnsize(fullcite:AC:WeeWu23)}}}
+
+** Known knowledge assumptions are easy quantumly 
+
+#+begin_quote
+Our main result is a quantum polynomial-time algorithm that samples well-distributed LWE instances while provably not knowing the solution, under the assumption that LWE is hard. Moreover, the approach works for a vast range of LWE parametrizations, including those used in the above-mentioned SNARKs.
+#+end_quote
+
+fullcite:EPRINT:DebFalSte24
+
+* BASIS
+** BASIS (Random)
+
+We consider \(k=2\), for simplicity.
+
+#+attr_latex: :options [BASIS\(_\mathsf{rand}\)]
+#+begin_definition
+Let \(\mat{A} \in \ZZ_{q}^{n \times m}\). We're given
+\[
+\vec{B} := \begin{pmatrix}\mat{A}_{1} & \vec{0} & - \vec{G}\\\vec{0} & \mat{A}_{2} & -\vec{G}\end{pmatrix}
+\] and a short \(\vec{T}\) s.t. \(\vec{G} \equiv \vec{B} \cdot \vec{T} \bmod q\)
+where \(\mat{A}_{i}\) are uniformly random for \(i>1\) and \(\mat{A}_{1} \coloneqq  [\vec{a} | \mat{A}^{T}]^{T}\) for uniformly random \(\mat{A}\) and \(\vec{a}\).
+
+Given \((\vec{B}, \vec{T})\) it is hard to find a short \(\vec{u}^{\star}\) s.t. \(\mat{A} \cdot \vec{u}^{\star} \equiv \vec{0} \bmod q\).
+#+end_definition
+
+{{{fnsize(fullcite:EC:WeeWu23)}}}
+
+** Hardness
+
+BASIS\(_\mathsf{rand}\) is as hard as SIS.
+
+- We can construct \(\vec{B}\) given \(\mat{A}\) since we can trapdoor all \(\mat{A}_{i}\) for \(i > 1\).
+
+- For each column \(\vec{t} = (\vec{t}^{(1)}, \vec{t}^{(2)}, \vec{t}^{(G)})\) of \(\vec{T}\) we have \(\mat{A}_{i} \cdot \vec{t}^{(i)} \equiv \vec{G} \cdot \vec{t}^{(G)}\) where \(\vec{G} \cdot \vec{t}^{(G)}\) is close to uniform.
+- We can sample \(\vec{t}^{(1)}\), compute \(\vec{y} := \mat{A}_{1} \cdot \vec{t}^{(1)}\) and then use the gadget structure of \(\vec{G}\) to find a short \(\vec{t}^{(G)}\) s.t. \(\mat{A}_{i} \cdot \vec{t}^{(i)} \equiv \vec{G} \cdot \vec{t}^{(G)}\).
+- Using the trapdoors for \(\mat{A}_{i}\) with \(i>1\) we can find \(\vec{t}^{(i)}\) s.t. \(\mat{A}_{i} \cdot \vec{t}^{(i)} \equiv \vec{G} \cdot \vec{t}^{(G)}\).
+
+** BASIS (Structured)
+
+We consider \(k=2\), for simplicity.
+
+#+attr_latex: :options [BASIS\(_\mathsf{struct}\)]
+#+begin_definition
+Let \(\mat{A} \sample \ZZ_{q}^{n \times m}\). We are given
+\[\vec{B} \coloneqq \begin{pmatrix}
+\mat{A}_{1} & \vec{0} & - \vec{G}\\
+\vec{0} & \mat{A}_{2} & -\vec{G}
+\end{pmatrix}
+\] and a short \(\vec{T}\) s.t. \(\vec{G} \equiv \vec{B} \cdot \vec{T} \bmod q\)
+where \(\mat{A}_{i} \coloneqq  \vec{W}_{i} \cdot \mat{A}\) for \(\vec{W}_{i} \sample \ZZ_{q}^{n \times n}\).
+
+Given \((\vec{B}, \mat{A}, \{\mat{W}_{i}\}, \vec{T})\) it is hard to find a short \(\vec{u}^{\star}\) s.t. \(\mat{A} \cdot \vec{u}^{\star} \equiv \vec{0} \bmod q\).
+#+end_definition
+
+{{{fnsize(fullcite:EC:WeeWu23)}}}
+
+** Hardness
+
+Given an algorithm for solving BASIS\(_\mathsf{struct}\) there is an algorithm for solving k-M-ISIS.
+
+** PRISIS
+
+#+attr_latex: :options [PRISIS]
+#+begin_definition
+Let \(\mat{A} \in \ring_{q}^{n \times m}\). We're given
+\[\vec{B} \coloneqq \begin{pmatrix}
+\mat{A} &               \vec{0} & \cdots & - \vec{G}\\
+\vec{0} &           w \cdot \mat{A} & \cdots & -\vec{G}\\
+\mat{0} &               \vec{0} & \ddots & -\vec{G}\\
+\vec{0} & \cdots & w^{k-1} \cdot \mat{A} & -\vec{G}
+\end{pmatrix}\] and a short \(\vec{T}\) s.t. \(\vec{G} \equiv \vec{B} \cdot \vec{T} \bmod q.\)
+
+Given \((\mat{A}, \mat{B}, w, \vec{T})\) it is hard to find a short \(\vec{u}^{\star}\) s.t. \(\mat{A} \cdot \vec{u}^{\star} \equiv \vec{0}\).
+#+end_definition
+
+{{{fnsize(fullcite:EPRINT:FenMogNgu23)}}}
+
+** Hardness
+
+PRISIS's additional structure allows to prove a broader regime of parameters as hard as M-SIS
+
+*** If \(k=2\) then PRISIS is no easier than M-SIS                :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+  #+begin_export latex
+\begin{align*}
+\vec{B} \coloneqq  \begin{pmatrix}
+\mat{A} &               \vec{0} & -\vec{G}\\
+\vec{0} &           w \cdot \mat{A} & -\vec{G}\\
+\end{pmatrix}
+\end{align*}
+  #+end_export
+
+*** The Trick
+
+- Plant an NTRU instance in \(w\), and use its trapdoor to construct the global trapdoor \(\mat{T}\)
+- Can pick parameters for NTRU that are statistically secure
+
+** \(h\)-PRISIS
+
+\(h\)-PRISIS cite:EPRINT:AFLN23 is a multi-instance version of PRISIS.
+
+#+attr_latex: :options [\(h\)-PRISIS]
+#+begin_definition
+Let \(\mat{A}_{i} \in \ring_{q}^{n \times m}\) for \(i \in \{1,…,h\}\). We're given
+\[\vec{B}_{i} := \begin{pmatrix}
+\mat{A}_{i} &                   \vec{0}     & \cdots & -\vec{G}\\
+\vec{0} &               w_{i} \cdot \mat{A}_{i} & \cdots & -\vec{G}\\
+\mat{0} &                       \vec{0} & \ddots & -\vec{G}\\
+\vec{0} & \cdots &       w_i^{k-1} \cdot \mat{A}_{i} & -\vec{G}
+\end{pmatrix}\] and a short \(\vec{T}_{i}\) s.t. \(\vec{G} \equiv \vec{B}_{i} \cdot \vec{T}_{i} \bmod q.\)
+
+Given \((\{\mat{A}_i\}, \{\mat{B}_{i}\}, \{w_i\}, \{\vec{T}\}_i)\) it is hard to find a short \(\vec{u}_{i}^{\star}\) s.t. \(\sum \mat{A}_{i} \cdot \vec{u}_{i}^{\star} \equiv \vec{0} \bmod q\).
+#+end_definition
+
+** Hardness
+
+\(h\)-PRISIS is no easier than PRISIS cite:EPRINT:AFLN23. In particular, if \(k=2\) then \(h\)-PRISIS is no easier than M-SIS cite:EPRINT:AFLN23.
+
+*** The Trick
+
+- Let \(\vec{U}, \vec{V}\) be short and satisfy \(\mat{U} \cdot \mat{V} \equiv \mat{I}\).
+- We can re-randomise \(\mat{A}_{1}\) to \(\mat{A}_{i}\) as \(\mat{A}_{i} \coloneqq \mat{A}_{1} \cdot \mat{U}\) and \(\mat{T}\) as \(\mat{T}_{i} \coloneqq \mat{V} \cdot \mat{T}\)
+- We have \(\mat{A}_{i} \cdot \mat{T}_{i} \equiv \mat{A}_{1} \cdot \vec{U} \cdot \mat{V} \cdot \mat{T} \equiv \mat{A} \cdot \mat{T}\).
+- \(\mat{U} \coloneqq \begin{pmatrix} \mat{I} & \mat{R}_{1} \\ \mat{0} & \mat{I} \end{pmatrix} \cdot \begin{pmatrix} \mat{I} & \mat{0} \\ \mat{R}_{2} & \mat{I} \end{pmatrix}\) and \(\mat{V} \coloneqq \begin{pmatrix} \mat{I} & \mat{0} \\ -\mat{R}_{2} & \mat{I} \end{pmatrix} \cdot \begin{pmatrix} \mat{I} & -\mat{R}_{1} \\ \mat{0} & \mat{I} \end{pmatrix}\) where \(\mat{R}_{i}\) are small.
+
+** What can it do?
+
+Polynomial commitment schemes, see Khanh's talk.
+
+* One-more-ISIS
+
+** One-more-ISIS
+
+#+attr_latex: :options [One-more-ISIS]
+#+begin_definition
+Let \(\mat{A} \sample \ZZ_{q}^{n \times m}\).
+
+_Syndrome queries:_ can request a random challenge vector \(\vec{t} \sample \ZZ_{q}^{n}\) which is added to some set \(\mathcal{S}\).
+
+_Preimage queries:_ can submit _any_ vector \(\vec{t}' \in \ZZ_{q}^{n}\) will get a short vector \(\vec{u}' \sample D_{\ZZ^m,\sigma}\) such that \(\mat{A} \cdot \vec{u}' \equiv \vec{t}' \bmod q\). Denote \(k\) for the number of preimage queries.
+
+The adversary is asked to output \(k+1\) pairs \(\{(\vec{u}^{\star}_i,\vec{t}_i)\}_{1 \le i \leq k+1}\) satisfying:
+\[\mat{A}\cdot \vec{u}_{i}^{\star} \equiv \vec{t}_{i} \bmod q, \|\vec{u}^\star_{i}\| \leq \beta^{\star} \text{ and }\vec{t}_{i} \in \mathcal{S}.\]
+#+end_definition
+
+{{{fnsize(fullcite:CCS:AKSY22)}}}
+
+** Hardness
+
+The hardness of the problem is analysed using direct cryptanalysis in the original paper. The authors give a combinatorial attack and a lattice attack.
+
+*** The Trick
+
+The key ingredient is that \(\beta^{*}\) is only marginally bigger than \(\sqrt{m} \cdot \sigma\).
+
+** COMMENT Hardness: Combinatorial Attack
+
+- The adversary requests \(n \cdot q\) preimages for all \(\{a \cdot \vec{e}_{i}\ \mid\ a \in \ZZ_{q}, i \in [1,…n]\}\), here \(\vec{e}_{i}\) is the \(i\)-th unit vector.
+- Adding up \(n\) such preimages allows to construct any image.
+- Since the norm of the preimages returned by the challenger is \(\sqrt{m} \cdot \sigma\), this allows to solve the One-more-ISIS problem when \(\sqrt{n \cdot m} \cdot \sigma \leq \beta\).
+- Smaller and larger sets of preimages are possible, increasing and decreasing the output norm respectively.
+
+** Hardness: Lattice Attack
+
+- The adversary requests \(\geq m\) preimages of zero and uses that to produce a short basis \(\mat{T}\) for the kernel of \(\mat{A}\), i.e. 
+  \[
+  \mat{A}\cdot\mat{T} \equiv \vec{0} \bmod q.
+  \] 
+- This constitutes a trapdoor for \(\mat{A}\) and thus permits to return short preimages for any target.
+- However, this trapdoor is of degraded quality relative to the trapdoor used by the challenger.
+
+*** Challenge
+
+The key computational challenge then is to fix-up or improve this degraded trapdoor in order to be able to sample sufficiently short vectors.
+
+** What can it do?
+
+Blind signatures.[fn::But see fullcite:EPRINT:BLNS23.]
+
+* Hinted Lattice Problems as Hard as Finding Short Vectors in PSPACE ∩ E
+** Hinted Lattice Problems as Hard as Finding Short Vectors in PSPACE ∩ E
+
+*** 
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+#+attr_latex: :height 0.6\textheight  :options keepaspectratio,frame
+[[./russell.jpg]]
+
+
+*** 
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+#+attr_latex: :height 0.6\textheight  :options keepaspectratio,frame
+[[./eamonn.jpg]]
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+#+begin_center 
+joint work with Russell W. F. Lai[fn::some slides nicked from Russell.] and Eamonn W. Postlethwaite
+#+end_center
+
+** GPV
+
+- Public Key :: Matrix \(\mat{A} \in \ZZ_q^{n \times m}\).
+- Secret Key :: Short basis of \(\Lambda_q^\bot(\mat{A})\) of norm \(\alpha\).
+- Signature of \(\mu\) :: Short vector \(\vec{u}\) satisfying
+  \[\begin{aligned}
+  \mat{A} \cdot \vec{u} \equiv \mathsf{H}(\mu) \bmod q && \text{and} && \norm{\vec{u}} \leq \beta
+  \end{aligned}\]
+  where \(\mathsf{H}: \bin^{\star} \to \ZZ_q^n\) is hash function modelled as random oracle, \(\beta \approx \sqrt{m} \cdot \alpha\).
+
+** Security Proof ≈ argument against signing the same \(\mu\) twice:
+
+- Signing same \(\mu\) twice \(\implies\)
+  \[\begin{aligned}
+  \mat{A} \cdot \vec{u}_0 \equiv \mat{A} \cdot \vec{u}_1 &= \mathsf{H}(\mu) \bmod q, \\
+  \mat{A} \cdot (\vec{u}_0 - \vec{u}_1) &= \vec{0} \bmod q,
+  \end{aligned}\]
+  i.e. gives away short vector \(\vec{x}_0 - \vec{x}_1 \in \Lambda_q^\bot(\mat{A})\).
+- Many \(\mu\) \(\implies\) adversary gets short(-ish) basis of \(\Lambda_q^\bot(\mat{A})\) of norm \(\approx \sqrt{m} \cdot \alpha\).
+
+***  Does this (really) help adversary forge signatures?          :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+One-more-ISIS assumption suggest "no"!
+
+** The \(k\)-hint Inhomogeneous Short Integer Solution Problem:
+
+#+name: def:khISIS
+#+attr_latex: :options [k-H-ISIS]
+#+begin_definition
+Let \(k,n,m,q,\beta,\mathsf{HintGen}\), where
+\[\begin{aligned}
+  \forall~\mat{A} \in \ZZ_q^{n \times m},~\mathsf{HintGen}(\mat{A}) \subseteq_k \Lambda_q^\bot(\mat{A}) && \text{and} && \beta^{\star} \leq r \cdot \norm{\mathsf{HintGen}(\mat{A})}          
+  \end{aligned}
+\]
+for some ratio \(r \leq \mathsf{polylog}(m)\).[fn::We mostly care about \(r \leq O(1)\) or at least \(r \leq O(\log m)\).]
+
+Given \((\mat{A} \sample \ZZ_q^{n \times m}, \vec{y} \sample \ZZ_q^n, \mat{U} \sample \mathsf{HintGen}(\mat{A}))\) find
+\(\vec{u}^{\star} \in \ZZ^m\) such that \(\mat{A} \cdot\vec{u}^{\star} \equiv \vec{y} \bmod q\) and \(\norm{\vec{u}^\star} \leq \beta^{\star}\).
+#+end_definition
+
+_\(k\)-hint (Homogeneous) Short Integer Solution (k-H-SIS) Problem_: Same thing but \(\vec{y} = \vec{0}\).
+
+** Successive Minima and SIVP
+
+- Successive minima \(\lambda_i(\Lambda) =\) radius of smallest ball containing \(i\) linearly independent lattice vectors.
+
+- \(\SIVP_\gamma\): Given lattice \(\Lambda \subseteq \RR^m\), find \(m\) linearly independent lattice vectors of norm at most \(\gamma \cdot \lambda_m(\Lambda)\).
+
+** Enumeration and Sieving
+
+Two types of lattice algorithms for \(\gamma \leq \poly[m]\):
+
+***                                                                  :B_columns:
+:PROPERTIES:
+:BEAMER_env: columns
+:BEAMER_opt: t
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_col: 0.45
+:END:
+
+***** Enumeration-type                                            :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+- Enumerate over all non-zero vectors in \(\Lambda\) of norm at most \(\beta\).
+- Output the shortest vector.
+
+**** 
+:PROPERTIES:
+:BEAMER_col: 0.45
+:END:
+
+***** Sieving-type                                                :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+- Start with a long list of vectors in \(\Lambda\).
+- Search for an integer combination of vectors in the list which gives a shorter vector.
+- Add resulting vector to the list.
+- Repeat.
+
+** Landscape
+
+Space-time complexity of \(\SIVP_\gamma\) over \(\Lambda_q^\bot(\mat{A})\):
+
+| Algorithms          | Time         | Memory       | Assumptions                             |
+|---------------------+--------------+--------------+-----------------------------------------|
+| Enumeration         | \(m^{\Omega(m)}\) | \(\poly[m]\) | -                                       |
+| Sieving             | \(2^{\Omega(m)}\) | \(2^{\Omega(m)}\) | -                                       |
+| Sieving (this work) | \(2^{\Omega(m)}\) | \(\poly[m]\) | 1) sub. exp. OWF and 2) k-H-SIS is easy |
+
+We write "\((\tau,\mu)\)-algorithm" for algorithms running in time \(\tau\) and memory \(\mu\).
+
+*** Our Interpretation                                            :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Hinted lattice problems seem hard.
+
+** Step 1: Entropic Reduction from k-H-SIS to k-H-ISIS
+
+We show that the classic SIS to ISIS reduction gives the following:
+
+*** k-H-SIS → k-H-ISIS                                            :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Let \(\adv\) be PPT adversary against k-H-ISIS, then there exists a PPT adversary \(\bdv\) against k-H-SIS. The output of \(\bdv\) follows a Gaussian distribution (with some centre) with high min-entropy.
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+\(\bdv\)'s outputs are drawn from the following distribution:
+
+- Choose a centre \(\vec{c}\) from some distribution (somehow chosen by \(\adv\)).
+- Output a sample from \(\ddv_{\Lambda_q^\bot(\mat{A}), s, \vec{c}}\), where the Gaussian parameter \(s\) satisfies \[s \geq \sqrt{m} \cdot \lambda_m(\Lambda_q^\bot(\mat{A})) \geq \eta_{\epsilon}(\Lambda_q^\bot(\mat{A}))\] with high probability.
+
+** Step 2: Gaussian Vectors Generate the Lattice
+
+We prove the following lattice generation theorem:
+
+*** Gaussian vectors generate the lattice                         :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+Let \(\Lambda \subseteq \RR^m\) be any lattice and suppose \(s \geq \sqrt{m} \cdot \lambda_m(\Lambda)\).\\
+Let \(\vec{x}_i \sample \ddv_{\Lambda,s,\vec{c}_i}\) for \(i = 1,2,\ldots,t\) with arbitrary and potentially distinct centres \(\vec{c}_i\).\\
+There exists \(t^* = O(m \cdot \log(s \sqrt{m}))\) s.t. if \(t \geq t^*\), then \(\set{\vec{x}_i}_{i\in \{1 \ldots t\}}\) generates \(\Lambda\) with probability at least \(1-2^{-\Omega(m)}\).
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+ This was known only for \(\vec{c}_i \coloneqq \vec{0}\).footfullcite:SODA:HavReg14
+
+** Step 3: Improved Analysis of Sieves
+
+We prove the following sieving theorem:
+
+*** Number of points in a ball                                    :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+Let \(S = \set{\vec{x}_1, \ldots, \vec{x}_t} \subseteq \RR^m\) be any set of \(t\) distinct vectors of norm \(\norm{\vec{x}_i} \leq \beta\).\\
+Let \(1 < r = o(\log m)\) be some improvement ratio.\\
+There exists \(t^* \leq 2^{O(m \log r)}\) s.t., if \(t \geq t^*\), then there exist \(i,j\) s.t. \(0 < \norm{\vec{x}_i - \vec{x}_j} \leq \beta/r\).
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+Previous sieve analyses were
+- heuristic (assuming vectors are uniformly distributed on the surface of a sphere) and
+- only for \(r = O(1)\).
+
+** Step 4: Finding One Mildly Short Vector
+
+Suppose there exists a PPT entropic k-H-SIS solver \(\bdv\) with ratio \(r > 1\).
+
+We construct a \((2^{O(m)},\poly[m])\) k-H-SIS solver \(\bdv'\) with constant ratio \(r' < 1\).
+
+*** Basic Idea                                                    :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Run entropic kHSIS solver \(\bdv\) many times to get \(2^{\Omega(m)}\) vectors, then apply sieving theorem.
+
+** Step 4: Finding One Mildly Short Vector (More Details)
+
+1. Success probability amplification: Repeat \(\bdv\) to make success probability overwhelming.
+2. Randomised memory-inefficient sieve:
+   - Fill random tape of (amplified) \(\bdv\) with \(t \geq 2^{\Omega(m)}\) independent randomness \(\chi_1, \ldots, \chi_t\).
+   - For each \(i,j \in [t]\):
+     - Compute \(\vec{x}_i \gets \bdv(\mat{A}, \mat{U}; \chi_i)\).
+     - Compute \(\vec{x}_j \gets \bdv(\mat{A}, \mat{U}; \chi_j)\).
+     - Output \(\vec{x}_i - \vec{x}_j\) if \(0 < \norm{\vec{x}_i - \vec{x}_j} \leq r' \cdot \norm{\mat{U}}.\)
+     - Entropic-ness of \(\bdv\) + sieving theorem \(\implies\) Successful output with overwhelming probability.
+3. Derandomisation: derandomise the double-loop with sub-exp. secure PRF.
+
+** Step 5: Finding Lots of Mildly Short Vectors
+
+Suppose further that the entropic kHSIS solver \(\bdv\) has Gaussian outputs.
+
+We construct a \((2^{O(m)}, \poly[m])\) sieving routine \(\cdv\):
+
+- Input :: \((\mat{A}, \mat{U})\) where \(\mat{U}\) generates \(\Lambda_q^\bot(\mat{A})\).
+- Output :: \(\mat{U}' \subset \Lambda_q^\bot(\mat{A})\) generating \(\Lambda_q^\bot(\mat{A})\) with \(\norm{\mat{U}'} \leq r' \cdot \norm{\mat{U}}\).
+
+*** Basic Idea
+
+Run \(\bdv'\) many times to get \(\Omega(m \cdot \log(s \sqrt{m}))\) vectors, then apply lattice generation theorem.
+
+** Step 6: Iterated Sieving
+
+Assume the existence of a chain of entropic k-H-SIS solvers \(\bdv_1, \bdv_2, \ldots\) with Gaussian outputs with arbitrary (small) centres, accepting Gaussian inputs with arbitrary (small) centres.
+
+We construct a \((2^{O(m)}, \poly[m])\) algorithm solving \(\SIVP_\gamma\) for \(\Lambda_q^\bot(\mat{A})\) with \(\gamma \geq m\).
+
+*** Basic Idea
+
+Feed output of sieving subroutine to itself until improvement stops.
+
+** I lied!
+
+#+attr_latex: :height .9\textheight  :options keepaspectratio
+[[./sis-with-hints-real.jpg]]
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+begin_center
+\huge
+
+  - Designers :: Please consider whether you can re-use one of those many newfangled assumptions before introducing yet another one.
+
+  - Cryptanalysts :: Analyse them!
+#+end_center
+
+** Technical Artefacts                                                           :noexport:
+
+# Local Variables:
+# org-tags-column: -80
+# eval: (add-hook 'after-save-hook #'org-beamer-export-to-latex nil t)
+# eval: (visual-fill-column-mode t)
+# eval: (adaptive-wrap-prefix-mode t)
+# eval: (typo-mode -1)
+# eval: (smartparens-mode 1)
+# eval: (org-cdlatex-mode 1)
+# End:
