@@ -97,7 +97,8 @@ For any integer \(k \geq 0\), an instance of the k-M-SIS problem[fn::This is the
 
 - cite:PKC:BonFre11 showed that k-SIS (over \(\ZZ\)) is hard if SIS is hard for discrete Gaussian \(\vec{u}_{i}\) and for \(k = O(1)\).
 - This reduction was improved to cover \(k = \mathcal{O}(m)\).footfullcite:C:LPSS14
-- No proof was provided for the module variant in cite:C:ACLMT22 but Sasha Laphia later proved it for \(k = O(1)\) (unpublished).
+- No proof was provided for the module variant in cite:C:ACLMT22.
+  # but Sasha Laphia later proved it for \(k = O(1)\) (unpublished).
 
 ** COMMENT Proof Idea
 

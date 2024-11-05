@@ -1,4 +1,4 @@
-% Created 2024-11-04 Mon 19:14
+% Created 2024-11-05 Tue 08:28
 % Intended LaTeX compiler: lualatex
 \documentclass[xcolor=table,10pt,aspectratio=169]{beamer}
 
@@ -311,7 +311,7 @@ urlcolor=gray
 
 \maketitle
 
-\begin{frame}[label={sec:orgd0ecb85}]{Programme}
+\begin{frame}[label={sec:org4801502}]{Programme}
 \begin{itemize}
 \item The \href{https://malb.io/sis-with-hints.html}{SIS with Hints Zoo} is an attempt to keep track of all those new SIS-like assumptions that hand out additional hints.
 
@@ -327,7 +327,7 @@ urlcolor=gray
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orge2944ae}]{Teaser}
+\begin{frame}[label={sec:orgc0cf1fc}]{Teaser}
 \begin{center}
 \includegraphics[keepaspectratio,height=.9\textheight]{./sis-with-hints-teaser.jpg}
 \end{center}
@@ -365,9 +365,9 @@ urlcolor=gray
 \end{frame}
 
 \section{K-SIS}
-\label{sec:org3adbde9}
+\label{sec:org3386dbe}
 
-\begin{frame}[label={sec:org962542d}]{The Original: K-SIS}
+\begin{frame}[label={sec:org13762a4}]{The Original: K-SIS}
 \begin{definition}
 For any integer \(k \geq 0\), an instance of the k-M-SIS problem\footnote{This is the module variant defined in \cite{C:ACLMT22}.} is a matrix \(\mat{A} \sample \ring_{q}^{n \times m}\) and a set of \(k\) vectors \(\vec{u}_{1}, \ldots \vec{u}_{k}\) s.t. \(\mat{A}\cdot \vec{u}_{i} \equiv \vec{0} \bmod q\) with \(\|{\vec{u}_i}\| \leq \beta\). A solution to the problem is a nonzero vector \(\vec{u}^{\star} \in \ring^{m}\) such that
 \[\|{\vec{u}^{\star}}\| \leq \beta^*, \quad \mat{A}\cdot \vec{u}^{\star} \equiv \vec{0} \bmod q,\quad \text{and} \quad \vec{u}^{\star} \notin \mathcal{K}\text{-}\operatorname{span}(\set{\vec{u}_i}_{1 \leq i \le k}).\]
@@ -376,15 +376,15 @@ For any integer \(k \geq 0\), an instance of the k-M-SIS problem\footnote{This i
 {\footnotesize \fullcite{PKC:BonFre11} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orgc7c2e74}]{K-SIS Hardness}
+\begin{frame}[label={sec:org51ff3a0}]{K-SIS Hardness}
 \begin{itemize}
 \item \cite{PKC:BonFre11} showed that k-SIS (over \(\ZZ\)) is hard if SIS is hard for discrete Gaussian \(\vec{u}_{i}\) and for \(k = O(1)\).
 \item This reduction was improved to cover \(k = \mathcal{O}(m)\).\footfullcite{C:LPSS14}
-\item No proof was provided for the module variant in \cite{C:ACLMT22} but Sasha Laphia later proved it for \(k = O(1)\) (unpublished).
+\item No proof was provided for the module variant in \cite{C:ACLMT22}.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgf0280cf}]{What can it do?}
+\begin{frame}[label={sec:org6929cdd}]{What can it do?}
 \begin{itemize}
 \item linearly homomorphic signatures
 \item removing the random oracle from GPV signatures at the price of restricting to \(k\) signatures
@@ -393,15 +393,15 @@ For any integer \(k \geq 0\), an instance of the k-M-SIS problem\footnote{This i
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgf3b51d8}]{Perspective}
+\begin{frame}[label={sec:orge533f21}]{Perspective}
 \begin{alertblock}{Leakage Resilience}
 Alice has \(\mat{A}, \mat{T}\) s.t. \(\mat{T} \in \ring^{m \times m}\) is short and \(\mat{A} \cdot \mat{T} \equiv \mat{0} \bmod q\), i.e. \(\mat{T}\) is trapdoor. Even given, say, \(1/2\) of the columns \(\mat{T}\) it is hard to recover a full trapdoor.
 \end{alertblock}
 \end{frame}
 
 \section{The Crisis of Knowledge Assumptions}
-\label{sec:org4ef4c5e}
-\begin{frame}[label={sec:org2a900b8}]{K-R-ISIS}
+\label{sec:org3e44936}
+\begin{frame}[label={sec:orgf37b682}]{K-R-ISIS}
 \begin{definition}[K-M-ISIS Admissible]
 Let \(g(\vec{X}) \coloneqq  \vec{X}^{\vec{e}} := \prod_{i \in \ZZ_w} X_i^{e_i}\) for some exponent vector \(\vec{e} \in \ZZ^w\). Let \(\mathcal{G} \subset \mathcal{R}(\vec{X})\) be a set of such monomials with \(k \coloneqq |\mathcal{G}|\). We call a family \(\mathcal{G}\) \textbf{k-M-ISIS-admissible} if all \(g \in \mathcal{G}\) have constant degree, all \(g \in \mathcal{G}\) are distinct and \(0 \not\in\mathcal{G}\).
 \end{definition}
@@ -417,7 +417,7 @@ When \(n = 1\), we call the problem \textbf{K-R-ISIS}.
 {\footnotesize \fullcite{C:ACLMT22} \par}
 \end{frame}
 
-\begin{frame}[label={sec:org128496d}]{K-R-ISIS Hardness}
+\begin{frame}[label={sec:org1002678}]{K-R-ISIS Hardness}
 \begin{columns}
 \begin{column}[t]{0.65\columnwidth}
 \textbf{Some reductions (none cover the interesting cases):}
@@ -442,7 +442,7 @@ When \(n = 1\), we call the problem \textbf{K-R-ISIS}.
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgb77593e}]{Knowledge K-R-ISIS}
+\begin{frame}[label={sec:org3eb0ce2}]{Knowledge K-R-ISIS}
 The assumption states that for any element \(c \cdot \vec{t}\) that the adversary can produce together with a short preimage, this is some small linear combination of the preimages \(\{\vec{u}_{g}\}\):
 
 \begin{definition}[Knowledge K-R-ISIS]
@@ -461,13 +461,13 @@ c \equiv \sum_{g \in \mathcal{G}} c_{g} \cdot g(\vec{v}) \bmod q.
 Think \(\vec{t} = (1,0)\) and the second component serves as a "check equation": The assumption only makes sense for \(n>1\).
 \end{frame}
 
-\begin{frame}[label={sec:orgfcdeec2}]{Knowledge K-R-ISIS: The Audacity}
+\begin{frame}[label={sec:org42d6b4d}]{Knowledge K-R-ISIS: The Audacity}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./pun.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org6a33208}]{Knowledge K-R-ISIS: Almost Instant Karma}
+\begin{frame}[label={sec:orgc330aed}]{Knowledge K-R-ISIS: Almost Instant Karma}
 The Knowledge K-M-ISIS assumptions is "morally"\footnote{The assumption is technically unfalsifiable but for all intents and purposes it is wrong by inspection of the attack.} false.
 
 \begin{columns}
@@ -489,7 +489,7 @@ The Knowledge K-M-ISIS assumptions is "morally"\footnote{The assumption is techn
 {\footnotesize \fullcite{AC:WeeWu23} \par}
 \end{frame}
 
-\begin{frame}[label={sec:org84ea0f5}]{Known knowledge assumptions are wrong quantumly}
+\begin{frame}[label={sec:orgd0ce448}]{Known knowledge assumptions are wrong quantumly}
 \begin{quote}
 Our main result is a quantum polynomial-time algorithm that samples well-distributed LWE instances while provably not knowing the solution, under the assumption that LWE is hard. Moreover, the approach works for a vast range of LWE parametrizations, including those used in the above-mentioned SNARKs.
 \end{quote}
@@ -498,8 +498,8 @@ Our main result is a quantum polynomial-time algorithm that samples well-distrib
 \end{frame}
 
 \section{BASIS}
-\label{sec:orga971918}
-\begin{frame}[label={sec:org6efcec1}]{BASIS (Random)}
+\label{sec:org5b97632}
+\begin{frame}[label={sec:org37535a8}]{BASIS (Random)}
 We consider \(k=2\), for simplicity.
 
 \begin{definition}[BASIS\(_\mathsf{rand}\)]
@@ -515,7 +515,7 @@ Given \((\vec{B}, \vec{T})\) it is hard to find a short \(\vec{u}^{\star}\) s.t.
 {\footnotesize \fullcite{EC:WeeWu23} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orga080dc1}]{Hardness}
+\begin{frame}[label={sec:orgc3a0c2b}]{Hardness}
 BASIS\(_\mathsf{rand}\) is as hard as SIS.
 
 \begin{itemize}
@@ -527,7 +527,7 @@ BASIS\(_\mathsf{rand}\) is as hard as SIS.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orga2faac2}]{BASIS (Structured)}
+\begin{frame}[label={sec:org3b112d2}]{BASIS (Structured)}
 We consider \(k=2\), for simplicity.
 
 \begin{definition}[BASIS\(_\mathsf{struct}\)]
@@ -545,11 +545,11 @@ Given \((\vec{B}, \mat{A}, \{\mat{W}_{i}\}, \vec{T})\) it is hard to find a shor
 {\footnotesize \fullcite{EC:WeeWu23} \par}
 \end{frame}
 
-\begin{frame}[label={sec:org776e8c5}]{Hardness}
+\begin{frame}[label={sec:orga246425}]{Hardness}
 Given an algorithm for solving BASIS\(_\mathsf{struct}\) there is an algorithm for solving k-M-ISIS (for some parameters).
 \end{frame}
 
-\begin{frame}[label={sec:orgde1b8c6}]{PRISIS}
+\begin{frame}[label={sec:org6861ad2}]{PRISIS}
 \begin{definition}[PRISIS]
 Let \(\mat{A} \in \ring_{q}^{n \times m}\). We're given
 \[\vec{B} \coloneqq \begin{pmatrix}
@@ -565,7 +565,7 @@ Given \((\mat{A}, \mat{B}, w, \vec{T})\) it is hard to find a short \(\vec{u}^{\
 {\footnotesize \fullcite{EPRINT:FenMogNgu23} \par}
 \end{frame}
 
-\begin{frame}[label={sec:orgd2e5168}]{Hardness}
+\begin{frame}[label={sec:org89d6008}]{Hardness}
 PRISIS's additional structure allows to prove a broader regime as hard as M-SIS
 
 \begin{alertblock}{If \(k=2\) then PRISIS is no easier than M-SIS}
@@ -585,7 +585,7 @@ PRISIS's additional structure allows to prove a broader regime as hard as M-SIS
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org9e96357}]{\(h\)-PRISIS}
+\begin{frame}[label={sec:orgbcd1c52}]{\(h\)-PRISIS}
 \(h\)-PRISIS \cite{EPRINT:AFLN23} is a multi-instance version of PRISIS.
 
 \begin{definition}[\(h\)-PRISIS]
@@ -601,7 +601,7 @@ Given \((\{\mat{A}_i\}, \{\mat{B}_{i}\}, \{w_i\}, \{\vec{T}\}_i)\) it is hard to
 \end{definition}
 \end{frame}
 
-\begin{frame}[label={sec:orgd2b7e42}]{Hardness}
+\begin{frame}[label={sec:org1ba9ebe}]{Hardness}
 \(h\)-PRISIS is no easier than PRISIS \cite{EPRINT:AFLN23}. In particular, if \(k=2\) then \(h\)-PRISIS is no easier than M-SIS \cite{EPRINT:AFLN23}.
 
 \begin{block}{The Trick}
@@ -614,14 +614,14 @@ Given \((\{\mat{A}_i\}, \{\mat{B}_{i}\}, \{w_i\}, \{\vec{T}\}_i)\) it is hard to
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org3105f2e}]{What can it do?}
+\begin{frame}[label={sec:orgc42ee74}]{What can it do?}
 Polynomial commitment schemes.
 \end{frame}
 
 \section{One-more-ISIS}
-\label{sec:org4e3994e}
+\label{sec:orgde374fa}
 
-\begin{frame}[label={sec:org8ca8239}]{One-more-ISIS}
+\begin{frame}[label={sec:org6a412ad}]{One-more-ISIS}
 \begin{definition}[One-more-ISIS]
 Let \(\mat{A} \sample \ZZ_{q}^{n \times m}\).
 
@@ -636,7 +636,7 @@ The adversary is asked to output \(k+1\) pairs \(\{(\vec{u}^{\star}_i,\vec{t}_i)
 {\footnotesize \fullcite{CCS:AKSY22} \par}
 \end{frame}
 
-\begin{frame}[label={sec:org6f1f95f}]{Hardness}
+\begin{frame}[label={sec:orga6d9aa7}]{Hardness}
 The hardness of the problem is analysed using direct cryptanalysis in the original paper. The authors give a combinatorial attack and a lattice attack.
 
 \begin{block}{The Trick}
@@ -644,7 +644,7 @@ The key ingredient is that \(\beta^{*}\) is only marginally bigger than \(\sqrt{
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orge403712}]{Hardness: Lattice Attack}
+\begin{frame}[label={sec:org1cc496a}]{Hardness: Lattice Attack}
 \begin{itemize}
 \item The adversary requests \(\geq m\) preimages of zero and uses that to produce a short basis \(\mat{T}\) for the kernel of \(\mat{A}\), i.e. 
 \[
@@ -659,13 +659,13 @@ The key computational challenge then is to fix-up or improve this degraded trapd
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:org1267961}]{What can it do?}
+\begin{frame}[label={sec:org37e7252}]{What can it do?}
 Blind signatures.
 \end{frame}
 
 \section{From Space-Time to Hinted Hardness of Lattice Problems}
-\label{sec:orgee1164a}
-\begin{frame}[label={sec:org42b8277}]{From Space-Time to Hinted Hardness of Lattice Problems}
+\label{sec:orgb34f133}
+\begin{frame}[label={sec:orgad49e0e}]{From Space-Time to Hinted Hardness of Lattice Problems}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -686,7 +686,7 @@ joint work with Russell W. F. Lai\footnote{some slides nicked from Russell.} a
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgda0b10f}]{GPV}
+\begin{frame}[label={sec:org8499964}]{GPV}
 \begin{description}
 \item[{Public Key}] Matrix \(\mat{A} \in \ZZ_q^{n \times m}\).
 \item[{Secret Key}] Short basis of \(\Lambda_q^\bot(\mat{A})\) of norm \(\alpha\).
@@ -698,7 +698,7 @@ where \(\mathsf{H}: \bin^{\star} \to \ZZ_q^n\) is hash function modelled as a Ra
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:org462cf43}]{Security Proof ≈ argument against signing the same \(\mu\) twice:}
+\begin{frame}[label={sec:org607481d}]{Security Proof ≈ argument against signing the same \(\mu\) twice:}
 \begin{itemize}
 \item Signing same \(\mu\) twice \(\implies\)
 \[\begin{aligned}
@@ -714,7 +714,7 @@ One-more-ISIS assumption suggest "no"!
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:org6c7463d}]{The \(k\)-hint Inhomogeneous Short Integer Solution Problem:}
+\begin{frame}[label={sec:orga0d8a4a}]{The \(k\)-hint Inhomogeneous Short Integer Solution Problem:}
 \begin{definition}[k-H-ISIS]
 Let \(k,n,m,q,\beta,\mathsf{Dist}\), where
 \[\begin{aligned}
@@ -731,7 +731,7 @@ Given \((\mat{A} \sample \ZZ_q^{n \times m}, \vec{y} \sample \ZZ_q^n, \mat{U} \s
 \textbf{\(k\)-hint (Homogeneous) Short Integer Solution (k-H-SIS) Problem}: Same thing but \(\vec{y} = \vec{0}\).
 \end{frame}
 
-\begin{frame}[label={sec:org1b0f388}]{Successive Minima and SIVP}
+\begin{frame}[label={sec:org4780a67}]{Successive Minima and SIVP}
 \begin{itemize}
 \item Successive minima \(\lambda_i(\Lambda) =\) radius of smallest ball containing \(i\) linearly independent lattice vectors.
 
@@ -739,7 +739,7 @@ Given \((\mat{A} \sample \ZZ_q^{n \times m}, \vec{y} \sample \ZZ_q^n, \mat{U} \s
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org6f87155}]{Enumeration and Sieving}
+\begin{frame}[label={sec:orgb6dc127}]{Enumeration and Sieving}
 Two types of lattice algorithms for \(\gamma \leq \poly[m]\):
 
 \begin{columns}[t]
@@ -765,7 +765,7 @@ Two types of lattice algorithms for \(\gamma \leq \poly[m]\):
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org487dfc5}]{Landscape}
+\begin{frame}[label={sec:org0aede65}]{Landscape}
 Space-time complexity of \(\SIVP_\gamma\) over \(\Lambda_q^\bot(\mat{A})\) and for \(\gamma \leq \poly[m]\).
 
 \begin{center}
@@ -788,7 +788,7 @@ Hinted lattice problems seem hard.
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:org60d0161}]{Step 1: Entropic Reduction from k-H-SIS to k-H-ISIS}
+\begin{frame}[label={sec:orgb70499a}]{Step 1: Entropic Reduction from k-H-SIS to k-H-ISIS}
 We show that the classic SIS to ISIS reduction gives the following:
 
 \begin{alertblock}{k-H-SIS → k-H-ISIS}
@@ -804,7 +804,7 @@ Let \(\adv\) be PPT adversary against k-H-ISIS, then there exists a PPT adversar
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org687fb4f}]{Step 2: Gaussian Vectors Generate the Lattice}
+\begin{frame}[label={sec:org4093c3d}]{Step 2: Gaussian Vectors Generate the Lattice}
 We prove the following lattice generation theorem:
 
 \begin{alertblock}{Gaussian vectors generate the lattice}
@@ -816,7 +816,7 @@ There exists \(t^* = O(m \cdot \log(s \sqrt{m}))\) s.t. if \(t \geq t^*\), then 
 This was known only for \(\vec{c}_i \coloneqq \vec{0}\).\footfullcite{SODA:HavReg14}
 \end{frame}
 
-\begin{frame}[label={sec:org4188a90}]{Step 3: Improved Analysis of Sieves}
+\begin{frame}[label={sec:org01e247f}]{Step 3: Improved Analysis of Sieves}
 We prove the following sieving theorem:
 
 \begin{alertblock}{Number of points in a ball}
@@ -832,7 +832,7 @@ Previous sieve analyses were
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org105ca1e}]{Step 4: Finding One Mildly Short Vector}
+\begin{frame}[label={sec:org1bf803f}]{Step 4: Finding One Mildly Short Vector}
 Suppose there exists a PPT entropic k-H-SIS solver \(\bdv\) with ratio \(\growthfactor > 1\).
 
 We construct a \((2^{O(m)},\poly[m])\) k-H-SIS solver \(\bdv'\) with constant ratio \(1/\shrinkfactor < 1\).
@@ -842,7 +842,7 @@ Run entropic kHSIS solver \(\bdv\) many times to get \(2^{\Omega(m)}\) vectors, 
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:orgfc84649}]{Step 4: Finding One Mildly Short Vector (More Details)}
+\begin{frame}[label={sec:org71fdc8a}]{Step 4: Finding One Mildly Short Vector (More Details)}
 \begin{enumerate}
 \item Success probability amplification: Repeat \(\bdv\) to make success probability overwhelming.
 \item Randomised memory-inefficient sieve:
@@ -860,7 +860,7 @@ Run entropic kHSIS solver \(\bdv\) many times to get \(2^{\Omega(m)}\) vectors, 
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orge20e686}]{Step 5: Finding Lots of Mildly Short Vectors}
+\begin{frame}[label={sec:org8fb7e10}]{Step 5: Finding Lots of Mildly Short Vectors}
 Suppose further that the entropic kHSIS solver \(\bdv\) has Gaussian outputs.
 
 We construct a \((2^{O(m)}, \poly[m])\) sieving routine \(\cdv\):
@@ -883,7 +883,7 @@ Do not sieve over \(\vec{g}_{i} - \vec{c}_{i}\) but over \(\vec{c}_{i}\) in \((\
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[label={sec:org1c14394}]{Step 6: Iterated Sieving}
+\begin{frame}[label={sec:org3249564}]{Step 6: Iterated Sieving}
 \textbf{Assume} the existence of a chain of entropic k-H-SIS solvers \(\bdv_1, \bdv_2, \ldots\) with Gaussian outputs with arbitrary (small) centres, accepting Gaussian inputs with arbitrary (small) centres.
 
 We construct a \((2^{O(m)}, \poly[m])\) algorithm solving \(\SIVP_\gamma\) for \(\Lambda_q^\bot(\mat{A})\) with \(\gamma \geq m\).
@@ -900,13 +900,13 @@ Feed output of sieving subroutine to itself until improvement stops.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org202f007}]{I lied!}
+\begin{frame}[label={sec:orgf77b6aa}]{I lied!}
 \begin{center}
 \includegraphics[keepaspectratio,height=.9\textheight]{./sis-with-hints-real.jpg}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgc779573},standout]{Fin}
+\begin{frame}[label={sec:org520cccf},standout]{Fin}
 \begin{center}
 \huge
 
