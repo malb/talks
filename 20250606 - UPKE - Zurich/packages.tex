@@ -1,0 +1,100 @@
+\usepackage[l2tabu,orthodox]{nag}
+
+\usepackage[english]{babel}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage[normalem]{ulem}
+
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{float}
+\usepackage{array}
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{cancel}
+
+% multiline comment
+\newcommand{\comment}[1]{}
+
+% convert to roman
+\newcommand{\Rnum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+\newcommand{\rnum}[1]{\lowercase\expandafter{\romannumeral #1\relax}}
+
+% cryptobib
+\usepackage[
+    advantage,
+    adversary,
+    asymptotics,
+    complexity,
+    events,
+    ff,
+    % keys,
+    lambda,
+    landau,
+    logic,
+    mm,
+    notions,
+    operators,
+    oracles,
+    primitives,
+    probability,
+    sets]{cryptocode}
+
+\renewcommand{\pcthen}{\highlightkeyword{\,:\ }}
+\renewcommand{\pcelse}{\highlightkeyword{else:\ }}
+\newcommand{\pcbreak}{\highlightkeyword{break}}
+
+\usepackage{amssymb}
+\let\proof\relax\let\endproof\relax
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{xspace}
+
+%\usepackage[bookmarksdepth=2,pagebackref=true,breaklinks=true]{hyperref}
+%\hypersetup{
+%    colorlinks,
+%    linkcolor={black},
+%    citecolor={black},
+%    urlcolor={blue!80!black},
+%}
+
+\usepackage{ifdraft}
+
+\ifdraft{
+    \NewDocumentCommand \ben  {s m o} {\IfBooleanTF{#1}{\cmnt*{ben}{#2}}{\cmnt{ben}{#2}[#3]}}
+}{
+    \NewDocumentCommand\ben  {s m o} {}
+}
+
+%% LISTINGS
+
+\usepackage[final]{listings}
+\lstdefinelanguage{Sage}[]{Python}{morekeywords={True,False,sage,cdef,cpdef,ctypedef,self},sensitive=true}
+
+\lstset{frame=none,
+  showtabs=False,
+  showspaces=False,
+  showstringspaces=False,
+  commentstyle={\color{gray}},
+  keywordstyle={\color{black}\textbf},
+  stringstyle={\color{darkgray}},
+  basicstyle=\tt\scriptsize\relax,
+  inputencoding=utf8, literate={…}{{\ldots}}1{λ}{{\(\lambda\)}}1{ε}{{\(\varepsilon\)}}1{σ}{{\(\sigma\)}}1{⋅}{{\(\cdot\)}}1{κ}{{\(\kappa\)}}1{‖}{{\(\Vert\)}}1{γ}{{\(\gamma\)}}1{≤}{{\(\leq\)}}1{β}{{\(\beta\)}}1{η}{{\(\eta\)}}1{×}{{\(\times\)}}1,
+  belowskip=0.0em,}
+
+
+\usepackage[color={.9 .2 .2},final]{attachfile2}
+
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "lip"
+%%% End:

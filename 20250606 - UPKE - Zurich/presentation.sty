@@ -1,0 +1,85 @@
+% --- Fonts ---
+
+\usefonttheme{professionalfonts}
+\usepackage{sourcesanspro}
+%\usepackage{sourcecodepro}
+%% \usepackage[T1]{fontenc}
+%\usepackage{amsmath,amssymb,amsthm,eucal,bbold,bm}
+\usepackage[italic,eulergreek,symbolmisc]{mathastext}
+
+% Correct spacing around letters in math
+%\MTsetmathskips{y}{1mu}{0mu}
+%\MTsetmathskips{j}{1.5mu}{0mu}
+
+% --- Beamer theme ---
+
+\usetheme{Boadilla}
+\usecolortheme[]{seagull}
+\setbeamercovered{transparent}
+\setbeamertemplate{navigation symbols}{}
+
+% --- Font sizes and shapes ---
+
+\setbeamerfont{title}{size=\huge, series=\scshape}
+\setbeamerfont{frametitle}{series=\scshape}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{button}{size=\footnotesize}
+
+% --- Spacing ---
+
+\usepackage[onehalfspacing]{setspace}
+\setbeamertemplate{title page}[default][left,leftskip=-8pt]
+\addtobeamertemplate{frametitle}{\vskip3mm}{}
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% --- Color ---
+
+\colorlet{myblack}{black!85!}
+\colorlet{mygray}{gray!60!}
+\setbeamercolor{title}{fg=myblack}
+\setbeamercolor{frametitle}{fg=myblack}
+\setbeamercolor{normal text}{fg=myblack}
+\setbeamercolor{itemize item}{fg=mygray}
+\setbeamercolor{itemize subitem}{fg=mygray} 
+\setbeamercolor{enumerate item}{fg=mygray} 
+\setbeamercolor{enumerate subitem}{fg=mygray}
+\setbeamercolor{footline}{fg=mygray}
+\setbeamercolor{button}{fg=mygray, bg=white}
+
+% --- Slide numbers ---
+
+% No slide numbers by default
+\setbeamertemplate{footline}{}
+
+% Uncomment the line below to insert slide numbers
+% \setbeamertemplate{footline}[frame number]
+
+% --- Title slide ---
+
+% % Title capitalization and underline
+\let\oldtitle\title
+\renewcommand{\title}[1]{\oldtitle[]{{#1}\vspace{-5mm}\\\color{myblack}{\rule{\textwidth}{2pt}}\vspace{1cm}}}
+
+% Paper information
+\usepackage{xparse}
+
+% --- Lists ---
+
+\setbeamertemplate{itemize item}{\textbullet}
+\setbeamertemplate{itemize subitem}{\textendash} 
+\setbeamertemplate{enumerate item}[default]
+\setbeamertemplate{enumerate subitem}[default]
+\setbeamertemplate{enumerate subitem}{\alph{enumii}.}
+
+% --- Tables & figures  ---
+
+\usepackage{multirow,booktabs}
+
+% Captions
+\usepackage{caption}
+\captionsetup{labelformat=empty,size=normalsize}
+
+% --- Section slide ---
+
+\newcommand{\heading}[1]{\LARGE\scshape\color{myblack}\singlespacing\MakeLowercase{#1}\vspace{-3mm}\\\color{myblack}{\rule{\textwidth}{2pt}}}
+
