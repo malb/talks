@@ -5,6 +5,7 @@
 #+select_tags: export
 #+exclude_tags: noexport
 
+
 #+latex_class: beamer
 #+latex_class_options: [xcolor=table,10pt,aspectratio=169]
 

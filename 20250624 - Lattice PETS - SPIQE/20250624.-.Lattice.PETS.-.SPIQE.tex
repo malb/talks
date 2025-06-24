@@ -1,4 +1,4 @@
-% Created 2025-06-17 Tue 14:44
+% Created 2025-06-24 Tue 10:50
 % Intended LaTeX compiler: lualatex
 \documentclass[xcolor=table,10pt,aspectratio=169]{beamer}
 
@@ -306,8 +306,8 @@ urlcolor=gray
 \end{frame}
 
 \section{LWE and DH}
-\label{sec:org04761e5}
-\begin{frame}[label={sec:org98ccf7a}]{On the one hand, on the other hand}
+\label{sec:orgc131ca1}
+\begin{frame}[label={sec:org29b5b28}]{On the one hand, on the other hand}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \textbf{Bottom of the Stack:}
@@ -329,7 +329,7 @@ urlcolor=gray
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:orgd1117d7}]{Somewhat efficient}
+\begin{frame}[label={sec:org3af5d3c}]{Somewhat efficient}
 \begin{columns}[t]
 \begin{column}{0.5\columnwidth}
 \textbf{RSA 2048}
@@ -386,7 +386,7 @@ Public key & 1,184 bytes\\
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:orgc339641}]{The Learning with Errors Problem (LWE)}
+\begin{frame}[label={sec:org25b77d3}]{The Learning with Errors Problem (LWE)}
 Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZ_q^{m}\), \(\vec{A} \in \ZZ_q^{m \times n}\), \(\vec{s} \in \ZZ_q^{n}\) and \alert{small \(\vec{e} \in \ZZ^{m}\)} is
 
 \begin{align*}
@@ -426,7 +426,7 @@ Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZ_q^{m}\), \(\vec{A} \in \ZZ_q^
 
 or \(\vec{c} \sample \mathcal{U}\left(\ZZ_q^{m}\right)\).
 \end{frame}
-\begin{frame}[label={sec:orge8f9674}]{LWE}
+\begin{frame}[label={sec:orgcc6ba71}]{LWE}
 \[
 \begin{pmatrix}c_{0} \\ c_{1} \\ c_{2} \\ c_{3} \\ c_{4} \\ c_{5} \\ c_{6} \\ c_{7}\end{pmatrix} = 
 \left(\begin{array}{rrrrrrrr}
@@ -446,7 +446,7 @@ a_{7,0} & a_{7,1} & a_{7,2} & a_{7,3} & a_{7,4} & a_{7,5} & a_{7,6} & a_{7,7}\\
 Storage: \(\mathcal{O}(n^{2})\); Computation \(\mathcal{O}(n^{2})\)
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:org6d125ba}]{Ring-LWE/Polynomial-LWE}
+\begin{frame}[label={sec:orgbd68151}]{Ring-LWE/Polynomial-LWE}
 \[
 \begin{pmatrix}c_{0} \\ c_{1} \\ c_{2} \\ c_{3} \\ c_{4} \\ c_{5} \\ c_{6} \\ c_{7}\end{pmatrix} = 
 \left(\begin{array}{rrrrrrrr}
@@ -466,7 +466,7 @@ Storage: \(\mathcal{O}(n^{2})\); Computation \(\mathcal{O}(n^{2})\)
 Storage: \(\mathcal{O}(n)\); Computation \(\mathcal{O}(n \log n)\)
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:org8a14477}]{Ring-LWE/Polynomial-LWE}
+\begin{frame}[label={sec:orgbeee0cc}]{Ring-LWE/Polynomial-LWE}
 \begin{align*}
 \sum_{i=0}^{n-1} c_{i} \cdot X^{i} &= \left(\sum_{i=0}^{n-1} a_{i} \cdot X^{i}\right) \cdot \left(\sum_{i=0}^{n-1} s_{i} \cdot X^{i}\right) + \sum_{i=0}^{8} e_{i} \cdot X^{i} \bmod X^{n} +1\\
 c(X) &= a(X) \cdot s(X) + e(X) \bmod \phi(X)
@@ -478,7 +478,7 @@ We write \(\ring \coloneqq \ZZ[X]/\phi(X)\) and \(\ring_{q} \coloneqq \ZZ_{q}[X]
 
 {\footnotesize \fullcite{EC:LyuPeiReg10} \par}
 \end{frame}
-\begin{frame}[label={sec:org2fffe95}]{Convention}
+\begin{frame}[label={sec:org7ac3625}]{Convention}
 \begin{itemize}
 \item I am going to use the Ring-LWE formulation \[c_{i}(X) = a_{i}(X)\cdot s(X) + e_{i}(X)\]
 Thus, each sample corresponds to ``\(n\) LWE samples''
@@ -490,7 +490,7 @@ Thus, each sample corresponds to ``\(n\) LWE samples''
 \[c_{i} = a_{i}\cdot \alert{s} + \alert{e_{i}}\]
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:org4555df7}]{DH to Ring-LWE Dictionary}
+\begin{frame}[label={sec:org51e35bc}]{DH to Ring-LWE Dictionary}
 \begin{center}
 \begin{tabular}{ll}
 \toprule
@@ -511,7 +511,7 @@ DH Land & Ring-LWE Land\\
 
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:org3a59f2e}]{ElGamal \& LPR10}
+\begin{frame}[label={sec:org6d6a974}]{ElGamal \& LPR10}
 \textbf{ElGamal}
 
 \begin{description}
@@ -532,9 +532,9 @@ DH Land & Ring-LWE Land\\
 \end{description}
 \end{frame}
 \section{Follow the Blueprint}
-\label{sec:org9a793ee}
+\label{sec:org12db82d}
 
-\begin{frame}[label={sec:org6367bd7}]{Verifiable Oblivious PRFs}
+\begin{frame}[label={sec:org23c4bd3}]{Verifiable Oblivious PRFs}
 \procedure{}{%
 \textbf{Client} \< \<  \textbf{Functionality} \< \< \textbf{Server}\\
 \< \sendmessageright{top=\(m\)} \< \< \sendmessageleft{top=\(k\)} \<\\
@@ -542,7 +542,7 @@ DH Land & Ring-LWE Land\\
 \< \sendmessageleft{top=\(c\)} \< \< \sendmessageright{top=\(\bot\)} \<\\
 }
 \end{frame}
-\begin{frame}[label={sec:org3d69ad0}]{Example Applications: Privacy Pass}
+\begin{frame}[label={sec:org1d7d31c}]{Example Applications: Privacy Pass}
 \begin{columns}[t]
 \begin{column}{0.6\columnwidth}
 \textbf{Problem:}
@@ -567,7 +567,7 @@ DH Land & Ring-LWE Land\\
 
 {\footnotesize \fullcite{PoPETS:DGSTV18} \par}
 \end{frame}
-\begin{frame}[label={sec:org7462ea4}]{DH-Based OPRF}
+\begin{frame}[label={sec:orge5215ee}]{DH-Based OPRF}
 \centering
 \procedure{}{%
 \textbf{Client} \< \< \textbf{Server}\\
@@ -578,7 +578,7 @@ DH Land & Ring-LWE Land\\
 
 \[d_x/c^r = c_x^k/c^r = (H(x) \cdot g^{r})^k/(g^k)^r = H(x)^k\]
 \end{frame}
-\begin{frame}[label={sec:org17f3327}]{``Just take Logs''}
+\begin{frame}[label={sec:org0bf7ecc}]{``Just take Logs''}
 \centering
 \procedure{}{%
 \textbf{Client} \< \< \textbf{Server}\\
@@ -594,7 +594,7 @@ d_x - c \cdot \alert{r}  &= \left(H(x) + a \cdot \alert{r} + \alert{e}\right)\cd
                      &\approx H(x)\cdot\alert{k} 
 \end{align*}
 \end{frame}
-\begin{frame}[label={sec:org4272309}]{The Trouble}
+\begin{frame}[label={sec:org9d5c4fb}]{The Trouble}
 \begin{description}
 \item[{Trapdoor Friendly}] It is not safe to output \(c_{x} \cdot \alert{k} + \alert{e}\) for some arbitrary \(c_{x}\)
 \item[{Noise Leakage}] ``\(\approx\)'' glosses over \(\alert{e}\cdot\alert{k} + \alert{e}'  - \alert{e}'' \cdot \alert{r}\) which depends on \(k\)
@@ -602,14 +602,14 @@ d_x - c \cdot \alert{r}  &= \left(H(x) + a \cdot \alert{r} + \alert{e}\right)\cd
 \end{description}
 \end{frame}
 \section{Trapdoor Friendly}
-\label{sec:org65b30f9}
+\label{sec:orgbcdfd5b}
 
-\begin{frame}[label={sec:org4d5a5ed}]{The Problem}
+\begin{frame}[label={sec:org3e06570}]{The Problem}
 \begin{center}
 The server has to output \(c_{x} \cdot \alert{k} + \alert{e}'\) for some \(c_x \overset{?}{=}  H(x) + a \cdot \alert{r} + \alert{e}\). This may not be safe.
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orgdf8f174},fragile]{Point Validation}
+\begin{frame}[label={sec:org30ea146},fragile]{Point Validation}
 \begin{columns}
 \begin{column}[t]{0.5\columnwidth}
 \newcommand{\mfi}[1]{\fbox{\includegraphics[width=0.4\paperwidth]{#1}}}
@@ -645,7 +645,7 @@ The server has to output \(c_{x} \cdot \alert{k} + \alert{e}'\) for some \(c_x \
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:org2954f86}]{Workaround}
+\begin{frame}[label={sec:orgd569696}]{Workaround}
 \begin{itemize}
 \item The client proves in zero-knowledge that \(c_{x}\) is well-formed: \(c_{x} \coloneqq H(x) + a \cdot \alert{r} + \alert{e}\)
 \item This means the client needs to prove the evaluation of \(H(x)\)
@@ -661,9 +661,9 @@ This NTRU ``attack'' can be used constructively to make proof systems online ext
 \end{alertblock}
 \end{frame}
 \section{Noise Leakage}
-\label{sec:orgef3ffe2}
+\label{sec:org626fd9c}
 
-\begin{frame}[label={sec:org4babeb2}]{The Problem}
+\begin{frame}[label={sec:org1cb472a}]{The Problem}
 The client learns
 \[\alert{e}\cdot\alert{k} + \alert{e}'  - \alert{e}'' \cdot \alert{r}\]
 where it chooses \(\alert{e}\) and \(\alert{r}\). 
@@ -672,7 +672,7 @@ Write \(\alert{\vec{a}} \coloneqq (\alert{e}, -\alert{r})\) and \(\alert{\vec{s}
 as \(\alert{\vec{a}} \cdot \alert{\vec{s}} + \alert{e''}\) which is essentially an instance of ``LWE without modular reduction'' \cite{AC:BDEFT18} which is easy.\footnote{The word ``essentially'' does a lot of work here. That is, this is a simplification because \(\alert{e''}\) changes in each invocation and the attacks from \cite{AC:BDEFT18} do not apply as is.}
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:orgd0a5414}]{Solutions}
+\begin{frame}[label={sec:orgf83cf19}]{Solutions}
 \begin{description}
 \item[{Statistical Noise Drowning}] \(\Vert\alert{e}'\Vert \geq \lambda^{\omega(1)} \cdot \Vert\alert{e}\cdot\alert{k}  - \alert{e}'' \cdot \alert{r}\Vert\) \cite{PKC:ADDS21}
 \item[{Rényi Noise Drowning}] \(\Vert\alert{e}'\Vert \geq \poly \cdot \sqrt{Q} \cdot \Vert\alert{e}\cdot\alert{k}  - \alert{e}'' \cdot \alert{r}\Vert\) \cite{AC:AlbGur24}
@@ -690,9 +690,9 @@ Since we require \(q > \Vert\alert{e}'\Vert\) we have that \(q/\Vert \alert{e} \
 \end{block}
 \end{frame}
 \section{Noise Growth}
-\label{sec:org990097b}
+\label{sec:orgd260c27}
 
-\begin{frame}[label={sec:org8a0f9e1}]{The Problem}
+\begin{frame}[label={sec:org46b174e}]{The Problem}
 \begin{align*}
 H(x)\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'}  - \alert{e''} \cdot \alert{r}
 &\approx H(x)\cdot\alert{k}\\
@@ -700,7 +700,7 @@ H(x)\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'}  - \alert{e''} \cdot \
 &\overset{?}{=} \left\lceil \frac{2}{q} \cdot \bigg( H(x)\cdot\alert{k} \bigg)\right\rfloor
 \end{align*}
 \end{frame}
-\begin{frame}[label={sec:org75303ab}]{Rounding}
+\begin{frame}[label={sec:org593a3e1}]{Rounding}
 \centering
 \begin{tikzpicture}
   \draw (0,0) circle (2cm);
@@ -728,7 +728,7 @@ H(x)\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'}  - \alert{e''} \cdot \
 
 \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org055a757}]{Solution Attempt}
+\begin{frame}[label={sec:org317d417}]{Solution Attempt}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 Make \(q > \poly\) such that the red area is negligibly small.
@@ -766,7 +766,7 @@ This argument works on average but does not work against adversaries that someho
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:org0186f84}]{Solution}
+\begin{frame}[label={sec:orgc922523}]{Solution}
 \begin{itemize}
 \item Plant a hard SIS instance in each coefficient: 1D-SIS \cite{PKC:ADDS21}
 \pause
@@ -787,7 +787,7 @@ This argument works on average but does not work against adversaries that someho
 Big ``signal-to-noise'' ratio, forcing us to increase \(n\), as above.
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:orgf0149f2}]{Related: Can't Just Do It™ — NIKE}
+\begin{frame}[label={sec:org8fcd566}]{Related: Can't Just Do It™ — NIKE}
 NIKE enables Alice and Bob, who know each others’ public keys, to agree on shared key without requiring any interaction \cite{DifHel76}
 \begin{itemize}
 \item Deployed in \href{https://www.wireguard.com/}{WireGuard} \cite{EPRINT:HNSWZ20} and static DH is also used in e.g. Google’s QUIC.
@@ -801,9 +801,9 @@ NIKE enables Alice and Bob, who know each others’ public keys, to agree on sha
 \end{itemize}
 \end{frame}
 \section{Wrapping Up}
-\label{sec:orge826d69}
+\label{sec:org9559df9}
 
-\begin{frame}[label={sec:org07ae4d3}]{Realisations of this Blueprint}
+\begin{frame}[label={sec:orgc251170}]{Realisations of this Blueprint}
 \begin{center}
 \begin{tabular}{llrrl}
 \toprule
@@ -822,7 +822,7 @@ Work & Model & 1-time Offline & Online & \(Q\)\\
 H: semi-honest, M: malicious
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orgafbbdfd}]{An Alternative from FHE \cite{EC:ADDG24}}
+\begin{frame}[label={sec:orgdeb9b98}]{An Alternative from FHE \cite{EC:ADDG24}}
 We do have efficient FHE, indeed FHE ciphertexts are typically \alert{smaller} than the messages exchanged in the schemes discussed above.
 \begin{itemize}
 \item Simple idea:
@@ -836,7 +836,7 @@ We do have efficient FHE, indeed FHE ciphertexts are typically \alert{smaller} t
 \item This can be computed with one level of FHE bootstrapping
 \end{itemize}
 \end{frame}
-\begin{frame}[label={sec:org1bec1c2}]{Other Round-Optimal Alternatives w/o Trusted Setup}
+\begin{frame}[label={sec:orgdd2d8a1}]{Other Round-Optimal Alternatives w/o Trusted Setup}
 \begin{small}
 
 \begin{center}
@@ -867,7 +867,7 @@ dSP23 & Isogenies F\textsubscript{p} & M-H, pp & - & 16.38kB\\
 {\footnotesize adapted from \url{https://heimberger.xyz/oprfs.html} \par}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orge39b532},standout]{Fin}
+\begin{frame}[label={sec:org916c2a4},standout]{Fin}
 \begin{center}
 {\Huge\alert{Thank You}\par}
 
