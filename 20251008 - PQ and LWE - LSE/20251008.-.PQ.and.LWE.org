@@ -1,0 +1,1078 @@
+#+title: Post-Quantum Cryptography, Lattices and @@beamer:\\@@ Learning with Errors
+#+subtitle: A Primer
+#+options: H:2 toc:t num:t ':t
+#+select_tags: export
+#+exclude_tags: noexport
+
+#+options: timestamp:nil
+#+language: en
+#+latex_class: beamer
+#+latex_class_options: [xcolor=table,10pt,aspectratio=169]
+#+property: header-args:sage :tolatex lambda obj: r'(%s)' % latex(obj) :results raw
+#+author: Martin R. Albrecht
+#+email: martin.albrecht@kcl.ac.uk
+#+date: 
+#+startup: beamer
+
+#+latex_header: \PassOptionsToPackage{british}{babel}
+#+latex_header: \setbeamerfont{alerted text}{series=\ifmmode\boldmath\else\bfseries\fi}
+#+latex_header: \definecolor{gamechangecolor}{HTML}{f8e8c6}
+#+latex_header: \definecolor{BrightOrange}{HTML}{f8e8c6}
+
+#+latex_header: \tikzexternalize[prefix=tikz-figures/]
+#+latex_header: \usetikzlibrary{trees}
+#+latex_header: \newcommand{\Ldis}{\ensuremath{\mathcal{L}_{\mathbf{s},\chi}}\xspace}
+#+latex_header: \newcommand{\rhf}{{\ensuremath{\sqrt{\alpha_{\beta}}}\xspace}}
+#+latex_header: \newcommand{\KeyGen}{\ensuremath{\mathsf{KeyGen}}\xspace}
+#+latex_header: \newcommand{\Enc}{\ensuremath{\mathsf{Enc}}\xspace}
+#+latex_header: \newcommand{\Dec}{\ensuremath{\mathsf{Dec}}\xspace}
+#+latex_header: \newcommand{\Encap}{\ensuremath{\mathsf{Encap}}\xspace}
+#+latex_header: \newcommand{\Decap}{\ensuremath{\mathsf{Decap}}\xspace}
+#+latex_header: \newcommand{\Sig}{\ensuremath{\Sigma}\xspace} %signature alg
+#+latex_header: \newcommand{\Sign}{\ensuremath{\mathsf{Sign}}\xspace}
+#+latex_header: \newcommand{\Verify}{\ensuremath{\mathsf{Verify}}\xspace}
+
+#+latex_header: \institute{\begin{columns} \begin{column}{0.55\columnwidth} ``\,`Cryptographers seldom sleep well' (Silvio Micali). Their careers are frequently based on very precise complexity-theoretic assumptions, which could be shattered the next morning. \textbf{A polynomial time algorithm for factoring would certainly prove more crushing than any paltry fluctuation of the Dow Jones.}'' -- \cite{STOC:Kilian88} \end{column} \begin{column}{0.35\columnwidth} \includegraphics[height=5\baselineskip]{Kings_Cryptographers_Logo.png} \end{column}\end{columns}}
+
+
+#+macro: credit @@beamer:{\tiny@@ Credit: $1 @@latex:}\par@@
+#+macro: picture-credit @@beamer:{\tiny@@ Picture credit: $1 @@latex:}\par@@
+#+macro: fnsize @@beamer:{\footnotesize@@ $1 @@latex:\par}@@
+#+macro: tiny @@beamer:{\tiny@@ $1 @@latex:\par}@@
+#+macro: vspace @@beamer:\vspace{$1}@@
+
+#+cite_export: biblatex
+
+* The Poverty of Public-Key Cryptography
+** Cryptographic Primitives  
+
+_Symmetric Primitives_
+
+- Block and stream ciphers (AES, ChaCha20, \ldots)
+- Authentication codes (HMAC, Poly1305, \ldots)
+- Hash functions (SHA-2, SHA-3, \ldots)
+
+_Asymmetric Primitives_
+
+- Key agreement and public-key encryption (RSA, DH, ECDH, \ldots)
+- Digital signatures (RSA, DSA, ECDSA, \ldots)
+
+** The Poverty of Public-Key Cryptography
+
+#+begin_center
+The Internet runs on factoring and discrete logarithms
+#+end_center
+
+** Rivest-Shamir-Adleman (RSA)
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+***** Factoring
+
+Let \(p, q\) be primes of \(\secpar\) bits. Given \(n \coloneqq p \cdot q\), find \(p\).
+
+
+***** RSA
+
+Let \(n \coloneqq p\cdot q\) be the product of two \(\secpar\)-bit primes. Let \(e \nmid (p-1)\cdot(q-1)\). Given \(n, e\) and \(c \coloneqq m^{e} \bmod n\) for \(m \sample \ZZ_{n}\), find \(m\).
+
+
+*****                                                          :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+{{{fnsize([cite/full:@RivShaAdl78])}}}
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- We'd *like* to say that RSA encryption/decryption is based on factoring, but such a reduction is not know
+  - If factoring is easy then RSA is insecure
+  - RSA could be insecure and factoring hard[fn::… on a classical computer, we'll get to that shortly]
+- Rabin encryption (\(\approx\) RSA with \(e=2\)) is based on factoring
+    
+** Diffie-Hellman (DH)
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+***** Discrete Logarithms
+
+Let \(p\) be a \(\secpar\)-bit prime and let \(g\) be a generator of the multiplicative group \(\ZZ_{p}^{*}\). Given \(g^{a} \bmod p\) find \(a\).
+
+***** DH
+
+Let \(p\) be a \(\secpar\)-bit prime and let \(g\) be a generator of the multiplicative group \(\ZZ_{p}^{*}\). Given \(g^{a} \bmod p\), \(g^{b} \bmod p\) and \(u\), decide if \(u = g^{ab}\) or random.
+
+*****                                                          :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+{{{fnsize([cite/full:@DifHel76])}}}
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- We'd *like* to say that the DH key exchange is based on discrete logarithms, but such a reduction is not known
+  - If discrete logs are easy, DH is insecure
+  - DH could be easy and discrete logarithms hard[fn::… on a classical computer, we'll get to that shortly]
+
+** Diffie-Hellman (DH)
+
+- We didn't use any properties of \(\ZZ_{p}^{*}\) except that it is a group where discrete logarithms are hard.
+- Elliptic curves are also groups where it is believed to be hard to compute discrete logarithms[fn::on a classical computer …]
+  - Indeed, it is believed only generic algorithms apply, in contrast to \(\ZZ_{p}^{*}\) \(\Rightarrow\) much smaller parameters
+- Elliptic curves are usually written additively and not multiplicative.    
+
+** Diffie-Hellman (DH)
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+***** Discrete Logarithms
+
+Let \(p\) be prime and let \(g\) be a generator of the multiplicative group \(\ZZ_{p}^{*}\). Given \(g^{a} \bmod p\) find \(a\).
+
+***** DH
+
+Let \(p\) be prime and let \(g\) be a generator of the multiplicative group \(\ZZ_{p}^{*}\). Given \(g^{a} \bmod p\), \(g^{b} \bmod p\) and \(u\), decide if \(u = g^{ab}\) or random.
+
+*****                                                          :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+***** Discrete Logarithms
+
+Let \(\mathcal{G}\) be a group of order \(p\) and let \(G\) be a generator of \(\mathcal{G}\). Given \({a}\cdot G\) for \(a \in \ZZ_{p}\) find \(a\).[fn::Here, \(a \cdot G\) means to add \(G\) to itself \(a\) times.]
+
+*****                                                          :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+***** DH
+
+Let \(\mathcal{G}\) be a group of order \(p\) and let \(G\) be a generator of \(\mathcal{G}\). Given \((G, {a} \cdot G, {b} \cdot G, U)\) for \(a,b \in \ZZ_{p}\) decide if \(U = a\cdot b \cdot G\) or random in \(\mathcal{G}\).
+
+* Post-Quantum Era
+** Quantum Computers
+
+- A quantum computer makes use of quantum effects (superpositions and entanglement) to perform computations.
+- Quantum computers are not _faster_ than classical computers, they are _different_.
+- Some computations are easy on a quantum computer that are – as far as we know – hard on a classical computer.
+    
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- Small universal quantum computers exist.
+- Key challenge is to scale them up by making them more stable.
+- There is a critical point where we can scale up further using error correction.
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+[[./lecture-assumptions-google-72-qubit.png]]
+
+** IBM Quantum Computing Timeline
+
+#+attr_latex: :height .8\textheight :options keepaspectratio
+[[./lecture-assumptions-IBM_Quantum_Developmen_&_Innovation_Roadmap_Explainer_2024-Update-03.jpg]]
+
+{{{tiny(https://www.ibm.com/quantum/roadmap)}}}
+
+
+# A comprehensive but somewhat outdated overview of what had been achieved (until July 2021) for the first metric is given for the US in [PGK+ 22, Tab. 3.25] and for China in [PGK+ 22, Tab. 4.17]. Since then IBM has made public a 433 qubit machine called Osprey and Google has a 72 qubit version of their Sycamore machine. Perhaps more useful is [PGK+ 22, Fig. 3.16] which compiles the publicly expressed quantum roadmaps for the main U.S. quantum computing companies, with detailed sources. In particular both IBM and Google are aiming for one million physical qubits by 2030. IBM has made public ideas about how they are going to allow multiple, smaller quantum chips to communicate [Qua22]. More details on Google’s approach and roadmap can be found in [AI22]
+
+# [PGK+ 22] Edward Parker, Daniel Gonzales, Ajay K. Kochhar, Sydney Litterer, Kathryn O’Connor, Jon Schmid, Keller Scholl, Richard Silberglitt, Joan Chang, Christopher A. Eusebi, and Scott W. Harold, An assessment of the u.s. and chinese industrial bases in quantum technology, RAND Corporation, Santa Monica, CA, 2022.
+
+# https://www.rand.org/content/dam/rand/pubs/research_reports/RRA800/RRA869-1/RAND_RRA869-1.pdf
+# Figure 3.16
+
+** Landscape of Quantum Computing in 2025
+
+#+attr_latex: :height .8\textheight :options keepaspectratio
+[[./lecture-assumptions-quantum-landscape.png]]
+
+{{{tiny(https://sam-jaques.appspot.com/quantum_landscape_2025)}}}
+
+** Symmetric Primitives: Quantum Computing Perspective (Good News)
+
+Best known quantum algorithms for attacking symmetric cryptography are based on Grover’s algorithm. 
+
+- Search key space of size \(2^n\) in \(2^{n/2}\) operations: AES-256 \rightarrow 128 “quantum bits of security”.
+- Taking all costs into account: \(> 2^{152}\) classical operations for AES-256.[cite/footfull:@EC:JNRV20]
+- Assuming a max depth of \(2^{96}\) for a quantum circuit: overall AES-256 cost is \(\approx 2^{190}\).
+- Does not parallelise: have to wait for \(2^{X}\) steps, cannot buy \(2^{32}\) quantum computers and wait \(2^X / 2^{32}\) steps.
+
+** "based on very precise complexity-theoretic assumptions, which could be shattered the next morning"
+
+#+attr_latex: :height .8\textheight  :options keepaspectratio
+[[./lecture-assumptions-shor-paper.png]]
+
+** "based on very precise complexity-theoretic assumptions, which could be shattered the next morning"
+
+#+attr_latex: :height .8\textheight  :options keepaspectratio
+[[./lecture-assumptions-shor.jpg]]
+
+** Post-Quantum Standardisation of Primitives
+
+- NIST :: _Post Quantum \sout{Competition} Process_
+- ETSI :: Cyber Working Group for Quantum Safe Cryptography
+- ISO ::  WG2 Standing Document 8 (SD8): Survey
+- IETF :: Standardisation of _stateful_ hash-based signatures, nothing further
+- CSA :: Quantum-safe Security Working Group: position papers
+- NIST :: _Post Quantum Process: Digital Signatures_
+
+#+BEAMER: \pause
+    
+*** Bottom Line
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+
+Essentially, everyone was waiting for NIST.
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+\vspace{0.7em}
+** NIST PQC \sout{Competition} Process
+
+_Timeline_
+
+| Submission                    | November 2017 |
+| Round 2 Selection             | January 2019  |
+| Round 3 Selection             | July 2020     |
+| Winners and Round 4 Selection | July 2022     |
+| 3/4 Final Standards           | August 2024   |
+| Additional KEM Standard       | March 2025    |
+| Final Standard for Falcon     | ???           |
+
+\vspace{1em}
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+
+_“Key Establishment”/Key Encapsulation_
+
+- =(pk,sk) ← KeyGen()=
+- =(c,k) ← Encap(pk)=
+- =k ← Decap(c,sk)=
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+_Digital Signature_
+
+- =(vk,sk)  ← KeyGen()=
+- =s  ← Sig(m,sk)=
+- ={0,1}  ← Verify(vk,s,m)=
+
+** NIST PQC Outcome
+
+_NIST selected:_
+
+- Kyber :: A lattice-based KEM (MLWE Problem)
+- Dilithium :: A lattice-based signature scheme (MSIS/MLWE Problems)
+- Falcon :: A lattice-based signature scheme (NTRU Problem)
+- SPHINCS+ :: A hash-based signature scheme
+- HQC :: A code-based KEM (decoding random quasi-cyclic codes)
+
+* Learning with Errors
+** "Small Elements" mod \(q\)
+
+- We can represent \(\ZZ_{q}\) with integers \(\{0, 1, \ldots, q-1\}\)
+- We can also represent \(\ZZ_{q}\) with integers \(\{-\lfloor q/2 \rfloor, -\lfloor q/2 \rfloor +1, \ldots, \lfloor q/2 \rfloor\}\)  
+- Example:
+  #+begin_src python :kernel sagemath :exports both :results table
+q = 17
+K = GF(q)
+[[e.lift() for e in K], [e.lift_centered() for e in K]]
+  #+end_src
+
+  #+RESULTS:
+  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
+  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1 |
+
+- The latter representation is called "centred" or "balanced".
+- We often implicitly assume the "centred" representation.  
+- We informally say that \(e \in \ZZ_{q}\) is "small" if its balanced representation is small in absolute value.
+ 
+** 1-dim LWE (even easier than RSA)
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.4
+:END:
+
+*KeyGen*
+
+- Pick a prime \(q \approx 2^{10,000}\)
+- Pick a random integer \(s \in \ZZ_q\)
+- Pick about \(t=20,000\) random \(a_i \in \ZZ_q\) and small \(e_i \approx 2^{9,850}\)
+- Publish pairs \(a_i, c_i = a_i \cdot s + e_i \bmod \ZZ_q\)
+
+*Encrypt*  \(m \in \{0,1\}\)
+
+- Pick \(b_i \in \{0,1\}\)
+- \(d_0 = \sum_{i=0}^{t-1} b_i \cdot a_i\)
+- \(d_1 = \lfloor \frac{q}{2} \rfloor \cdot m + \sum_{i=0}^{t-1} b_i \cdot c_i\)  
+- Return \(d_0, d_1\)
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.6
+:END:
+
+*Decrypt*
+
+- Compute \(d = d_1 - d_0 \cdot s\)
+\begin{align*}
+  &=  \left\lfloor \frac{q}{2} \right\rfloor \cdot m + \sum_{i=0}^{t-1} b_i \cdot c_i - \sum_{i=0}^{t-1} b_i \cdot a_i \cdot s\\
+  &=  \left\lfloor \frac{q}{2} \right\rfloor \cdot m + \sum_{i=0}^{t-1} b_i \cdot (a_i \cdot s + e_i) - \sum_{i=0}^{t-1} b_i \cdot a_i \cdot s\\
+  &=  \left\lfloor \frac{q}{2} \right\rfloor \cdot m + \sum_{i=0}^{t-1} b_i \cdot  e_i 
+\end{align*}
+- Return 1 if \(|d| > q/4 \) and 0 otherwise.
+
+** The Learning with Errors Problem (LWE)
+
+Given $(\vec{A},\vec{c})$ with $\vec{c} \in \ZZ_q^{m}$, $\vec{A} \in \ZZ_q^{m \times n}$, $\vec{s} \in \ZZ_q^{n}$ and *small $\vec{e} \in \ZZ^{m}$* is
+
+#+begin_export latex
+\begin{align*}
+\left(\begin{array}{c}
+\\
+\\
+\\ 
+\vec{c} \\
+\\
+\\
+\\
+\end{array} \right) = \left(
+\begin{array}{ccc}
+\leftarrow & n & \rightarrow \\
+\\
+\\ 
+& \vec{A} & \\
+\\
+\\
+\\
+\end{array} \right) \times \left( \begin{array}{c}
+\\
+\vec{s} \\
+\\
+\end{array} \right) \alert{+ \left(
+\begin{array}{c}
+\\
+\\
+\\ 
+\vec{e} \\
+\\
+\\
+\\
+\end{array} 
+\right)}
+\end{align*}
+#+end_export
+
+or $\vec{c} \sample \mathcal{U}\left(\ZZ_q^{m}\right)$.
+
+** A Fair Warning: Gaussian Distributions
+
+- In this talk I am ignoring the specifics of the distribution \(\chi\). That is, the only slide with the phrase "Discrete Gaussian distribution" is this slide.
+
+- In practice, *for encryption* the shape of the error does not seem to matter much.
+
+- Ignoring the distribution allows to brutally simply proof sketches: almost all technical difficulty in these proofs derives from arguing about two distributions being close.
+
+** Normal Form LWE
+
+*** 
+:PROPERTIES:
+:BEAMER_opt: t
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+Consider
+- \(\mat{A}_{i} \in \ZZ_q^{n \times n}\), \(\vec{s} \in \ZZ_q^n\), \(\alert{\alert{\vec{e}}}_{i} \sample \chi^n\), 
+- \(\vec{c}_0 = \mat{A}_0 \cdot \vec{s} + \alert{\vec{e}}_0\) and
+- \(\vec{c}_1 = \vec{A}_1 \cdot \vec{s} + \alert{\vec{e}}_1\)
+- We have with high probability
+\begin{align*}
+\vec{c}' &= \vec{c}_1 - \mat{A}_1 \cdot \mat{A}_0^{-1} \cdot \vec{c}_0\\
+   &= \vec{A}_1\cdot \vec{s} + \alert{\vec{e}}_1 -  \mat{A}_1 \cdot \mat{A}_0^{-1} (\mat{A}_0 \cdot \vec{s} + \alert{\vec{e}}_0)\\
+   &= \vec{A}_1\cdot \vec{s} + \alert{\vec{e}}_1 -  \mat{A}_1 \cdot \vec{s} -  \mat{A}_1 \cdot \mat{A}_0^{-1} \cdot \alert{\vec{e}}_0\\
+   &= - \mat{A}_1 \cdot \mat{A}_0^{-1} \cdot \alert{\vec{e}}_0 + \alert{\vec{e}}_1\\
+   &= \mat{A}' \cdot \alert{\vec{e}}_0 + \alert{\vec{e}}_1
+\end{align*}
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- We might as well assume that our secret is also sampled from \(\chi\).
+
+- [cite/full:@C:ACPS09]
+  
+** Dimension/Modulus Trade-Off
+
+Consider \(\vec{a}, \alert{\vec{s}} \in \mathbb{Z}_{q}^{d}\) where \(\vec{s}\) is small, then
+\[q^{d-1} \cdot \langle{\vec{a},\alert{\vec{s}}}\rangle \approx \left(\sum_{i=0}^{d-1} q^{i} \cdot a_{i}\right) \cdot \left(\sum_{i=0}^{d-1} q^{d-i-1} \cdot \alert{s}_{i}\right) \bmod q^{d} = \tilde{a} \cdot \tilde{s} \bmod q^{d}.\]
+If there is an algorithm solving the problem in \(\ZZ_{q^d}\), we can solve the problem in \(\mathbb{Z}_{q}^d\). 
+
+***  \(\ZZ_{q^{2}}\)
+:PROPERTIES:
+:BEAMER_env: example
+:END:
+
+#+begin_export latex
+\vspace{-1em}
+\[q\cdot \left(a_{0}\cdot \alert{s}_{0} + a_{1} \cdot \alert{s}_{1}\right) + a_{0} \cdot \alert{s}_{1} + q^{2} \cdot a_{1} \cdot \alert{s}_{0} \bmod q = \left(a_{0} + q\cdot a_{1}\right) \cdot (q\cdot \alert{s}_{0} + \alert{s}_{1})\]
+#+end_export
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+[cite/full:@STOC:BLPRS13]
+
+* Algebraic Variants
+
+** LWE
+
+#+begin_export latex
+\[
+\begin{pmatrix}c_{0} \\ c_{1} \\ c_{2} \\ c_{3} \\ c_{4} \\ c_{5} \\ c_{6} \\ c_{7}\end{pmatrix} = 
+\begin{pmatrix}
+a_{0,0} & a_{0,1} & a_{0,2} & a_{0,3} & a_{0,4} & a_{0,5} & a_{0,6} & a_{0,7}\\
+a_{1,0} & a_{1,1} & a_{1,2} & a_{1,3} & a_{1,4} & a_{1,5} & a_{1,6} & a_{1,7}\\
+a_{2,0} & a_{2,1} & a_{2,2} & a_{2,3} & a_{2,4} & a_{2,5} & a_{2,6} & a_{2,7}\\
+a_{3,0} & a_{3,1} & a_{3,2} & a_{3,3} & a_{3,4} & a_{3,5} & a_{3,6} & a_{3,7}\\
+a_{4,0} & a_{4,1} & a_{4,2} & a_{4,3} & a_{4,4} & a_{4,5} & a_{4,6} & a_{4,7}\\
+a_{5,0} & a_{5,1} & a_{5,2} & a_{5,3} & a_{5,4} & a_{5,5} & a_{5,6} & a_{5,7}\\
+a_{6,0} & a_{6,1} & a_{6,2} & a_{6,3} & a_{6,4} & a_{6,5} & a_{6,6} & a_{6,7}\\
+a_{7,0} & a_{7,1} & a_{7,2} & a_{7,3} & a_{7,4} & a_{7,5} & a_{7,6} & a_{7,7}\\
+\end{pmatrix} \cdot
+\begin{pmatrix}s_{0} \\ s_{1} \\ s_{2} \\ s_{3} \\ s_{4} \\ s_{5} \\ s_{6} \\ s_{7}\end{pmatrix} +
+\begin{pmatrix}e_{0} \\ e_{1} \\ e_{2} \\ e_{3} \\ e_{4} \\ e_{5} \\ e_{6} \\ e_{7}\end{pmatrix}
+\]
+#+end_export
+
+*** Performance
+
+Storage: \(\mathcal{O}(n^{2})\); Computation \(\mathcal{O}(n^{2})\)
+
+** Ring-LWE/Polynomial-LWE
+
+#+begin_src jupyter-python :kernel sagemath :results raw :exports none
+P = PolynomialRing(QQ, 3*8, ["a_%d"%i for i in range(8)] + ["s_%d"%i for i in range(8)] + ["e_%d"%i for i in range(8)])
+a = P.gens()[0:8]
+s = P.gens()[8:16]
+e = P.gens()[16:24]
+R.<X> = PolynomialRing(P)
+F = X^8 + 1
+a = sum(a[i]*X^i for i in range(8))
+s = sum(s[i]*X^i for i in range(8))
+e = sum(e[i]*X^i for i in range(8))
+A = matrix([((X^i*a) % F).list() for i in range(8)]).T
+# print((A*vector(s) + vector(e))[2])
+# print(((a*s + e) % f)[2])
+latex(A)
+#+end_src
+
+#+begin_export latex
+\[
+\begin{pmatrix}c_{0} \\ c_{1} \\ c_{2} \\ c_{3} \\ c_{4} \\ c_{5} \\ c_{6} \\ c_{7}\end{pmatrix} = 
+\begin{pmatrix}
+\alert{a_{0}} & -a_{7} & -a_{6} & -a_{5} & -a_{4} & -a_{3} & -a_{2} & -a_{1} \\
+\alert{a_{1}} & a_{0} & -a_{7} & -a_{6} & -a_{5} & -a_{4} & -a_{3} & -a_{2} \\
+\alert{a_{2}} & a_{1} & a_{0} & -a_{7} & -a_{6} & -a_{5} & -a_{4} & -a_{3} \\
+\alert{a_{3}} & a_{2} & a_{1} & a_{0} & -a_{7} & -a_{6} & -a_{5} & -a_{4} \\
+\alert{a_{4}} & a_{3} & a_{2} & a_{1} & a_{0} & -a_{7} & -a_{6} & -a_{5} \\
+\alert{a_{5}} & a_{4} & a_{3} & a_{2} & a_{1} & a_{0} & -a_{7} & -a_{6} \\
+\alert{a_{6}} & a_{5} & a_{4} & a_{3} & a_{2} & a_{1} & a_{0} & -a_{7} \\
+\alert{a_{7}} & a_{6} & a_{5} & a_{4} & a_{3} & a_{2} & a_{1} & a_{0}
+\end{pmatrix}\cdot
+\begin{pmatrix}s_{0} \\ s_{1} \\ s_{2} \\ s_{3} \\ s_{4} \\ s_{5} \\ s_{6} \\ s_{7}\end{pmatrix} +
+\begin{pmatrix}e_{0} \\ e_{1} \\ e_{2} \\ e_{3} \\ e_{4} \\ e_{5} \\ e_{6} \\ e_{7}\end{pmatrix}
+\]
+#+end_export
+
+** Ring-LWE/Polynomial-LWE
+
+#+begin_export latex
+\begin{align*}
+\sum_{i=0}^{n-1} c_{i} \cdot X^{i} &= \left(\sum_{i=0}^{n-1} a_{i} \cdot X^{i}\right) \cdot \left(\sum_{i=0}^{n-1} s_{i} \cdot X^{i}\right) + \sum_{i=0}^{8} e_{i} \cdot X^{i} \bmod X^{n} +1\\
+c(X) &= a(X) \cdot s(X) + e(X) \bmod \phi(X)
+\end{align*}
+#+end_export
+
+*** Performance (\(n\) is a power of two)
+
+Storage: \(\mathcal{O}(n)\); Computation \(\mathcal{O}(n \log n)\)
+
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+{{{fnsize([cite/full:@AC:SSTX09])}}}
+
+{{{fnsize([cite/full:@EC:LyuPeiReg10])}}}
+
+
+** Module-LWE
+
+#+begin_src jupyter-python :kernel sagemath :results raw :exports none
+P = PolynomialRing(QQ, 3*4, ["a_%d"%i for i in range(4)] + ["s_%d"%i for i in range(4)] + ["e_%d"%i for i in range(4)])
+a = P.gens()[0:4]
+s = P.gens()[4:8]
+e = P.gens()[8:12]
+R.<X> = PolynomialRing(P)
+F = X^4 + 1
+a = sum(a[i]*X^i for i in range(4))
+s = sum(s[i]*X^i for i in range(4))
+e = sum(e[i]*X^i for i in range(4))
+A = matrix([((X^i*a) % F).list() for i in range(4)]).T
+# print((A*vector(s) + vector(e))[2])
+# print(((a*s + e) % f)[2])
+latex(A)
+#+end_src
+
+
+#+begin_export latex
+\[
+\begin{pmatrix}c_{0,0} \\ c_{0,1} \\ c_{0,2} \\ c_{0,3} \\ c_{1,0} \\ c_{1,1} \\ c_{1,2} \\ c_{1,3}\end{pmatrix} = 
+\left(\begin{array}{rrrr|rrrr}
+\alert{a_{0,0}} & -a_{0,3} & -a_{0,2} & -a_{0,1} & \alert{a_{1,0}} & -a_{1,3} & -a_{1,2} & -a_{1,1} \\
+\alert{a_{0,1}} &  a_{0,0} & -a_{0,3} & -a_{0,2} & \alert{a_{1,1}} &  a_{1,0} & -a_{1,3} & -a_{1,2} \\
+\alert{a_{0,2}} &  a_{0,1} &  a_{0,0} & -a_{0,3} & \alert{a_{1,2}} &  a_{1,1} &  a_{1,0} & -a_{1,3} \\
+\alert{a_{0,3}} &  a_{0,2} &  a_{0,1} &  a_{0,0} & \alert{a_{1,3}} &  a_{1,2} &  a_{1,1} &  a_{1,0} \\
+\hline
+\alert{a_{2,0}} & -a_{2,3} & -a_{2,2} & -a_{2,1} & \alert{a_{3,0}} & -a_{3,3} & -a_{3,2} & -a_{3,1} \\
+\alert{a_{2,1}} &  a_{2,0} & -a_{2,3} & -a_{2,2} & \alert{a_{3,1}} &  a_{3,0} & -a_{3,3} & -a_{3,2} \\
+\alert{a_{2,2}} &  a_{2,1} &  a_{2,0} & -a_{2,3} & \alert{a_{3,2}} &  a_{3,1} &  a_{3,0} & -a_{3,3} \\
+\alert{a_{2,3}} &  a_{2,2} &  a_{2,1} &  a_{2,0} & \alert{a_{3,3}} &  a_{3,2} &  a_{3,1} &  a_{3,0} \\
+\end{array}\right)\cdot
+\begin{pmatrix}s_{0} \\ s_{1} \\ s_{2} \\ s_{3} \\ s_{4} \\ s_{5} \\ s_{6} \\ s_{7}\end{pmatrix} +
+\begin{pmatrix}e_{0} \\ e_{1} \\ e_{2} \\ e_{3} \\ e_{4} \\ e_{5} \\ e_{6} \\ e_{7}\end{pmatrix}
+\]
+#+end_export
+
+** Module-LWE
+
+#+begin_export latex
+\[
+\begin{pmatrix} c_{0}(X) \\ c_{1}(X) \end{pmatrix} =
+\begin{pmatrix} a_{0}(X) & a_{1}(X) \\ a_{2}(X) & a_{3}(X) \end{pmatrix} \cdot
+\begin{pmatrix} s_{0}(X) \\ s_{1}(X) \end{pmatrix} +
+\begin{pmatrix} e_{0}(X) \\ e_{1}(X) \end{pmatrix}
+\]
+#+end_export
+
+*** Performance (\(n\) is a power of two)
+
+Storage: \(\mathcal{O}(k^{2} \cdot n)\); Computation \(\mathcal{O}(k^{2} \cdot n \log n)\)
+***                                                            :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+{{{fnsize([cite/full:@Langlois:2015:WCA])}}}
+
+* LWE and Lattices
+** Lattices
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** 
+:PROPERTIES:
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+- A lattice is a discrete subgroup of $\RR^d$
+- It can be written as
+  \[
+  \Lambda = \left\{\sum_{i=0}^{d-1} v_i \cdot \vec{b}_i \mid v_i \in \ZZ\right\}
+  \]
+  for some basis vectors \(\vec{b}_i\).
+- We write \(\Lambda(\mat{B})\) for the lattices spanned by the columns of \(\mat{B}\).
+- A lattice is \(q\)-ary if it contains \(q\,\ZZ^{d}\), e.g. \(\{\vec{x} \in \ZZ_{q}^{d} \mid \vec{x} \cdot \vec{A} \equiv \vec{0}\}\) for some \(\vec{A} \in \ZZ^{d \times d'}\).  
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+#+begin_export latex
+\tikzset{external/export=true}
+\begin{tikzpicture}
+
+  \begin{scope}[scale=.6]
+    \coordinate (Origin)   at (0,0);
+    \coordinate (XAxisMin) at (-5,0);
+    \coordinate (XAxisMax) at (5,0);
+    \coordinate (YAxisMin) at (0,-5);
+    \coordinate (YAxisMax) at (0,5);
+    \draw [thin, black!40, <->] (XAxisMin) -- (XAxisMax);% Draw x axis
+    \draw [thin, black!40,<->] (YAxisMin) -- (YAxisMax);% Draw y axis
+    %\draw[style=help lines,dashed,black!20] (-5,-5) grid[step=1cm] (5,5);
+
+    \begin{scope}
+      \clip (-5,-5) rectangle (5,5); % Clips the picture...
+      \pgftransformcm{1}{0.6}{0.7}{1}{\pgfpoint{0cm}{0cm}}
+
+      % setup the nodes
+      \foreach \x in {-15,...,15}
+      \foreach \y in {-15,...,15}
+      {
+        \node[shape=circle,fill=black!45,scale=0.35] (\x-\y) at (2*\x,\y+3){};
+      }
+    \end{scope}
+  \end{scope}
+
+\end{tikzpicture}
+\tikzset{external/export=false}
+#+end_export
+
+{{{picture-credit(David Wong)}}}
+
+** Shortest Vector Problem
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** 
+:PROPERTIES:
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+#+begin_definition
+Given a lattice basis \(\mat{B}\), find a shortest non-zero vector in \(\Lambda(\mat{B})\).
+#+end_definition
+
+- The most natural problem on lattices
+- We write \(\lambda_{1}(\Lambda)\) for the Euclidean norm of a shortest vector.
+- NP-hard to solve exactly
+- Cryptography relies on approximate variants without such a reduction  
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+
+#+begin_export latex
+\tikzset{external/export=true}
+\begin{tikzpicture}
+  \begin{scope}[scale=.6]
+    \coordinate (Origin)   at (0,0);
+    \coordinate (XAxisMin) at (-5,0);
+    \coordinate (XAxisMax) at (5,0);
+    \coordinate (YAxisMin) at (0,-5);
+    \coordinate (YAxisMax) at (0,5);
+    \draw [thin, black!40, <->] (XAxisMin) -- (XAxisMax);% Draw x axis
+    \draw [thin, black!40,<->] (YAxisMin) -- (YAxisMax);% Draw y axis
+    \draw [thin, purple,->] (0,0) -- (-.5,.7);
+    % \draw[style=help lines,dashed,black!20] (-5,-5) grid[step=1cm] (5,5);
+
+    \begin{scope}
+      \clip (-5,-5) rectangle (5,5); % Clips the picture...
+      \pgftransformcm{1}{0.6}{0.7}{1}{\pgfpoint{0cm}{0cm}}
+
+      % setup the nodes
+      \foreach \x in {-15,...,15}
+      \foreach \y in {-15,...,15}
+      {
+        \node[shape=circle,fill=black!45,scale=0.35] (\x-\y) at (2*\x,\y+3){};
+      }
+    \end{scope}
+    % our little node
+    \node[shape=circle,fill=purple,scale=0.35] at (-.6,.8){};
+  \end{scope}
+
+\end{tikzpicture}
+\tikzset{external/export=false}
+
+#+end_export
+
+{{{picture-credit(David Wong)}}}
+
+** Bounded Distance Decoding
+
+*** 
+:PROPERTIES:
+:BEAMER_env: columns
+:END:
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+#+begin_definition
+Given a lattice basis \(\mat{B}\), a vector \( \vec{t} \), and a parameter \( 0 < \alpha\) such that the Euclidean distance \textnormal{dist}\((\vec{t},\vec{B}) < \alpha \cdot \lambda_{1}(\Lambda(\vec{B})) \), find the lattice vector \(\vec{v} \in \Lambda(\vec{B}) \) which is closest to \( \vec{t} \).
+#+end_definition
+
+- When \(\alpha < 1/2\) unique decoding is guaranteed but for \(\alpha < 1\) we typically still expect unique decoding.
+- BDD is a special case of the Closest Vector Problem where there is no bound on the distance to the lattice.
+
+**** 
+:PROPERTIES:
+:BEAMER_env: column
+:BEAMER_col: 0.5
+:END:
+
+#+begin_export latex
+\tikzset{external/export=true}
+\begin{tikzpicture}
+
+  \begin{scope}[scale=.6,shift={(12,0)}]
+    \coordinate (Origin)   at (0,0);
+    \coordinate (XAxisMin) at (-5,0);
+    \coordinate (XAxisMax) at (5,0);
+    \coordinate (YAxisMin) at (0,-5);
+    \coordinate (YAxisMax) at (0,5);
+    \draw [thin, black!40, <->] (XAxisMin) -- (XAxisMax);% Draw x axis
+    \draw [thin, black!40,<->] (YAxisMin) -- (YAxisMax);% Draw y axis
+    % \draw[style=help lines,dashed,black!20] (-5,-5) grid[step=1cm] (5,5);
+
+
+    \begin{scope}
+      \clip (-5,-5) rectangle (5,5); % Clips the picture...
+      \pgftransformcm{1}{0.6}{0.7}{1}{\pgfpoint{0cm}{0cm}}
+
+      % setup the nodes
+      \foreach \x in {-15,...,15}
+      \foreach \y in {-15,...,15}
+      {
+        \node[shape=circle,fill=black!45,scale=0.35] (\x-\y) at (2*\x,\y+3){};
+      }
+    \end{scope}
+
+    % our little node
+    \node[shape=circle,fill=purple!60,scale=0.4] at (2.5,3.4){};
+    \node[shape=circle,fill=purple,scale=0.4] at (2.1,3){};
+    \node[shape=circle,fill=none,draw=purple,scale=0.8] at (2.1,3){};
+
+  \end{scope}
+
+\end{tikzpicture}
+\tikzset{external/export=false}
+
+#+end_export
+
+{{{picture-credit(David Wong)}}}
+
+** LWE _is_ Bounded Distance Decoding (BDD) on Random \(q\)-ary Lattices
+
+Let
+#+begin_export latex
+\[
+\mat{L} =  \begin{pmatrix}
+    q\mat{I} & \mat{A}\\
+    0 & \mat{I}\\
+  \end{pmatrix}
+\]
+#+end_export
+We can reformulate the matrix form of the LWE equation \(\vec{A} \cdot \vec{s} + \vec{e} \equiv \vec{c} \bmod q\) as a linear system over the Integers as:
+#+begin_export latex
+\[
+  \mat{L} \cdot
+  \begin{pmatrix}
+    \vec{*}\\
+    \vec{s}
+  \end{pmatrix} +
+  \begin{pmatrix}
+    \vec{e}\\
+    -\vec{s}
+  \end{pmatrix}  
+ = 
+  \begin{pmatrix}
+    q\mat{I} & -\mat{A}\\
+    0 & \mat{I}\\
+  \end{pmatrix} \cdot
+  \begin{pmatrix}
+    \vec{*}\\
+    \vec{s}
+  \end{pmatrix} +
+  \begin{pmatrix}
+    \vec{e}\\
+    -\vec{s}
+  \end{pmatrix}  
+= 
+  \begin{pmatrix}
+    \vec{c}\\
+    \vec{0}
+  \end{pmatrix}
+\]
+#+end_export
+
+The vector \((\vec{c}^T, \vec{0}^T)^T\) is close to the lattice \(\Lambda\left(\mat{L}\right)\) with offset \((\vec{e}^T, -\vec{s}^T)^T\).
+
+** Is that a Good Choice?
+
+- Maybe BDD on random \(q\)-ary lattices is easier than BDD in general?
+- Maybe BDD is easier than SVP?
+
+** Sketch: BDD on Random \(q\)-ary Lattices solves BDD on any Lattice
+
+- We are given some basis \(\mat{B} \in \ZZ^{d \times d}\) and some target \(\vec{t}\) s.t. \(\vec{t} = \mat{B}\cdot \vec{s} + \vec{e}\) with \(\vec{e}\) small
+- Pick some large \(q \geq 2^{2d}\) 
+- Sample some \(\mat{U}\) (see below)
+- Set \(\mat{A} = \mat{U}\cdot \mat{B} \bmod q\) and consider \(\vec{c} = \mat{U} \cdot \vec{t} + \vec{e}'\) with \({\vec{e}'}\) small
+  #+begin_export latex
+\begin{align*}
+\vec{c} &= \mat{U} \cdot \vec{t} + \vec{e}' = \mat{U} \cdot \left(\mat{B}\cdot \vec{s} + \vec{e} \right) + \vec{e}' = \mat{U} \cdot \mat{B}\cdot \vec{s} + \mat{U} \cdot \vec{e} + \vec{e}' = \mat{A} \cdot \vec{s} + \vec{e}''
+\end{align*}
+  #+end_export
+- We can pick \(\mat{U}\)
+  + large enough to make \(\mat{A}\) uniform mod \(q\) and
+  + small enough to make \(\mat{U} \cdot \vec{e} + \vec{e}'\) small and well distributed
+  using "smoothing parameter" arguments on \(\Lambda(\mat{B}^{-T})\)
+
+[cite/full:@Regev:2009:LLE]
+
+** Sketch: Solving BDD on any Lattice implies solving GapSVP
+
+Say we want to decide if \(\lambda_{1}(\Lambda) \leq 1\) or \(\lambda_{1}(\Lambda) > \gamma\) and we have a BDD solver with \(\alpha = c\cdot \gamma\).
+
+- Pick a random \(\vec{z} \in \Lambda\), add a small error \(\vec{e}\) of norm \(c\cdot \gamma\)
+- Run the BDD solver.
+- If it returns \(\vec{z}\) then output \(\lambda_{1}(\Lambda) > \gamma\), else output \(\lambda_{1}(\Lambda) \leq 1\).[cite/footfull:@STOC:Peikert09]
+
+Regev showed: If you have a BDD solver you can find a short basis on a quantum computer. [cite/footfull:@Regev:2009:LLE]
+
+** Concrete Hardness: Cryptanalysis
+
+- This tells us random \(q\)-ary lattices are not a terrible choice
+- To establish how long it actually takes to solve LWE, we rely on cryptanalysis
+ 
+  #+begin_src python :kernel sagemath :dir /home/malb/Projects/lattices/estimator :exports both
+from estimator import *
+schemes.Kyber512
+  #+end_src
+
+  #+RESULTS:
+  : LWEParameters(n=512, q=3329, Xs=D(σ=1.22), Xe=D(σ=1.22), m=512, tag='Kyber 512')
+
+  #+begin_src python :kernel sagemath :dir /home/malb/Projects/lattices/estimator :exports both
+LWE.primal_usvp(schemes.Kyber512)
+  #+end_src
+
+  #+RESULTS:
+  : rop: ≈2^143.8, red: ≈2^143.8, δ: 1.003941, β: 406, d: 998, tag: usvp
+
+#+begin_center
+https://github.com/malb/lattice-estimator/
+#+end_center
+
+* LWE Encryption
+** Convention
+
+- I am going to use the Ring-LWE formulation \[c_{i}(X) = a_{i}(X)\cdot s(X) + e_{i}(X)\]
+  Thus, each sample corresponds to "\(n\) LWE samples"
+- I will suppress the "\((X)\)" in "\(a(X)\)" etc.
+- I will assume \(s\) is "small" and that the product of two "small" things is "small".
+- I will write \(\alert{e_{i}}\) to emphasise that \(e_{i}\) is small.
+
+*** TL;DR: I will write
+ \[c_{i} = a_{i}\cdot \alert{s} + \alert{e_{i}}\]
+
+** DH to Ring-LWE Dictionary
+
+| DH Land                        | Ring-LWE Land                                                 |
+|--------------------------------+---------------------------------------------------------------|
+| \(g\)                          | \(a\)                                                         |
+| \(g^x\)                        | \(a\cdot {s} + \alert{e}\)                                                    |
+|                                |                                                               |
+| \(g^x \cdot g^y = g^{x+y}\)    | \((a\cdot {s} + \alert{e_0}) + (a \cdot {t} + \alert{e_1}) = a \cdot {(s+t)} + \alert{e'}\)                   |
+|                                |                                                               |
+| \((g^a)^b = (g^b)^a\)          | \((a\cdot \alert{s} + \alert{e})\cdot \alert{t} = (a\cdot \alert{s} \cdot \alert{t} + \alert{e} \cdot \alert{t})\) |
+|                                | \(\approx a\cdot \alert{s} \cdot \alert{t} \approx (a\cdot \alert{t} + \alert{e})\cdot \alert{s}\) |
+|                                |                                                               |
+| \((g, g^a, g^b, g^{ab})\)      | \((a,\ a\cdot \alert{s} + \alert{e},\ a\cdot \alert{t} + \alert{d},\ a \cdot \alert{s} \cdot \alert{t} + \alert{e'})\) |
+| \(\approx_c (g, g^a, g^b, u)\) | \(\approx_c (a,\ a\cdot \alert{s} + \alert{e},\ a\cdot \alert{t} + \alert{d},\ u)\) |
+
+** Regev's Encryption Scheme
+
+You have already seen it.
+
+- KeyGen :: Publish \(c_{i} = a_{i} \cdot s + \alert{e_{i}}\) for \(i=0,\ldots, \lceil 2\, n \log q\rceil\)
+- Encrypt :: \[d_{0} = \sum \alert{b_{i}} \cdot a_{i},\quad  d_{1} = \left(\sum \alert{b_{i}} \cdot c_{i} \right) + \lfloor q/2 \rfloor \cdot m  \textnormal{ with } \alert{b_{i}} \in \bin, m \in \bin^{n}\]
+- Decrypt ::
+  #+begin_export latex
+\begin{align*}
+\left\lfloor \frac{2}{q} \cdot \left(d_{1} - d_{0} \cdot s\right) \right\rceil &= \left\lfloor \frac{2}{q} \cdot \left(\left(\sum \alert{b_{i}} \cdot c_{i} \right) + \left\lfloor \frac{q}{2} \right\rfloor  \cdot m - \sum \alert{b_{i}} \cdot a_{i} \cdot s\right) \right\rceil\\
+&= \left\lfloor \frac{2}{q} \cdot \left(\left(\sum \alert{b_{i}} \cdot (a_{i} \cdot s + \alert{e_{i}}) \right) + \frac{q}{2} \cdot m - \sum \alert{b_{i}} \cdot a_{i} \cdot s\right) \right\rceil\\
+&= \left\lfloor \frac{2}{q} \cdot \left(\left(\sum \alert{b_{i} \cdot e_{i}} \right) + \left\lfloor \frac{q}{2} \right\rfloor  \cdot m \right) \right\rceil = m
+\end{align*}
+  #+end_export
+
+The public key is indistinguishable from uniform by the LWE assumption and \(\sum b_{i} \cdot a_{i}\) is statistically close to uniformly random by the Leftover Hash Lemma (LHL).
+
+** ElGamal & LPR10
+
+_ElGamal_
+
+- KeyGen :: \(h = g^{x}\)
+- Encrypt :: \(d_{0},\ d_{1} = \left({g^{r},\  m \cdot h^{r}}\right)\) for some random \(r\)
+- Decrypt :: \(d_{1} / d_{0}^{x} = m \cdot (g^{x})^{r} / (g^{r})^{x} = m\)
+
+_[[cite:EC:LyuPeiReg10]]_
+
+- KeyGen :: \(c = a \cdot \alert{s} + \alert{e}\)
+- Encrypt :: \(d_{0}, \ d_{1} = \alert{v} \cdot a + \alert{e'},\ \alert{v} \cdot c + \alert{e''} +\left\lfloor \frac{q}{2} \right\rfloor  \cdot m \)
+- Decrypt ::
+  #+begin_export latex
+\begin{align*}
+\left\lfloor \frac{2}{q} \cdot \left(d_{1} - d_{0} \cdot \alert{s}\right) \right\rceil &= \left\lfloor \frac{2}{q} \cdot \left({\alert{v} \cdot (a \cdot \alert{s} + \alert{e}) + \alert{e''} + \left\lfloor \frac{q}{2} \right\rfloor \cdot m - \left(\alert{v} \cdot a + \alert{e'}\right) \cdot \alert{s}}\right) \right\rceil\\
+&= \left\lfloor \frac{2}{q} \cdot \left({\alert{v} \cdot \alert{e} + \alert{e''} + \left\lfloor \frac{q}{2} \right\rfloor  \cdot m - \alert{e'} \cdot \alert{s}}\right) \right\rceil = m\\
+\end{align*}
+  #+end_export
+
+** Proof Sketch
+
+- KeyGen :: \(c = a \cdot \alert{s} + \alert{e}\)
+  - The public key \((a,c)\) is indistinguishable from uniform \((u', u'')\) by the (Ring-)LWE assumption
+
+- Encrypt :: \(d_{0}, \ d_{1} = \alert{v} \cdot a + \alert{e'},\ \alert{v} \cdot c + \alert{e''} + q/2 \cdot m \)
+  - Then \(\alert{v} \cdot u' + \alert{e''},\ \alert{v} \cdot u'' + \alert{e''}\) is indistinguishable from uniform by the (Ring)-LWE assumption
+
+** Fin
+:PROPERTIES:
+:BEAMER_OPT: standout
+:END:
+
+#+begin_center
+\Large \alert{… noisy linear algebra mod \(q\)}
+#+end_center
+
+#+begin_export latex
+\IfFileExists{\jobname.tex}{\embedfile[afrelationship={/Source}]{\jobname.tex}}{}
+#+end_export
+
+** References
+:PROPERTIES:
+:BEAMER_opt: allowframebreaks
+:END:
+
+#+begin_export latex
+\renewcommand*{\bibfont}{\scriptsize}
+\printbibliography[heading=none]
+#+end_export
+
+* Other Stuff
+** QKD?
+
+#+begin_quote
+"Given the specialised hardware requirements of QKD over classical cryptographic key agreement mechanisms and the requirement for authentication in all use cases, the NCSC does not endorse the use of QKD for any government or military applications, and cautions against sole reliance on QKD for business-critical networks, especially in Critical National Infrastructure sectors. […] NCSC advice is that the best mitigation against the threat of quantum computers is quantum-safe cryptography."[fn::https://www.ncsc.gov.uk/whitepaper/quantum-security-technologies]
+#+end_quote
+
+
+* Technical Artefacts                                                 :noexport:
+
+
