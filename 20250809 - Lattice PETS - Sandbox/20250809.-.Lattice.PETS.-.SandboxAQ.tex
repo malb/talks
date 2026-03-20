@@ -1,0 +1,724 @@
+% Created 2025-08-09 Sat 11:49
+% Intended LaTeX compiler: lualatex
+\documentclass[xcolor=table,10pt,aspectratio=169]{beamer}
+
+\RequirePackage[l2tabu,orthodox]{nag}            %% Warn about obsolete commands and packages
+\RequirePackage{amsmath,amsfonts,amssymb,amsthm} %% Math
+\RequirePackage{ifpdf,ifxetex,ifluatex}          %% Detect XeTeX and LuaTeX
+\RequirePackage{xspace}
+\RequirePackage{graphicx}
+\RequirePackage{comment}
+\RequirePackage{url}
+\RequirePackage{relsize}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage[normalem]{ulem}
+\ifluatex%
+\else%
+  \RequirePackage[all]{xy}
+\fi%
+\RequirePackage{etoolbox}
+\RequirePackage{csquotes}
+\RequirePackage[export]{adjustbox}
+
+\RequirePackage{silence}
+\WarningsOff[microtype]
+\WarningFilter{microtype}{Unknown slot}
+
+% https://tex.stackexchange.com/questions/64459/overfull-vbox-warning-disable
+\vfuzz=30pt
+\hfuzz=30pt
+
+
+%%%
+%%% Code Listings
+%%%
+
+\RequirePackage{listings}
+\lstdefinelanguage{Sage}[]{Python}{morekeywords={True,False,sage,cdef,cpdef,ctypedef,self},sensitive=true}
+
+\lstset{frame=none,
+  showtabs=False,
+  showspaces=False,
+  showstringspaces=False,
+  commentstyle={\color{gray}},
+  keywordstyle={\color{mLightBrown}\textbf},
+  stringstyle ={\color{mDarkBrown}},
+  frame=single,
+  basicstyle=\tt\scriptsize\relax,
+  backgroundcolor=\color{gray!190!black},
+  inputencoding=utf8,
+  literate={…}{{\ldots}}1,
+  belowskip=0.0em,
+}
+
+\makeatletter
+\patchcmd{\@verbatim}
+  {\verbatim@font}
+  {\verbatim@font\scriptsize}
+  {}{}
+\makeatother
+
+
+%%%
+%%% Pseudocode
+%%%
+
+\let\nl\undefine
+\let\procedure\relax
+\let\endprocedure\relax
+\usepackage{algorithm2e}
+
+%%%
+%%% Tikz
+%%%
+
+\RequirePackage{tikz,pgfplots}
+\pgfplotsset{compat=newest}
+
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{automata}
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{fit,}
+\usetikzlibrary{shapes.symbols}
+\usetikzlibrary{chains}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{graphs}
+
+%% Cache but disable by default
+
+\usetikzlibrary{external}
+\tikzset{external/export=false}
+
+\definecolor{DarkPurple}{HTML}{332288}
+\definecolor{DarkBlue}{HTML}{6699CC}
+\definecolor{LightBlue}{HTML}{88CCEE}
+\definecolor{DarkGreen}{HTML}{117733}
+\definecolor{DarkRed}{HTML}{661100}
+\definecolor{LightRed}{HTML}{CC6677}
+\definecolor{LightPink}{HTML}{AA4466}
+\definecolor{DarkPink}{HTML}{882255}
+\definecolor{LightPurple}{HTML}{AA4499}
+\definecolor{DarkBrown}{HTML}{604c38}
+\definecolor{DarkTeal}{HTML}{23373b}
+\definecolor{LightBrown}{HTML}{EB811B}
+\definecolor{LightGreen}{HTML}{14B03D}
+\definecolor{DarkOrange}{HTML}{FFDD00}
+
+\pgfplotsset{width=1.0\textwidth,
+  height=0.6\textwidth,
+  cycle list={%
+    solid,LightGreen,thick\\%
+    dotted,LightRed,very thick\\%
+    dashed,DarkBlue,thick\\%
+    dashdotted,DarkPink,thick\\%
+    dashdotdotted,LightGreen,thick\\%
+    loosely dotted,very thick\\%
+    loosely dashed,DarkBlue,very thick\\%
+    loosely dashdotted,DarkPink,very thick\\%
+    \\%
+    DarkBrown,thick\\%
+  },
+  legend pos=north west,
+  legend cell align={left}}
+
+\pgfplotsset{select coords between index/.style 2 args={
+    x filter/.code={
+        \ifnum\coordindex<#1\def\pgfmathresult{}\fi
+        \ifnum\coordindex>#2\def\pgfmathresult{}\fi
+    }
+}}
+
+\setlength{\marginparwidth}{2cm}
+\pgfplotsset{compat=1.18}
+
+%%%
+%%% SVG (Inkscape)
+%%%
+
+\ifpdf% 
+\providecommand{\executeiffilenewer}[3]{%
+  \ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+    {\pdffilemoddate{#2}}>0%
+    {\immediate\write18{#3}}
+  \fi%
+}
+\else%
+\providecommand{\executeiffilenewer}[3]{%
+  {\immediate\write18{#3}} % hack
+}
+\fi%
+
+\providecommand{\includesvg}[2][1.0\textwidth]{%
+ \executeiffilenewer{#1.svg}{#1.pdf}%
+ {inkscape -z -D --file=#2.svg --export-pdf=#2.pdf --export-latex --export-area-page}%
+ \def\svgwidth{#1} 
+ \input{#2.pdf_tex}%
+} 
+
+%%%
+%%% Attachments
+%%%
+
+\RequirePackage{embedfile}
+
+
+%%%
+%%% Metropolis Theme
+%%%
+
+\usetheme{metropolis}
+\metroset{color/block=fill}
+\metroset{numbering=none}
+\metroset{outer/progressbar=foot}
+\metroset{titleformat=smallcaps}
+
+\setbeamercolor{description item}{fg=mLightBrown}
+\setbeamerfont{footnote}{size=\scriptsize}
+\setbeamercolor{example text}{fg=mDarkBrown}
+\setbeamercolor{block title alerted}{fg=white, bg=mDarkBrown}
+\setbeamerfont{alerted text}{series=\ifmmode\boldmath\else\bfseries\fi}
+
+\renewcommand*{\UrlFont}{\ttfamily\relax}
+
+%%%
+%%% UTF-8 & Fonts
+%%% 
+
+% \RequirePackage{unicodesymbols} % after metropolis which loads fontspec
+
+\ifboolexpr{bool{xetex} or bool{luatex}}{%
+\setmonofont[BoldFont={Cousine Bold},
+             ItalicFont={Cousine Italic},
+             BoldItalicFont={Cousine Bold Italic},
+             Scale=0.9]{Cousine}             
+}{%
+}
+
+%%%
+%%% BibLaTeX
+%%%
+
+\RequirePackage[backend=bibtex,
+            style=alphabetic,
+            maxnames=8,maxbibnames=8,maxalphanames=8,
+            citestyle=alphabetic]{biblatex}
+
+\bibliography{local.bib,abbrev3.bib,crypto_crossref.bib,rfc.bib,jacm.bib,dcc.bib}
+
+\setbeamertemplate{bibliography item}[text]
+% https://tex.stackexchange.com/questions/683533/beamer-theme-metropolis-does-not-allow-different-font-size-for-fullcite
+\setbeamerfont{bibliography entry title}{size=}
+\setbeamerfont{bibliography entry author}{size=}
+\setbeamerfont{bibliography entry location}{size=}
+\setbeamerfont{bibliography entry note}{size=}
+
+\DeclareFieldFormat{title}{\alert{#1}}
+\DeclareFieldFormat[book]{title}{\alert{#1}}
+\DeclareFieldFormat[thesis]{title}{\alert{#1}}
+\DeclareFieldFormat[inproceedings]{title}{\alert{#1}}
+\DeclareFieldFormat[incollection]{title}{\alert{#1}}
+\DeclareFieldFormat[article]{title}{\alert{#1}}
+\DeclareFieldFormat[misc]{title}{\alert{#1}}
+
+%%% 
+%%% Microtype
+%%%
+
+\IfFileExists{upquote.sty}{\RequirePackage{upquote}}{}
+%% https://github.com/schlcht/microtype/issues/43
+%% \IfFileExists{microtype.sty}{\RequirePackage{microtype}}{}
+%% \IfFileExists{microtype.sty}{\PassOptionsToPackage{verbose=silent}{microtype}}{}
+
+\setlength{\parindent}{0pt}                   %%
+\setlength{\parskip}{6pt plus 2pt minus 1pt}  %%
+\setlength{\emergencystretch}{3em}            %% prevent overfull lines
+\setcounter{secnumdepth}{0}                   %%
+
+%%%
+%%% Maths
+%%%
+
+\DeclareMathOperator{\Vol}{Vol}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\GH}{GH}
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}\xspace}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\providecommand{\mat}[1]{\ensuremath{\vec{#1}}\xspace}
+\providecommand{\ring}[0]{\ensuremath{\mathcal{R}}\xspace}
+
+
+\usepackage{amsmath}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{newunicodechar}
+\usepackage[notions,operators,sets,keys,ff,adversary,primitives,complexity,asymptotics,lambda,landau,advantage]{cryptocode}
+\usepackage[capitalize]{cleveref}
+\usepackage[,]{stmaryrd}
+\usepackage[english]{babel}
+\usepackage{xspace}
+\usepackage{units}
+\usepackage{nicefrac}
+\usepackage{gensymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[color=cyan!0!magenta!4!yellow!16]{todonotes}
+% \tikzset{external/export=true}
+\providecommand{\ring}[0]{\ensuremath{\mathcal{R}}\xspace}
+\PassOptionsToPackage{british}{babel}
+\definecolor{gamechangecolor}{HTML}{f8e8c6}
+\usetheme{default}
+\author{Martin R. Albrecht}
+\date{SandboxAQ}
+\title{Lattices give us KEMs and FHE, but where are the efficient lattice PETs?}
+\subtitle{By Example of (Verifiable) Oblivious PRFs}
+\hypersetup{
+pdfauthor={Martin R. Albrecht},
+pdftitle={Lattices give us KEMs and FHE, but where are the efficient lattice PETs?},
+pdfkeywords={},
+pdfsubject={},
+pdfcreator={Emacs 30.1 (Org mode 9.7.33)},
+pdflang={English},
+colorlinks,
+citecolor=gray,
+filecolor=gray,
+linkcolor=gray,
+urlcolor=gray
+}
+\begin{document}
+
+\maketitle
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+\section{Oblivious PRFs}
+\label{sec:org19efc1f}
+\begin{frame}[label={sec:orgeaf546e}]{Verifiable Oblivious PRFs}
+\procedure{}{%
+\textbf{Client} \< \<  \textbf{Functionality} \< \< \textbf{Server}\\
+\< \sendmessageright{top=\(m\)} \< \< \sendmessageleft{top=\(k\)} \<\\
+\< \< \text{\(c = F_k(m)\)} \< \<\\
+\< \sendmessageleft{top=\(c\)} \< \< \sendmessageright{top=\(\bot\)} \<\\
+}
+\end{frame}
+\begin{frame}[label={sec:org735d84c}]{Example Applications: Privacy Pass}
+\begin{center}
+\includegraphics[keepaspectratio,frame,height=.9\textheight]{./privacy-pass.png}
+\end{center}
+\end{frame}
+\begin{frame}[label={sec:orgb82de66}]{DH-Based OPRF}
+\centering
+\procedure{}{%
+\textbf{Client} \< \< \textbf{Server}\\
+\< \sendmessageright*{\text{\(c_x \coloneqq  H(x) \cdot g^{r}\)}} \<\\
+\< \sendmessageleft*{\text{\(d_x \coloneqq  c_x^k, c = g^{k}\)}} \<\\
+\text{\(d_x/c^r = H(x)^k\)} \< \<\\
+}
+
+\[\text{\textbf{Correctness:} } d_x/c^r = c_x^k/c^r = (H(x) \cdot g^{r})^k/(g^k)^r = H(x)^k\]
+\end{frame}
+\section{LWE and DH}
+\label{sec:orgd53f0d3}
+\begin{frame}[label={sec:orgf68d090}]{Lattices seem great}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{Bottom of the Stack:}
+
+\begin{itemize}
+\item Kyber (KEM)
+\item Dilithium (Signature)
+\item Falcon (Signature)
+\end{itemize}
+\end{column}
+\begin{column}{0.5\columnwidth}
+\textbf{Top of the Stack:}
+
+\begin{itemize}
+\item FHE \cite{PhD:Gentry09,ITCS:BraGenVai12,JC:CGGI20,C:GenSahWat13}
+\item iO \cite{FOCS:GGHRSW13,EC:BDGM20}
+\item FE \cite{EC:SahWat05,TCC:BonSahWat11}
+\end{itemize}
+
+\medskip
+\end{column}
+\end{columns}
+\begin{columns}[t]
+\begin{column}{0.5\columnwidth}
+\textbf{Curve25519}
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Key generation & \(\approx\) 60,000 cycles\\
+Key agreement & \(\approx\) 160,000 cycles\\
+ & \\
+Public key & 32 bytes\\
+Key Share & 32 bytes\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+
+\tiny \url{https://eprint.iacr.org/2015/943}
+\end{column}
+\begin{column}{0.5\columnwidth}
+\textbf{Kyber-768}
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Key generation & ≈  38,000 cycles\\
+Encapsulation & ≈  49,000 cycles\\
+Decapsulation & ≈  39,000 cycles\\
+Ciphertext & 1,088 bytes\\
+Public key & 1,184 bytes\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+
+\tiny \url{https://bench.cr.yp.to/results-kem.html}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}[label={sec:orgc16c22d}]{The Learning with Errors Problem (LWE)}
+Given \((\vec{A},\vec{c})\) with \(\vec{c} \in \ZZ_q^{m}\), \(\vec{A} \in \ZZ_q^{m \times n}\), \(\vec{s} \in \ZZ_q^{n}\) and \alert{small \(\vec{e} \in \ZZ^{m}\)} is
+
+\begin{align*}
+\left(\begin{array}{c}
+\\
+\\
+\\ 
+\vec{c} \\
+\\
+\\
+\\
+\end{array} \right) = \left(
+\begin{array}{ccc}
+\leftarrow & n & \rightarrow \\
+\\
+\\ 
+& \vec{A} & \\
+\\
+\\
+\\
+\end{array} \right) \times \left( \begin{array}{c}
+\\
+\vec{s} \\
+\\
+\end{array} \right) \alert{+ \left(
+\begin{array}{c}
+\\
+\\
+\\ 
+\vec{e} \\
+\\
+\\
+\\
+\end{array} 
+\right)}
+\end{align*}
+
+or \(\vec{c} \sample \mathcal{U}\left(\ZZ_q^{m}\right)\).
+\end{frame}
+\begin{frame}[label={sec:orgb1878f3}]{LWE}
+\[
+\begin{pmatrix}c_{0} \\ c_{1} \\ c_{2} \\ c_{3} \\ c_{4} \\ c_{5} \\ c_{6} \\ c_{7}\end{pmatrix} = 
+\left(\begin{array}{rrrrrrrr}
+a_{0,0} & a_{0,1} & a_{0,2} & a_{0,3} & a_{0,4} & a_{0,5} & a_{0,6} & a_{0,7}\\
+a_{1,0} & a_{1,1} & a_{1,2} & a_{1,3} & a_{1,4} & a_{1,5} & a_{1,6} & a_{1,7}\\
+a_{2,0} & a_{2,1} & a_{2,2} & a_{2,3} & a_{2,4} & a_{2,5} & a_{2,6} & a_{2,7}\\
+a_{3,0} & a_{3,1} & a_{3,2} & a_{3,3} & a_{3,4} & a_{3,5} & a_{3,6} & a_{3,7}\\
+a_{4,0} & a_{4,1} & a_{4,2} & a_{4,3} & a_{4,4} & a_{4,5} & a_{4,6} & a_{4,7}\\
+a_{5,0} & a_{5,1} & a_{5,2} & a_{5,3} & a_{5,4} & a_{5,5} & a_{5,6} & a_{5,7}\\
+a_{6,0} & a_{6,1} & a_{6,2} & a_{6,3} & a_{6,4} & a_{6,5} & a_{6,6} & a_{6,7}\\
+a_{7,0} & a_{7,1} & a_{7,2} & a_{7,3} & a_{7,4} & a_{7,5} & a_{7,6} & a_{7,7}\\
+\end{array}\right) \cdot
+\begin{pmatrix}s_{0} \\ s_{1} \\ s_{2} \\ s_{3} \\ s_{4} \\ s_{5} \\ s_{6} \\ s_{7}\end{pmatrix} +
+\begin{pmatrix}e_{0} \\ e_{1} \\ e_{2} \\ e_{3} \\ e_{4} \\ e_{5} \\ e_{6} \\ e_{7}\end{pmatrix}
+\]
+\begin{block}{Performance}
+Storage: \(\mathcal{O}(n^{2})\); Computation \(\mathcal{O}(n^{2})\)
+\end{block}
+\end{frame}
+\begin{frame}[label={sec:org3eb8468}]{Ring-LWE/Polynomial-LWE}
+\[
+\begin{pmatrix}c_{0} \\ c_{1} \\ c_{2} \\ c_{3} \\ c_{4} \\ c_{5} \\ c_{6} \\ c_{7}\end{pmatrix} = 
+\left(\begin{array}{rrrrrrrr}
+\alert{a_{0}} & -a_{7} & -a_{6} & -a_{5} & -a_{4} & -a_{3} & -a_{2} & -a_{1} \\
+\alert{a_{1}} & a_{0} & -a_{7} & -a_{6} & -a_{5} & -a_{4} & -a_{3} & -a_{2} \\
+\alert{a_{2}} & a_{1} & a_{0} & -a_{7} & -a_{6} & -a_{5} & -a_{4} & -a_{3} \\
+\alert{a_{3}} & a_{2} & a_{1} & a_{0} & -a_{7} & -a_{6} & -a_{5} & -a_{4} \\
+\alert{a_{4}} & a_{3} & a_{2} & a_{1} & a_{0} & -a_{7} & -a_{6} & -a_{5} \\
+\alert{a_{5}} & a_{4} & a_{3} & a_{2} & a_{1} & a_{0} & -a_{7} & -a_{6} \\
+\alert{a_{6}} & a_{5} & a_{4} & a_{3} & a_{2} & a_{1} & a_{0} & -a_{7} \\
+\alert{a_{7}} & a_{6} & a_{5} & a_{4} & a_{3} & a_{2} & a_{1} & a_{0}
+\end{array}\right)\cdot
+\begin{pmatrix}s_{0} \\ s_{1} \\ s_{2} \\ s_{3} \\ s_{4} \\ s_{5} \\ s_{6} \\ s_{7}\end{pmatrix} +
+\begin{pmatrix}e_{0} \\ e_{1} \\ e_{2} \\ e_{3} \\ e_{4} \\ e_{5} \\ e_{6} \\ e_{7}\end{pmatrix}
+\]
+\begin{block}{Performance (\(n\) is a power of two)}
+Storage: \(\mathcal{O}(n)\); Computation \(\mathcal{O}(n \log n)\)
+\end{block}
+\end{frame}
+\begin{frame}[label={sec:org5aaa464}]{Ring-LWE/Polynomial-LWE}
+\begin{align*}
+\sum_{j=0}^{n-1} c_{j} \cdot X^{j} &= \left(\sum_{j=0}^{n-1} a_{j} \cdot X^{j}\right) \cdot \left(\sum_{j=0}^{n-1} s_{j} \cdot X^{j}\right) + \sum_{j=0}^{n-1} e_{j} \cdot X^{j} \bmod X^{n} +1\\
+c(X) &= a(X) \cdot s(X) + e(X) \bmod \phi(X)\\
+c_i &= a_{i} \cdot \alert{s} + \alert{e}_{i}
+\end{align*}
+
+We write \(\ring \coloneqq \ZZ[X]/\phi(X)\) and \(\ring_{q} \coloneqq \ZZ_{q}[X]/\phi(X)\).
+
+{\footnotesize \fullcite{AC:SSTX09} \par}
+
+{\footnotesize \fullcite{EC:LyuPeiReg10} \par}
+\end{frame}
+\begin{frame}[label={sec:org79a7520}]{DH to Ring-LWE Dictionary}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+DH Land & Ring-LWE Land\\
+\midrule
+\(g\) & \(a\)\\
+\(g^x\) & \(a\cdot {s} + \alert{e}\)\\
+ & \\
+\(g^x \cdot g^y = g^{x+y}\) & \((a\cdot {s} + \alert{e_0}) + (a \cdot {t} + \alert{e_1}) = a \cdot {(s+t)} + \alert{e'}\)\\
+ & \\
+\((g^a)^b = (g^b)^a\) & \((a\cdot \alert{s} + \alert{e})\cdot \alert{t} = (a\cdot \alert{s} \cdot \alert{t} + \alert{e} \cdot \alert{t})\)\\
+ & \(\approx a\cdot \alert{s} \cdot \alert{t} \approx (a\cdot \alert{t} + \alert{e})\cdot \alert{s}\)\\
+ & \\
+\((g, g^a, g^b, g^{ab})\) & \((a,\ a\cdot \alert{s} + \alert{e},\ a\cdot \alert{t} + \alert{d},\ a \cdot \alert{s} \cdot \alert{t} + \alert{e'})\)\\
+\(\approx_c (g, g^a, g^b, u)\) & \(\approx_c (a,\ a\cdot \alert{s} + \alert{e},\ a\cdot \alert{t} + \alert{d},\ u)\)\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+\end{frame}
+\begin{frame}[label={sec:org333cbb6}]{Follow the Blueprint}
+\medskip
+\begin{columns}[t]
+\begin{column}[t]{0.5\columnwidth}
+\centering
+\procedure{}{%
+\textbf{C} \< \< \textbf{S}\\
+\< \sendmessageright*{\text{\(c_x \coloneqq  H(x) \cdot g^{r}\)}} \<\\
+\< \sendmessageleft*{\text{\(d_x \coloneqq  c_x^k\)}\\
+                     \text{\(c \coloneqq g^{k}\)}} \<\\
+\text{\(d_x/c^r = H(x)^k\)} \< \<\\
+}
+\end{column}
+\begin{column}[t]{0.5\columnwidth}
+\centering
+\procedure{}{%
+\textbf{C} \< \< \textbf{S}\\
+\< \sendmessageright*{\text{\(c_x \coloneqq  H(x) + a \cdot \alert{r} + \alert{e}\)}} \<\\
+\< \sendmessageleft*{\text{\(d_x \coloneqq c_x \cdot \alert{k} + \alert{e'}\)}\\
+                     \text{\(c   \coloneqq   a \cdot \alert{k} + \alert{e''}\)}} \<\\
+\text{\(\left\lfloor {2}/{q} \cdot d_x - c \cdot \alert{r} \right\rceil \)} \< \<\\
+}
+\end{column}
+\end{columns}
+\begin{columns}
+\begin{column}[t]{0.4\columnwidth}
+\begin{align*}
+d_x/c^r  &= c_x^k/c^r\\
+         &= (H(x) \cdot g^{r})^k/(g^k)^r\\
+         &=  H(x)^k\\
+\end{align*}
+\end{column}
+\begin{column}[t]{0.6\columnwidth}
+\begin{align*}
+d_x - c \cdot \alert{r}  &= \left(H(x) + a \cdot \alert{r} + \alert{e}\right)\cdot\alert{k} + \alert{e'} - \left(a \cdot \alert{k} + \alert{e''}\right) \cdot \alert{r}\\
+                     &= H(x)\cdot\alert{k} + a \cdot \alert{r}\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'} - a \cdot \alert{k} \cdot \alert{r} - \alert{e''} \cdot \alert{r}\\
+                     &= H(x)\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'}  - \alert{e''} \cdot \alert{r}\\
+                     &\approx H(x)\cdot\alert{k} 
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\section{The Trouble}
+\label{sec:orgb5c062b}
+\begin{frame}[label={sec:org68aef1e}]{Trapdoor Friendly}
+\begin{alertblock}{The Problem}
+The server has to output \(c_{x} \cdot \alert{k} + \alert{e}'\) for some \(c_x \overset{?}{=}  H(x) + a \cdot \alert{r} + \alert{e}\). This is not safe, the client can learn all the server's secrets with one maliciously crafted \(c_{x}\).
+\end{alertblock}
+\begin{itemize}
+\item The client proves in zero-knowledge that \(c_{x}\) is well-formed: \(c_{x} \coloneqq H(x) + a \cdot \alert{r} + \alert{e}\)
+\item This is expensive in terms of bandwidth and computation cost
+\begin{itemize}
+\item \cite{PKC:ADDS21}: \(\approx\) 128GB per evaluation using \cite{C:YAZXYW19}
+\item \cite{AC:AlbGur24}: \(\approx\) 63kB per evaluation using \cite{C:BeuSei23}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:org7e14751}]{Noise Leakage}
+\begin{alertblock}{The Problem}
+The client learns \(\alert{e}\cdot\alert{k} + \alert{e}'  - \alert{e}'' \cdot \alert{r}\)
+where it chooses \(\alert{e}\) and \(\alert{r}\). 
+\end{alertblock}
+\begin{itemize}
+\item Drown everything with \(\alert{e'}\): \(\Vert\alert{e}'\Vert \gg  \Vert\alert{e}\cdot\alert{k}  - \alert{e}'' \cdot \alert{r}\Vert\)
+\item Since \(q > \Vert\alert{e}'\Vert\) we have that \(q/\Vert \alert{e} \Vert\) -- the ``signal to noise ratio'' -- is big.
+\item A big signal to noise ratio makes solving LWE easier.
+\item This requires us to use larger secret dimensions \(n\) to compensate.
+\item Bandwidth cost is essentially \(n \log q\).
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:orgf9aa4eb}]{Noise Growth}
+\begin{columns}
+\begin{column}{0.65\columnwidth}
+\begin{alertblock}{The Problem}
+Have:
+\[
+H(x)\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'}  - \alert{e''} \cdot \alert{r}
+\approx H(x)\cdot\alert{k}.
+\]
+
+Want:
+\begin{align*}
+\left\lceil \frac{2}{q} \cdot \bigg(H(x)\cdot\alert{k} + \alert{e}\cdot\alert{k} + \alert{e'}  - \alert{e''} \cdot \alert{r}\bigg)\right\rfloor
+&= \left\lceil \frac{2}{q} \cdot \bigg( H(x)\cdot\alert{k} \bigg)\right\rfloor
+\end{align*}
+\end{alertblock}
+\begin{itemize}
+\item Make \(q \gg \poly\) so that red area is negligibly small.
+\item Big ``signal-to-noise'' ratio: increasing \(n\) again.
+\end{itemize}
+\end{column}
+\begin{column}{0.35\columnwidth}
+\centering
+\begin{tikzpicture}[scale=0.85, transform shape]
+  \draw (0,0) circle (2cm);
+
+  \fill[red!30] (0,0) -- (-15:2cm) arc (-15:15:2cm) -- cycle;
+  \fill[red!30] (0,0) -- (165:2cm) arc (165:195:2cm) -- cycle;
+
+
+  \draw[dashed] (0,-2) -- (0,2);
+  \draw[dashed] (-2,0) -- (2,0);
+  \draw[rotate=75] (0,-2) -- (0,2);
+  \draw[rotate=-75] (0,-2) -- (0,2);
+
+  \node at (0,2.3) {\(0\)};
+  \node at (2.5,0.6) {\(\frac{q}{4}-\delta\)};
+  \node at (2.4,0) {\(\frac{q}{4}\)};
+  \node at (2.5,-0.6) {\(\frac{q}{4}+\delta\)};
+  \node at (0,-2.4) {\(\frac{q}{2}\)};
+  \node at (-2.6,0.6) {\(\frac{3\,q}{4}+\delta\)};
+  \node at (-2.4,0) {\(\frac{3\,q}{4}\)};
+  \node at (-2.6,-0.6) {\(\frac{3\,q}{4}-\delta\)};
+
+  \node at (0, 1) {\(b=0\)};
+  \node at (0,-1) {\(b=1\)};
+
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+\section{Wrapping Up}
+\label{sec:orgff0804a}
+
+\begin{frame}[label={sec:org0b98277}]{Realisations of this Blueprint}
+\begin{center}
+\begin{tabular}{llrrl}
+\toprule
+Work & Model & 1-time Offline & Online & \(Q\)\\
+\midrule
+\cite{PKC:ADDS21} & H-H & -- & 2MB & \\
+\cite{PKC:ADDS21} & M-M & -- & 128GB & \\
+\cite{AC:AlbGur24} & M-M & 114kB & 198kB & \(2^{32}\)\\
+\cite{EPRINT:ESTX24} & M-M & 20kB & 159kB & \(2^{32}\)\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+
+\begin{center}
+H: semi-honest, M: malicious
+\end{center}
+
+\begin{itemize}
+\item {\footnotesize \fullcite{PKC:ADDS21} \par}
+\item {\footnotesize \fullcite{AC:AlbGur24} \par}
+\item {\footnotesize \fullcite{EPRINT:ESTX24} \par}
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:orgbe80f04}]{An Alternative from FHE}
+We do have efficient FHE: ciphertexts are typically \alert{smaller} than messages above.
+\begin{itemize}
+\item \textbf{Simple idea:}
+\begin{enumerate}
+\item Client FHE encrypts \(x\) as \([x]\)
+\item Server homomorphically computes PRF using plaintext \(k\) and \([x]\) to obtain \([F_{k}(x)]\)
+\item Client FHE decrypts \(F_{k}(x)\)
+\end{enumerate}
+\item \textbf{Problem:} PRFs need deep circuits, deep circuits are expensive
+\item \textbf{Proposal:} Use Dark Matter (weak-)PRF candidate \cite{TCC:BIPSW18} \(\sum \left(\mat{A}\cdot \vec{x} \bmod 2\right) \bmod 3\) where \(\mat{A}\) is the secret key
+\end{itemize}
+
+
+{\footnotesize \fullcite{EC:ADDG24} \par}
+\end{frame}
+\begin{frame}[label={sec:orgb0f2ca8}]{Overview of Round-Optimal OPRFs w/o Trusted Setup}
+\begin{small}
+
+\begin{center}
+\begin{tabular}{lllrr}
+\toprule
+Work & Assumption & Model & 1-time Offline & Online\\
+\midrule
+ADDS21 & (R)LWE+SIS & H-H & - & 2MB\\
+ADDS21 & (R)LWE+SIS & M-M & - & 128GB\\
+\rowcolor{gamechangecolor} AG24 & (R)LWE+SIS & M-M & 114kB & 198kB\\
+\rowcolor{gamechangecolor} ADDG24 & mod(2,3)+lattices & M-H & 2.5MB & 10KB\\
+\rowcolor{gamechangecolor} ADDG24 & mod(2,3)+lattices & M-M & 2.5MB & 160KB\\
+ESTX24 & iMLWER-RU+MLE+SIS & M-M & 20kB & 159KB\\
+APRR24 & mod(2,3) & M-H, pp & 4.75B & 114.5B\\
+FOO23 & AES+Garbled Circuits & H-H & - & 6.79MB\\
+Basso24 & Higher-Dimensional isogenies & M-M & - & 28.9kB\\
+HHM+23 & Isogenies F\textsubscript{p} + lattices + HE OT & H-H & - & 640kB\\
+dSP23 & Isogenies F\textsubscript{p} & M-H, pp & 68.4 kB & 384B\\
+dSP23 & Isogenies F\textsubscript{p} & M-H, pp & - & 16.38kB\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+
+\end{small}
+
+\begin{center}
+{\footnotesize adapted from \url{https://heimberger.xyz/oprfs.html} \par}
+\end{center}
+\end{frame}
+\begin{frame}[label={sec:orgb23380c},standout]{Fin}
+\begin{center}
+{\Huge\alert{Thank You}\par}
+
+\url{https://ia.cr/2019/1271}
+
+\url{https://ia.cr/2023/232}
+
+\url{https://ia.cr/2024/1459}
+\end{center}
+\end{frame}
+\begin{frame}[allowframebreaks]{References}
+\renewcommand*{\bibfont}{\scriptsize}
+\printbibliography[heading=none]
+\end{frame}
+\end{document}
